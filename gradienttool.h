@@ -29,6 +29,7 @@ public:
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
+    void hoverMoveEvent(QHoverEvent *event) override;
     void wheelEvent(QWheelEvent* event) override;
 
     void paint7(QPainter *painter);
@@ -36,6 +37,8 @@ protected:
 private:
     void setColorBegin(const QColor & newColor);
     void setColorEnd(const QColor & newColor);
+
+    std::optional<QPoint> findNearest(const QPoint & other) const;
 
 private:
     QVector<QPoint> lines;
@@ -45,6 +48,7 @@ private:
     int max = 10000;
     qreal penWidth = 0;
     EasingColor easingColor;
+    std::optional<QPoint> hoverPoint;
 };
 
 #endif // GRADIENTTOOL_H

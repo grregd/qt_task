@@ -3,9 +3,12 @@
 #include <QDebug>
 
 #include <math.h>
+#include <optional>
+
 #include <QPainter>
 #include <QVector3D>
 #include <QEasingCurve>
+#include <QGuiApplication>
 
 
 GradientTool::GradientTool()
@@ -40,6 +43,8 @@ void GradientTool::paint7(QPainter *painter)
     if (lines.size()<2)
         return ;
 
+    Qt::KeyboardModifiers mods = QGuiApplication::queryKeyboardModifiers();
+
     easingColor.setEasingCurveType(QEasingCurve::OutBounce);
 
     qreal accLength = 0;
@@ -58,9 +63,24 @@ void GradientTool::paint7(QPainter *painter)
         painter->setPen(QPen(gradient, penWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         painter->drawLine(line);
 
+        if (mods & Qt::ControlModifier)
+        {
+            painter->setPen(QPen(QColor(128, 128, 128), 3));
+            QRect r(0, 0, penWidth, penWidth);
+            r.moveCenter(lines[i]);
+            painter->drawEllipse(r);
+        }
+
         accLength += curLength;
     }
 
+    if (hoverPoint)
+    {
+        QRect occ(QPoint(), QSize(penWidth*1.1, penWidth*1.1));
+        occ.moveCenter(*hoverPoint);
+        painter->setPen(QPen(QColor(0xff1493), 3));
+        painter->drawEllipse(occ);
+    }
 }
 
 
@@ -74,6 +94,43 @@ void GradientTool::mousePressEvent(QMouseEvent *event)
     lines.push_back(event->pos());
     update();
 }
+
+void GradientTool::hoverMoveEvent(QHoverEvent *event)
+{
+    qDebug() << "----------------------------------------------";
+
+//    std::for_each(lines.begin(), lines.end(), [&event](const QPoint & point)
+//    {
+//        auto l = event->pos() - point;
+//        qDebug() << ": l = " << l;
+//        qDebug() << "m = " << l.manhattanLength();
+//    });
+
+
+    if (std::optional<QPoint> nearest = findNearest(event->pos()))
+    {
+        qDebug() << "nearest of " << event->pos() << ": " << *nearest
+                 << "manhattan: " << (*nearest - event->pos()).manhattanLength();
+
+        if ((*nearest - event->pos()).manhattanLength() <= penWidth)
+        {
+            if (hoverPoint != nearest)
+            {
+                hoverPoint = nearest;
+                update();
+            }
+        }
+        else
+        {
+            if (hoverPoint)
+            {
+                hoverPoint.reset();
+                update();
+            }
+        }
+    }
+}
+
 
 void GradientTool::wheelEvent(QWheelEvent* event)
 {
@@ -96,3 +153,19 @@ void GradientTool::setColorEnd(const QColor & newColor)
     easingColor.setColorEnd(newColor);
 }
 
+std::optional<QPoint> GradientTool::findNearest(const QPoint & other) const
+{
+    int minManhattan = 1000;
+    std::optional<QPoint> nearest;
+    for (const QPoint& p: lines)
+    {
+        auto newManhattan = (p - other).manhattanLength();
+        if (newManhattan < minManhattan)
+        {
+            minManhattan = newManhattan;
+            nearest = p;
+        }
+    }
+
+    return nearest;
+}
