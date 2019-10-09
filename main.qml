@@ -11,6 +11,7 @@ Window {
     GradientTool {
         width: 640
         height: 480
+        penWidth: 20
 
 //        MouseArea {
 //            anchors.fill: parent

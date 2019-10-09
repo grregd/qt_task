@@ -7,7 +7,12 @@
 
 class GradientTool : public QQuickPaintedItem
 {
-    Q_OBJECT;
+    Q_OBJECT
+    Q_PROPERTY(qreal penWidth MEMBER penWidth NOTIFY penWidthChanged)
+
+signals:
+    void penWidthChanged();
+
 public:
     GradientTool();
 
@@ -28,7 +33,7 @@ private:
     QPen circlePen;
     QBrush circleBrush;
     int max = 10000;
-    qreal penWidth = 4.0;
+    qreal penWidth = 0;
 };
 
 #endif // GRADIENTTOOL_H

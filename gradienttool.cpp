@@ -80,10 +80,10 @@ void GradientTool::mousePressEvent(QMouseEvent *event)
 void GradientTool::wheelEvent(QWheelEvent* event)
 {
     qDebug() << "GradientTool::wheelEvent(QWheelEvent* event): "
-             << max << " + "  << event->delta();
+             << penWidth << " + "  << event->delta();
     max += event->delta();
     penWidth += event->delta()/10.0;
-    qDebug() << " = " << max;
+    qDebug() << " = " << penWidth;
 
     update();
 }
