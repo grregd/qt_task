@@ -9,9 +9,13 @@ class GradientTool : public QQuickPaintedItem
 {
     Q_OBJECT
     Q_PROPERTY(qreal penWidth MEMBER penWidth NOTIFY penWidthChanged)
+    Q_PROPERTY(QColor colorBegin MEMBER colorBegin NOTIFY colorBeginChanged)
+    Q_PROPERTY(QColor colorEnd MEMBER colorEnd NOTIFY colorEndChanged)
 
 signals:
     void penWidthChanged();
+    void colorBeginChanged();
+    void colorEndChanged();
 
 public:
     GradientTool();
@@ -34,6 +38,8 @@ private:
     QBrush circleBrush;
     int max = 10000;
     qreal penWidth = 0;
+    QColor colorBegin;
+    QColor colorEnd;
 };
 
 #endif // GRADIENTTOOL_H

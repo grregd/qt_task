@@ -40,21 +40,38 @@ void GradientTool::paint7(QPainter *painter)
     if (lines.size()<2)
         return ;
 
+    int a = colorEnd.red();
+    int b = colorBegin.red();
+
     QEasingCurve easingColor(QEasingCurve::InOutQuad);
     qreal accLength = 0;
 
     for (size_t i = 0; i < lines.size()-1; ++i)
     {
         QLineF line(lines[i], lines[i+1]);
+
         qreal curLength = line.length()/linesLength;
+
+        auto easingBeg = easingColor.valueForProgress(accLength);
+        auto easingEnd = easingColor.valueForProgress(accLength+curLength);
+
+        auto componentBegR = colorBegin.red() + easingBeg*(colorEnd.red() - colorBegin.red());
+        auto componentEndR = colorBegin.red() + easingEnd*(colorEnd.red() - colorBegin.red());
+        auto componentBegG = colorBegin.green() + easingBeg*(colorEnd.green() - colorBegin.green());
+        auto componentEndG = colorBegin.green() + easingEnd*(colorEnd.green() - colorBegin.green());
+        auto componentBegB = colorBegin.blue() + easingBeg*(colorEnd.blue() - colorBegin.blue());
+        auto componentEndB = colorBegin.blue() + easingEnd*(colorEnd.blue() - colorBegin.blue());
+
         qreal colorStart = 255.0*easingColor.valueForProgress(accLength);
         qreal colorStop = 255.0*easingColor.valueForProgress(accLength+curLength);
         qDebug() << "colorStart: " << colorStart;
         qDebug() << "colorStop: " << colorStop;
 
         QLinearGradient gradient(line.p1(), line.p2());
-        gradient.setColorAt(0, QColor(colorStart, colorStart, colorStart));
-        gradient.setColorAt(1, QColor(colorStop, colorStop, colorStop));
+//        gradient.setColorAt(0, QColor(colorStart, colorStart, colorStart));
+//        gradient.setColorAt(1, QColor(colorStop, colorStop, colorStop));
+        gradient.setColorAt(0, QColor(componentBegR, componentBegG, componentBegB));
+        gradient.setColorAt(1, QColor(componentEndR, componentEndG, componentEndB));
 
         painter->setPen(QPen(gradient, penWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         painter->drawLine(line);
