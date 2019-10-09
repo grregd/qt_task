@@ -40,10 +40,7 @@ void GradientTool::paint7(QPainter *painter)
     if (lines.size()<2)
         return ;
 
-    QColor const & colorBegin = easingColor.getColorBegin();
-    QColor const & colorEnd = easingColor.getColorEnd();
-
-    easingColor.setEasingCurveType(QEasingCurve::InOutQuad);
+    easingColor.setEasingCurveType(QEasingCurve::OutBounce);
 
     qreal accLength = 0;
 
