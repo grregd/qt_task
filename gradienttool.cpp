@@ -63,7 +63,8 @@ void GradientTool::paint7(QPainter *painter)
         painter->setPen(QPen(gradient, penWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         painter->drawLine(line);
 
-        if (mods & Qt::ControlModifier)
+//        if (mods & Qt::ControlModifier)
+        if (showControlPoints)
         {
             painter->setPen(QPen(QColor(128, 128, 128), 3));
             QRect r(0, 0, penWidth, penWidth);

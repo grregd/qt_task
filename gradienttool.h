@@ -11,6 +11,7 @@ class GradientTool : public QQuickPaintedItem
 {
     Q_OBJECT
     Q_PROPERTY(qreal penWidth MEMBER penWidth NOTIFY penWidthChanged)
+    Q_PROPERTY(bool showControlPoints MEMBER showControlPoints)
     Q_PROPERTY(QColor colorBegin WRITE setColorBegin)
     Q_PROPERTY(QColor colorEnd WRITE setColorEnd)
 
@@ -41,6 +42,7 @@ private:
     std::optional<QPoint> findNearest(const QPoint & other) const;
 
 private:
+    bool showControlPoints = false;
     QVector<QPoint> lines;
     qreal linesLength = 0;
     QPen circlePen;
