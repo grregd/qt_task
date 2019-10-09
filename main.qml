@@ -13,8 +13,8 @@ Window {
     GradientTool {
         anchors.fill: parent
         penWidth: 200
-        colorBegin: "#baadc0de"
-        colorEnd: "blue"
+        colorBegin: "red"
+        colorEnd: "yellow"
 
 //        MouseArea {
 //            anchors.fill: parent
