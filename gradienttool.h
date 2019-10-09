@@ -1,6 +1,8 @@
 #ifndef GRADIENTTOOL_H
 #define GRADIENTTOOL_H
 
+#include "easingcolor.h"
+
 #include <QQuickPaintedItem>
 #include <QPen>
 //#include <QBrush>
@@ -9,8 +11,8 @@ class GradientTool : public QQuickPaintedItem
 {
     Q_OBJECT
     Q_PROPERTY(qreal penWidth MEMBER penWidth NOTIFY penWidthChanged)
-    Q_PROPERTY(QColor colorBegin MEMBER colorBegin NOTIFY colorBeginChanged)
-    Q_PROPERTY(QColor colorEnd MEMBER colorEnd NOTIFY colorEndChanged)
+    Q_PROPERTY(QColor colorBegin WRITE setColorBegin)
+    Q_PROPERTY(QColor colorEnd WRITE setColorEnd)
 
 signals:
     void penWidthChanged();
@@ -32,14 +34,17 @@ protected:
     void paint7(QPainter *painter);
 
 private:
+    void setColorBegin(const QColor & newColor);
+    void setColorEnd(const QColor & newColor);
+
+private:
     QVector<QPoint> lines;
     qreal linesLength = 0;
     QPen circlePen;
     QBrush circleBrush;
     int max = 10000;
     qreal penWidth = 0;
-    QColor colorBegin;
-    QColor colorEnd;
+    EasingColor easingColor;
 };
 
 #endif // GRADIENTTOOL_H

@@ -40,8 +40,8 @@ void GradientTool::paint7(QPainter *painter)
     if (lines.size()<2)
         return ;
 
-    int a = colorEnd.red();
-    int b = colorBegin.red();
+    QColor const & colorBegin = easingColor.getColorBegin();
+    QColor const & colorEnd = easingColor.getColorEnd();
 
     QEasingCurve easingColor(QEasingCurve::InOutQuad);
     qreal accLength = 0;
@@ -82,7 +82,6 @@ void GradientTool::paint7(QPainter *painter)
 }
 
 
-
 void GradientTool::mousePressEvent(QMouseEvent *event)
 {
     if (!lines.empty())
@@ -103,5 +102,15 @@ void GradientTool::wheelEvent(QWheelEvent* event)
     qDebug() << " = " << penWidth;
 
     update();
+}
+
+void GradientTool::setColorBegin(const QColor & newColor)
+{
+    easingColor.setColorBegin(newColor);
+}
+
+void GradientTool::setColorEnd(const QColor & newColor)
+{
+    easingColor.setColorEnd(newColor);
 }
 
