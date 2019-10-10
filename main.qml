@@ -97,6 +97,12 @@ Window {
                                   gradientTool.removeLastPoint()
            }
        }
+        Shortcut {
+           sequence: "Ctrl+Y"
+           onActivated: { console.log("Ctrl+Y")
+                                  gradientTool.redoLastPoint()
+           }
+       }
     }
 
 

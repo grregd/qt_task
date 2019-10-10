@@ -54,9 +54,20 @@ void GradientTool::removeLastPoint()
             qDebug() << "linesLength: " << linesLength;
         }
 
+        undoPoints.push_back(lines.back());
         lines.pop_back();
         update();
     }
+}
+
+void GradientTool::redoLastPoint()
+{
+    if (!undoPoints.empty())
+    {
+        addPointAtEnd(undoPoints.back());
+        undoPoints.pop_back();
+    }
+    update();
 }
 
 void GradientTool::paint7(QPainter *painter)
@@ -109,6 +120,8 @@ void GradientTool::paint7(QPainter *painter)
 
 void GradientTool::mousePressEvent(QMouseEvent *event)
 {
+    undoPoints.clear();
+
     addPointAtEnd(event->pos());
     update();
 }

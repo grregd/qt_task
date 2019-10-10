@@ -29,6 +29,7 @@ public:
 
 public slots:
     void removeLastPoint();
+    void redoLastPoint();
 
 protected:
     void paint7(QPainter *painter);
@@ -57,6 +58,7 @@ private:
 private:
     bool showControlPoints = false;
     QVector<QPoint> lines;
+    QVector<QPoint> undoPoints;
     qreal linesLength = 0;
     qreal penWidthMax = 100;
     qreal penWidth = 0;
