@@ -14,53 +14,45 @@ Window {
 
     title: qsTr("Hello World")
 
-    RowLayout {
-        anchors.fill:
-        ColumnLayout {
+    ColumnLayout {
+        anchors.fill: parent
+
+        RowLayout {
+            CheckBox {
+                id: checkBox
+                text: qsTr("Show control points")
+                onClicked: gradientTool.showControlPoints = checkBox.checked
+                Component.onCompleted: gradientTool.showControlPoints
+                Connections {
+                    target: gradientTool
+                    onShowControlPointsChanged: checkBox.checked = gradientTool.showControlPoints
+                }
+            }
+
+            Label { text: "color beg"
+
+            }
+
+            Label { text: "color end" }
+
+//            ColorDialog {
+//                title: "select color"
+//                Component.onCompleted: visible = true
+//            }
+
+
+        }
+
+        GradientTool {
+            id: gradientTool
             Layout.fillHeight: true
             Layout.fillWidth: true
-            RowLayout {
-                Layout.fillWidth: false
-                Layout.alignment: Qt.AlignLeft | Qt.AlignTop
-                CheckBox {
-                    id: checkBox
-                    text: qsTr("Show control points")
-                    checked: false
-                }
-
-                Label { text: "color beg"
-
-                }
-
-                Label { text: "color end" }
-
-                ColorDialog {
-                    title: "select color"
-                    Component.onCompleted: visible = true
-                }
-
-
-
-
-            }
-
-            GradientTool {
-                id: gradientTool
-                Layout.fillHeight: false
-                Layout.fillWidth: false
-                anchors.fill: parent
-                penWidth: 200
-                colorBegin: "red"
-                colorEnd: "yellow"
-                showControlPoints: false
-            }
-
+            penWidth: 200
+            colorBegin: "red"
+            colorEnd: "yellow"
+            showControlPoints: false
         }
     }
 
-    Connections {
-        target: checkBox
-        onClicked: gradientTool = checkBox.checked
-    }
 
 }

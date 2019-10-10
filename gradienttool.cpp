@@ -154,6 +154,17 @@ void GradientTool::setColorEnd(const QColor & newColor)
     easingColor.setColorEnd(newColor);
 }
 
+bool GradientTool::getShowControlPoints() const
+{
+    return showControlPoints;
+}
+
+void GradientTool::setShowControlPoints(bool newValue)
+{
+    showControlPoints = newValue;
+    update();
+}
+
 std::optional<QPoint> GradientTool::findNearest(const QPoint & other) const
 {
     int minManhattan = 1000;
