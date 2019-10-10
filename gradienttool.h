@@ -10,7 +10,7 @@
 class GradientTool : public QQuickPaintedItem
 {
     Q_OBJECT
-    Q_PROPERTY(qreal penWidth MEMBER penWidth NOTIFY penWidthChanged)
+    Q_PROPERTY(qreal penWidth MEMBER penWidth READ getPenWidth WRITE setPenWidth NOTIFY penWidthChanged)
     Q_PROPERTY(bool showControlPoints MEMBER getShowControlPoints READ getShowControlPoints WRITE setShowControlPoints NOTIFY showControlPointsChanged)
     Q_PROPERTY(QColor colorBegin WRITE setColorBegin)
     Q_PROPERTY(QColor colorEnd WRITE setColorEnd)
@@ -37,9 +37,11 @@ protected:
     void paint7(QPainter *painter);
 
 private:
+    void setPenWidth(qreal newValue);
     void setColorBegin(const QColor & newColor);
     void setColorEnd(const QColor & newColor);
 
+    qreal getPenWidth() const;
     bool getShowControlPoints() const;
     void setShowControlPoints(bool newValue);
 

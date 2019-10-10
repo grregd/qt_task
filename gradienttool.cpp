@@ -98,8 +98,6 @@ void GradientTool::mousePressEvent(QMouseEvent *event)
 
 void GradientTool::hoverMoveEvent(QHoverEvent *event)
 {
-    qDebug() << "----------------------------------------------";
-
 //    std::for_each(lines.begin(), lines.end(), [&event](const QPoint & point)
 //    {
 //        auto l = event->pos() - point;
@@ -110,8 +108,8 @@ void GradientTool::hoverMoveEvent(QHoverEvent *event)
 
     if (std::optional<QPoint> nearest = findNearest(event->pos()))
     {
-        qDebug() << "nearest of " << event->pos() << ": " << *nearest
-                 << "manhattan: " << (*nearest - event->pos()).manhattanLength();
+//        qDebug() << "nearest of " << event->pos() << ": " << *nearest
+//                 << "manhattan: " << (*nearest - event->pos()).manhattanLength();
 
         if ((*nearest - event->pos()).manhattanLength() <= penWidth)
         {
@@ -135,12 +133,16 @@ void GradientTool::hoverMoveEvent(QHoverEvent *event)
 
 void GradientTool::wheelEvent(QWheelEvent* event)
 {
-    qDebug() << "GradientTool::wheelEvent(QWheelEvent* event): "
-             << penWidth << " + "  << event->delta();
     max += event->delta();
-    penWidth += event->delta()/10.0;
-    qDebug() << " = " << penWidth;
+    setPenWidth( penWidth + event->delta()/10.0);
 
+    update();
+}
+
+void GradientTool::setPenWidth(qreal newValue)
+{
+    penWidth = newValue;
+    emit penWidthChanged();
     update();
 }
 
@@ -154,6 +156,11 @@ void GradientTool::setColorEnd(const QColor & newColor)
     easingColor.setColorEnd(newColor);
 }
 
+qreal GradientTool::getPenWidth() const
+{
+    return penWidth;
+}
+
 bool GradientTool::getShowControlPoints() const
 {
     return showControlPoints;
@@ -162,6 +169,7 @@ bool GradientTool::getShowControlPoints() const
 void GradientTool::setShowControlPoints(bool newValue)
 {
     showControlPoints = newValue;
+    emit showControlPointsChanged();
     update();
 }
 

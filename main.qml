@@ -22,7 +22,7 @@ Window {
                 id: checkBox
                 text: qsTr("Show control points")
                 onClicked: gradientTool.showControlPoints = checkBox.checked
-                Component.onCompleted: gradientTool.showControlPoints
+                Component.onCompleted: checkBox.checked = gradientTool.showControlPoints
                 Connections {
                     target: gradientTool
                     onShowControlPointsChanged: checkBox.checked = gradientTool.showControlPoints
@@ -34,6 +34,20 @@ Window {
             }
 
             Label { text: "color end" }
+
+            Label { text: qsTr("Pen width [pixels]") }
+            Slider {
+                id: penWidthSlider
+                stepSize: 1
+                minimumValue: 1
+                maximumValue: 100
+                Component.onCompleted: penWidthSlider.value = gradientTool.penWidth
+                onValueChanged: gradientTool.penWidth = penWidthSlider.value
+                Connections {
+                    target: gradientTool
+                    onPenWidthChanged: penWidthSlider.value = gradientTool.penWidth
+                }
+            }
 
 //            ColorDialog {
 //                title: "select color"
