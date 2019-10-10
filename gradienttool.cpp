@@ -36,16 +36,42 @@ void GradientTool::paint(QPainter *painter)
     paint7(painter);
 }
 
+void GradientTool::addPointAtEnd(const QPoint & point)
+{
+    if (!lines.empty())
+    {
+        qDebug() << __PRETTY_FUNCTION__ << "addPointAtEnd: "
+                 << QLineF(lines.back(), point).length();
+        linesLength += QLineF(lines.back(), point).length();
+        qDebug() << "linesLength: " << linesLength;
+    }
+
+    lines.push_back(point);
+}
+
+void GradientTool::removeLastPoint()
+{
+    if (!lines.empty())
+    {
+        if (lines.size() >= 2)
+        {
+            qDebug() << __PRETTY_FUNCTION__ << "removeLastPoint: "
+                     << QLineF(lines.back(), *(lines.rbegin()+1)).length();
+            linesLength -= QLineF(lines.back(), *(lines.rbegin()+1)).length();
+            qDebug() << "linesLength: " << linesLength;
+        }
+
+        lines.pop_back();
+        update();
+    }
+}
+
 void GradientTool::paint7(QPainter *painter)
 {
-    qDebug() << "GradientTool::paint7";
-
     if (lines.size()<2)
         return ;
 
-    Qt::KeyboardModifiers mods = QGuiApplication::queryKeyboardModifiers();
-
-    easingColor.setEasingCurveType(QEasingCurve::OutBounce);
+    easingColor.setEasingCurveType(QEasingCurve::Linear);
 
     qreal accLength = 0;
 
@@ -63,7 +89,6 @@ void GradientTool::paint7(QPainter *painter)
         painter->setPen(QPen(gradient, penWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         painter->drawLine(line);
 
-//        if (mods & Qt::ControlModifier)
         if (showControlPoints)
         {
             painter->setPen(QPen(QColor(128, 128, 128), 3));
@@ -86,12 +111,7 @@ void GradientTool::paint7(QPainter *painter)
 
 void GradientTool::mousePressEvent(QMouseEvent *event)
 {
-    if (!lines.empty())
-    {
-        linesLength += QLineF(lines.back(), event->pos()).length();
-    }
-
-    lines.push_back(event->pos());
+    addPointAtEnd(event->pos());
     update();
 }
 

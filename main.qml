@@ -102,6 +102,13 @@ Window {
 //            }
             Component.onCompleted: visible = false
         }
+
+        Shortcut {
+           sequence: "Ctrl+Z"
+           onActivated: { console.log("Ctrl+Z")
+                                  gradientTool.removeLastPoint()
+           }
+       }
     }
 
 

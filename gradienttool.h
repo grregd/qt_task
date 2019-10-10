@@ -27,15 +27,17 @@ public:
 
     void paint(QPainter *painter) override;
 
-//public slots:
-//    void addPoint(int x, int y);
+public slots:
+    void removeLastPoint();
 
 protected:
     void paint7(QPainter *painter);
 
-    void mousePressEvent(QMouseEvent *event) override;
-    void hoverMoveEvent(QHoverEvent *event) override;
+    void mousePressEvent(QMouseEvent* event) override;
+    void hoverMoveEvent(QHoverEvent* event) override;
     void wheelEvent(QWheelEvent* event) override;
+
+    void addPointAtEnd(const QPoint & point);
 
 private:
 //    void setPenWidthMax(qreal newValue);
