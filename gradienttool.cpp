@@ -133,7 +133,6 @@ void GradientTool::hoverMoveEvent(QHoverEvent *event)
 void GradientTool::wheelEvent(QWheelEvent* event)
 {
     setPenWidth(penWidth + event->delta()/10.0);
-
     update();
 }
 

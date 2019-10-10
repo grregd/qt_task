@@ -76,6 +76,7 @@ Window {
         ColorDialog {
             id: selectColorBegin
             title: "Select begin color"
+            showAlphaChannel: true
 
             onCurrentColorChanged: gradientTool.colorBegin = currentColor
 //            onAccepted: {
@@ -90,6 +91,7 @@ Window {
         ColorDialog {
             id: selectColorEnd
             title: "Select end color"
+            showAlphaChannel: true
 
             onCurrentColorChanged: gradientTool.colorEnd = currentColor
 //            onAccepted: {
