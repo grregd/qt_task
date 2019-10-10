@@ -8,7 +8,7 @@ import QtQuick.Dialogs 1.3
 Window {
     id: window
     visible: true
-    //    visibility: "Maximized"
+//    visibility: "Maximized"
     width: 640
     height: 480
 
@@ -91,18 +91,22 @@ Window {
             Component.onCompleted: visible = false
         }
 
-        Shortcut {
+       Shortcut {
            sequence: "Ctrl+Z"
-           onActivated: { console.log("Ctrl+Z")
-                                  gradientTool.removeLastPoint()
-           }
+           onActivated: gradientTool.removeLastPoint()
        }
-        Shortcut {
+       Shortcut {
            sequence: "Ctrl+Y"
-           onActivated: { console.log("Ctrl+Y")
-                                  gradientTool.redoLastPoint()
-           }
+           onActivated: gradientTool.redoLastPoint()
        }
+       Shortcut {
+            sequence: "Ctrl+F"
+            onActivated: window.showFullScreen()
+        }
+        Shortcut {
+            sequence: "ESC"
+            onActivated: window.showNormal()
+        }
     }
 
 
