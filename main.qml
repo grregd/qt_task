@@ -29,11 +29,23 @@ Window {
                 }
             }
 
-            Label { text: "color beg"
+            Button {
+                text: "Select begin color"
 
+                onClicked: {
+                    selectColorBegin.currentColor = gradientTool.colorBegin
+                    selectColorBegin.open()
+                }
             }
 
-            Label { text: "color end" }
+            Button {
+                text: "Select end color"
+
+                onClicked: {
+                    selectColorEnd.currentColor = gradientTool.colorEnd
+                    selectColorEnd.open()
+                }
+            }
 
             Label { text: qsTr("Pen width [pixels]") }
             Slider {
@@ -41,6 +53,7 @@ Window {
                 stepSize: 1
                 minimumValue: 1
                 maximumValue: 100
+                value: 1
                 Component.onCompleted: penWidthSlider.value = gradientTool.penWidth
                 onValueChanged: gradientTool.penWidth = penWidthSlider.value
                 Connections {
@@ -48,23 +61,44 @@ Window {
                     onPenWidthChanged: penWidthSlider.value = gradientTool.penWidth
                 }
             }
-
-//            ColorDialog {
-//                title: "select color"
-//                Component.onCompleted: visible = true
-//            }
-
-
         }
 
         GradientTool {
             id: gradientTool
             Layout.fillHeight: true
             Layout.fillWidth: true
-            penWidth: 200
+            penWidthMax: 100
             colorBegin: "red"
             colorEnd: "yellow"
             showControlPoints: false
+        }
+
+        ColorDialog {
+            id: selectColorBegin
+            title: "Select begin color"
+
+            onCurrentColorChanged: gradientTool.colorBegin = currentColor
+//            onAccepted: {
+//                gradientTool.colorBegin = color
+//            }
+//            onRejected: {
+//                console.log("Canceled")
+//            }
+            Component.onCompleted: visible = false
+        }
+
+        ColorDialog {
+            id: selectColorEnd
+            title: "Select end color"
+
+            onCurrentColorChanged: gradientTool.colorEnd = currentColor
+//            onAccepted: {
+//                gradientTool.colorEnd = color
+//            }
+//            onRejected: {
+//                console.log("Canceled")
+//            }
+            Component.onCompleted: visible = false
         }
     }
 

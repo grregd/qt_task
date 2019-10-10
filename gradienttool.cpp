@@ -84,7 +84,6 @@ void GradientTool::paint7(QPainter *painter)
     }
 }
 
-
 void GradientTool::mousePressEvent(QMouseEvent *event)
 {
     if (!lines.empty())
@@ -133,15 +132,16 @@ void GradientTool::hoverMoveEvent(QHoverEvent *event)
 
 void GradientTool::wheelEvent(QWheelEvent* event)
 {
-    max += event->delta();
-    setPenWidth( penWidth + event->delta()/10.0);
+    setPenWidth(penWidth + event->delta()/10.0);
 
     update();
 }
 
 void GradientTool::setPenWidth(qreal newValue)
 {
-    penWidth = newValue;
+    penWidth = newValue > penWidthMax
+            ? penWidthMax : newValue < 1
+            ? 1 : newValue;
     emit penWidthChanged();
     update();
 }
@@ -149,11 +149,13 @@ void GradientTool::setPenWidth(qreal newValue)
 void GradientTool::setColorBegin(const QColor & newColor)
 {
     easingColor.setColorBegin(newColor);
+    update();
 }
 
 void GradientTool::setColorEnd(const QColor & newColor)
 {
     easingColor.setColorEnd(newColor);
+    update();
 }
 
 qreal GradientTool::getPenWidth() const
@@ -164,6 +166,16 @@ qreal GradientTool::getPenWidth() const
 bool GradientTool::getShowControlPoints() const
 {
     return showControlPoints;
+}
+
+QColor GradientTool::getColorBegin() const
+{
+    return easingColor.getColorBegin();
+}
+
+QColor GradientTool::getColorEnd() const
+{
+    return easingColor.getColorEnd();
 }
 
 void GradientTool::setShowControlPoints(bool newValue)
