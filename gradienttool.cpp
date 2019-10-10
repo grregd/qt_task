@@ -4,6 +4,7 @@
 
 #include <math.h>
 #include <optional>
+#include <algorithm>
 
 #include <QPainter>
 #include <QVector3D>
@@ -16,18 +17,10 @@ GradientTool::GradientTool()
     setAcceptedMouseButtons(Qt::AllButtons);
     setAcceptHoverEvents(true);
     setFlag(ItemAcceptsInputMethod, true);
-//    setAcceptTouchEvents(true);
 
     QLinearGradient gradient(QPointF(50, -20), QPointF(80, 20));
-//    QLinearGradient gradient(QPointF(0, 0), QPointF(0, 480));
     gradient.setColorAt(0.0, Qt::white);
     gradient.setColorAt(1.0, QColor(0xa6, 0xce, 0x39));
-//    gradient.setCoordinateMode(QGradient::StretchToDeviceMode);
-
-//    circlePen = QPen(/*Qt::black*/gradient, penWidth);
-//    circlePen.setWidth(5);
-
-    circleBrush = QBrush(gradient);
 }
 
 
@@ -68,37 +61,42 @@ void GradientTool::removeLastPoint()
 
 void GradientTool::paint7(QPainter *painter)
 {
-    if (lines.size()<2)
-        return ;
 
     easingColor.setEasingCurveType(QEasingCurve::Linear);
 
     qreal accLength = 0;
 
-    for (size_t i = 0; i < lines.size()-1; ++i)
+    if (lines.size() >= 2)
     {
-        QLineF line(lines[i], lines[i+1]);
-
-        qreal curLength = line.length()/linesLength;
-
-        QLinearGradient gradient(line.p1(), line.p2());
-
-        gradient.setColorAt(0, easingColor.colorForProgress(accLength));
-        gradient.setColorAt(1, easingColor.colorForProgress(accLength+curLength));
-
-        painter->setPen(QPen(gradient, penWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-        painter->drawLine(line);
-
-        if (showControlPoints)
+        for (size_t i = 0; i < lines.size()-1; ++i)
         {
-            painter->setPen(QPen(QColor(128, 128, 128), 3));
-            QRect r(0, 0, penWidth, penWidth);
-            r.moveCenter(lines[i]);
-            painter->drawEllipse(r);
-        }
+            QLineF line(lines[i], lines[i+1]);
 
-        accLength += curLength;
+            qreal curLength = line.length()/linesLength;
+
+            QLinearGradient gradient(line.p1(), line.p2());
+
+            gradient.setColorAt(0, easingColor.colorForProgress(accLength));
+            gradient.setColorAt(1, easingColor.colorForProgress(accLength+curLength));
+
+            painter->setPen(QPen(gradient, penWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+            painter->drawLine(line);
+
+
+            accLength += curLength;
+        }
     }
+
+    if (showControlPoints)
+    {
+        painter->setPen(QPen(QColor(128, 128, 128), 3));
+        QRect r(0, 0, std::max(15.0, penWidth), std::max(15.0, penWidth));
+        std::for_each(lines.begin(), lines.end(), [painter, &r](auto & point){
+            r.moveCenter(point);
+            painter->drawEllipse(r);
+        });
+    }
+
 
     if (hoverPoint)
     {

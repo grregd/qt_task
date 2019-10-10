@@ -58,8 +58,6 @@ private:
     bool showControlPoints = false;
     QVector<QPoint> lines;
     qreal linesLength = 0;
-    QPen circlePen;
-    QBrush circleBrush;
     qreal penWidthMax = 100;
     qreal penWidth = 0;
     EasingColor easingColor;

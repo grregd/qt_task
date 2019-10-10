@@ -79,12 +79,6 @@ Window {
             showAlphaChannel: true
 
             onCurrentColorChanged: gradientTool.colorBegin = currentColor
-//            onAccepted: {
-//                gradientTool.colorBegin = color
-//            }
-//            onRejected: {
-//                console.log("Canceled")
-//            }
             Component.onCompleted: visible = false
         }
 
@@ -94,12 +88,6 @@ Window {
             showAlphaChannel: true
 
             onCurrentColorChanged: gradientTool.colorEnd = currentColor
-//            onAccepted: {
-//                gradientTool.colorEnd = color
-//            }
-//            onRejected: {
-//                console.log("Canceled")
-//            }
             Component.onCompleted: visible = false
         }
 
