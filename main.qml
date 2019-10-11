@@ -43,6 +43,7 @@ Window {
 
             Slider {
                 id: penWidthSlider
+                width: 150
                 stepSize: 1
                 minimumValue: 1
                 maximumValue: 100
