@@ -76,12 +76,9 @@ private:
 private:
     Line line;
     bool showControlPoints = false;
-    QVector<QPoint> lines_points;
     QVector<QPoint> undoPoints;
-    qreal linesLength = 0;
     qreal penWidthMax = 100;
     qreal penWidth = 0;
-    EasingColor easingColor;
     std::optional<QPoint> hoverPoint;
     bool dragging = false;
 };
