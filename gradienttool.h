@@ -1,7 +1,8 @@
 #ifndef GRADIENTTOOL_H
 #define GRADIENTTOOL_H
 
-#include "easingcolor.h"
+//#include "easingcolor.h"
+#include "brokenline.h"
 
 #include <algorithm>
 
@@ -56,34 +57,8 @@ private:
 
     std::optional<QPoint> findNearest(const QPoint & other) const;
 
-    class Line
-    {
-        QVector<QPoint> points_;
-        EasingColor colors_;
-        qreal length_ = 0;
-
-    public:
-        QVector<QPoint>& points() { return points_; }
-        QVector<QPoint> const & points() const { return points_; }
-
-        EasingColor& colors() { return colors_; }
-        EasingColor const & colors() const { return colors_; }
-
-        qreal & length() { return length_ ; }
-        qreal const & length() const { return length_ ; }
-
-        Line & removePoint(QPoint point)
-        {
-            points_.erase(
-                std::remove(points_.begin(),
-                            points_.end(),
-                            point),
-                points_.end());
-        }
-    };
-
 private:
-    Line line;
+    BrokenLine line;
     bool showControlPoints = false;
     QVector<QPoint> undoPoints;
     qreal penWidthMax = 100;
