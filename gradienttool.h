@@ -58,11 +58,20 @@ private:
 
     class Line
     {
-        QVector<QPoint> points;
-        EasingColor colors;
+        QVector<QPoint> points_;
+        EasingColor colors_;
+        qreal linesLength = 0;
+
+    public:
+        QVector<QPoint>& points() { return points_; }
+        QVector<QPoint> const & points() const { return points_; }
+
+        EasingColor& colors() { return colors_; }
+        EasingColor const & colors() const { return colors_; }
     };
 
 private:
+    Line line;
     bool showControlPoints = false;
     QVector<QPoint> lines_points;
     QVector<QPoint> undoPoints;
