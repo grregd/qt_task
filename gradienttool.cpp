@@ -25,16 +25,6 @@ void GradientTool::paint(QPainter *painter)
     paint7(painter);
 }
 
-void GradientTool::addPointAtEnd(const QPoint & point)
-{
-    if (!line.points().empty())
-    {
-        line.length() += QLineF(line.points().back(), point).length();
-    }
-
-    line.points().push_back(point);
-}
-
 void GradientTool::finishCurrentLine()
 {
     lines.push_back(line);
@@ -59,7 +49,7 @@ void GradientTool::redoLastPoint()
 {
     if (!undoPoints.empty())
     {
-        addPointAtEnd(undoPoints.back());
+        line.addPointAtEnd(undoPoints.back());
         undoPoints.pop_back();
     }
     update();
@@ -132,7 +122,7 @@ void GradientTool::mouseReleaseEvent(QMouseEvent *event)
     {
         undoPoints.clear();
 
-        addPointAtEnd(event->pos());
+        line.addPointAtEnd(event->pos());
     }
     else if (event->button() == Qt::RightButton)
     {

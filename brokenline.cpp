@@ -1,4 +1,20 @@
+
 #include "brokenline.h"
+
+#include <QLineF>
+
+BrokenLine & BrokenLine::addPointAtEnd(const QPoint & point)
+{
+    if (!points_.empty())
+    {
+        length_ += QLineF(points_.back(), point).length();
+    }
+
+    points_.push_back(point);
+
+    return *this;
+}
+
 
 BrokenLine & BrokenLine::removePoint(const QPoint & point)
 {

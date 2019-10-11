@@ -26,6 +26,7 @@ public:
     qreal & length() { return length_ ; }
     qreal const & length() const { return length_ ; }
 
+    BrokenLine & addPointAtEnd(const QPoint & point);
     BrokenLine & removePoint(const QPoint & point);
     BrokenLine & removeAllPoints();
 
