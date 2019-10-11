@@ -27,6 +27,8 @@ public:
     qreal const & length() const { return length_ ; }
 
     BrokenLine & removePoint(const QPoint & point);
+    BrokenLine & removeAllPoints();
+
     std::optional<QPoint> findNearest(const QPoint & other) const;
 };
 

@@ -41,6 +41,7 @@ protected:
     void wheelEvent(QWheelEvent* event) override;
 
     void addPointAtEnd(const QPoint & point);
+    void finishCurrentLine();
 
 private:
 //    void setPenWidthMax(qreal newValue);
@@ -56,6 +57,7 @@ private:
     QColor getColorEnd() const;
 
 private:
+    QVector<BrokenLine> lines;
     BrokenLine line;
     bool showControlPoints = false;
     QVector<QPoint> undoPoints;

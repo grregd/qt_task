@@ -35,6 +35,11 @@ void GradientTool::addPointAtEnd(const QPoint & point)
     line.points().push_back(point);
 }
 
+void GradientTool::finishCurrentLine()
+{
+    lines.push_back(line);
+}
+
 void GradientTool::removeLastPoint()
 {
     if (!line.points().empty())
@@ -110,8 +115,15 @@ void GradientTool::paint7(QPainter *painter)
 
 void GradientTool::mousePressEvent(QMouseEvent *event)
 {
-    if (hoverPoint)
+    if (event->button() == Qt::LeftButton && hoverPoint)
+    {
+        // startDragging();
         dragging = true;
+    }
+    else if (event->button() == Qt::RightButton)
+    {
+        finishCurrentLine();
+    }
 }
 
 void GradientTool::mouseReleaseEvent(QMouseEvent *event)
