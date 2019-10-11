@@ -50,6 +50,7 @@ Window {
                 Component.onCompleted: penWidthSlider.value = gradientTool.penWidth
                 onValueChanged: gradientTool.penWidth = penWidthSlider.value
                 Connections {
+                    target: gradientTool
                     onPenWidthChanged: penWidthSlider.value = gradientTool.penWidth
                 }
             }
