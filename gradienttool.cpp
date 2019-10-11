@@ -17,10 +17,6 @@ GradientTool::GradientTool()
     setAcceptedMouseButtons(Qt::AllButtons);
     setAcceptHoverEvents(true);
     setFlag(ItemAcceptsInputMethod, true);
-
-    QLinearGradient gradient(QPointF(50, -20), QPointF(80, 20));
-    gradient.setColorAt(0.0, Qt::white);
-    gradient.setColorAt(1.0, QColor(0xa6, 0xce, 0x39));
 }
 
 
@@ -33,10 +29,7 @@ void GradientTool::addPointAtEnd(const QPoint & point)
 {
     if (!line.points().empty())
     {
-        qDebug() << __PRETTY_FUNCTION__ << "addPointAtEnd: "
-                 << QLineF(line.points().back(), point).length();
         line.length() += QLineF(line.points().back(), point).length();
-        qDebug() << "line.length(): " << line.length();
     }
 
     line.points().push_back(point);
@@ -48,10 +41,7 @@ void GradientTool::removeLastPoint()
     {
         if (line.points().size() >= 2)
         {
-            qDebug() << __PRETTY_FUNCTION__ << "removeLastPoint: "
-                     << QLineF(line.points().back(), *(line.points().rbegin()+1)).length();
             line.length() -= QLineF(line.points().back(), *(line.points().rbegin()+1)).length();
-            qDebug() << "line.length(): " << line.length();
         }
 
         undoPoints.push_back(line.points().back());
