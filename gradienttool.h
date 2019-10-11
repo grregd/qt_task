@@ -60,7 +60,7 @@ private:
     {
         QVector<QPoint> points_;
         EasingColor colors_;
-        qreal linesLength = 0;
+        qreal length_ = 0;
 
     public:
         QVector<QPoint>& points() { return points_; }
@@ -68,6 +68,9 @@ private:
 
         EasingColor& colors() { return colors_; }
         EasingColor const & colors() const { return colors_; }
+
+        qreal & length() { return length_ ; }
+        qreal const & length() const { return length_ ; }
     };
 
 private:

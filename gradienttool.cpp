@@ -35,8 +35,8 @@ void GradientTool::addPointAtEnd(const QPoint & point)
     {
         qDebug() << __PRETTY_FUNCTION__ << "addPointAtEnd: "
                  << QLineF(line.points().back(), point).length();
-        linesLength += QLineF(line.points().back(), point).length();
-        qDebug() << "linesLength: " << linesLength;
+        line.length() += QLineF(line.points().back(), point).length();
+        qDebug() << "line.length(): " << line.length();
     }
 
     line.points().push_back(point);
@@ -50,8 +50,8 @@ void GradientTool::removeLastPoint()
         {
             qDebug() << __PRETTY_FUNCTION__ << "removeLastPoint: "
                      << QLineF(line.points().back(), *(line.points().rbegin()+1)).length();
-            linesLength -= QLineF(line.points().back(), *(line.points().rbegin()+1)).length();
-            qDebug() << "linesLength: " << linesLength;
+            line.length() -= QLineF(line.points().back(), *(line.points().rbegin()+1)).length();
+            qDebug() << "line.length(): " << line.length();
         }
 
         undoPoints.push_back(line.points().back());
@@ -83,7 +83,7 @@ void GradientTool::paint7(QPainter *painter)
         {
             QLineF fragment(line.points()[i], line.points()[i+1]);
 
-            qreal curLength = fragment.length()/linesLength;
+            qreal curLength = fragment.length()/line.length();
 
             QLinearGradient gradient(fragment.p1(), fragment.p2());
 
