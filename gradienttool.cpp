@@ -33,6 +33,9 @@ void GradientTool::finishCurrentLine()
 {
     lines.push_back(line);
     line = BrokenLine();
+    emit penWidthChanged();
+    emit colorBeginChanged();
+    emit colorEndChanged();
 }
 
 void GradientTool::removeLastPoint()

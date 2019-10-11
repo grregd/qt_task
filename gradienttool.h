@@ -14,8 +14,8 @@ class GradientTool : public QQuickPaintedItem
     Q_PROPERTY(qreal penWidthMax MEMBER penWidthMax /*READ getPenWidthMax WRITE setPenWidthMax*/)
     Q_PROPERTY(qreal penWidth MEMBER penWidth READ getPenWidth WRITE setPenWidth NOTIFY penWidthChanged)
     Q_PROPERTY(bool showControlPoints MEMBER getShowControlPoints READ getShowControlPoints WRITE setShowControlPoints NOTIFY showControlPointsChanged)
-    Q_PROPERTY(QColor colorBegin READ getColorBegin WRITE setColorBegin)
-    Q_PROPERTY(QColor colorEnd READ getColorEnd WRITE setColorEnd)
+    Q_PROPERTY(QColor colorBegin READ getColorBegin WRITE setColorBegin NOTIFY colorBeginChanged)
+    Q_PROPERTY(QColor colorEnd READ getColorEnd WRITE setColorEnd NOTIFY colorEndChanged)
 
 signals:
     void penWidthChanged();

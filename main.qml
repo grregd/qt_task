@@ -64,6 +64,12 @@ Window {
             colorBegin: "red"
             colorEnd: "yellow"
             showControlPoints: false
+            onColorBeginChanged: {
+                selectColorBegin.currentColor = gradientTool.colorBegin
+            }
+            onColorEndChanged: {
+                selectColorEnd.currentColor = gradientTool.colorEnd
+            }
         }
 
         ColorDialog {
