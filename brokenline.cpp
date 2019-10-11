@@ -49,12 +49,17 @@ qreal calculateLength(const QVector<QPoint> & points)
 
 BrokenLine & BrokenLine::addPointAtEnd(const QPoint & point)
 {
+    qreal lastLength = 0;
+
     if (!points_.empty())
     {
-        length_ += QLineF(points_.back(), point).length();
+        lastLength = accLength_.back() + QLineF(points_.back(), point).length();
     }
 
     points_.push_back(point);
+    accLength_.push_back(lastLength);
+
+    length_ = accLength_.back();
 
     return *this;
 }
@@ -70,7 +75,7 @@ BrokenLine & BrokenLine::removePoint(const QPoint & point)
 
     length_ = calculateLength(points_);
     qDebug() << "length: " << length();
-    calculateLength1(points_);
+    accLength_ = calculateLength1(points_);
 
     return *this;
 }
@@ -78,6 +83,7 @@ BrokenLine & BrokenLine::removePoint(const QPoint & point)
 BrokenLine &BrokenLine::removeAllPoints()
 {
     points_.clear();
+    accLength_.clear();
     length_ = 0;
 }
 

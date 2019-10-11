@@ -57,29 +57,19 @@ void GradientTool::redoLastPoint()
 
 void GradientTool::paint7(QPainter *painter)
 {
-
-    line.colors().setEasingCurveType(QEasingCurve::Linear);
-
-    qreal accLength = 0;
-
     if (line.points().size() >= 2)
     {
-        for (size_t i = 0; i < line.points().size()-1; ++i)
+        for (int i = 0; i < line.points().size()-1; ++i)
         {
             QLineF fragment(line.points()[i], line.points()[i+1]);
 
-            qreal curLength = fragment.length()/line.length();
-
             QLinearGradient gradient(fragment.p1(), fragment.p2());
 
-            gradient.setColorAt(0, line.colors().colorForProgress(accLength));
-            gradient.setColorAt(1, line.colors().colorForProgress(accLength+curLength));
+            gradient.setColorAt(0, line.colors().colorForProgress(line.accLength()[i]/line.length()));
+            gradient.setColorAt(1, line.colors().colorForProgress(line.accLength()[i+1]/line.length()));
 
             painter->setPen(QPen(gradient, penWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
             painter->drawLine(fragment);
-
-
-            accLength += curLength;
         }
     }
 
