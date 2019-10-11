@@ -3,9 +3,9 @@
 
 #include "easingcolor.h"
 
+#include <algorithm>
+
 #include <QQuickPaintedItem>
-#include <QPen>
-//#include <QBrush>
 
 class GradientTool : public QQuickPaintedItem
 {
@@ -71,6 +71,15 @@ private:
 
         qreal & length() { return length_ ; }
         qreal const & length() const { return length_ ; }
+
+        Line & removePoint(QPoint point)
+        {
+            points_.erase(
+                std::remove(points_.begin(),
+                            points_.end(),
+                            point),
+                points_.end());
+        }
     };
 
 private:

@@ -126,27 +126,26 @@ void GradientTool::mousePressEvent(QMouseEvent *event)
 
 void GradientTool::mouseReleaseEvent(QMouseEvent *event)
 {
-    undoPoints.clear();
+    if (event->button() == Qt::LeftButton)
+    {
+        undoPoints.clear();
 
-    addPointAtEnd(event->pos());
+        addPointAtEnd(event->pos());
+    }
+    else if (event->button() == Qt::RightButton)
+    {
+        if (hoverPoint)
+        {
+            line.removePoint(*hoverPoint);
+        }
+    }
     update();
 }
 
 void GradientTool::hoverMoveEvent(QHoverEvent *event)
 {
-//    std::for_each(lines.begin(), lines.end(), [&event](const QPoint & point)
-//    {
-//        auto l = event->pos() - point;
-//        qDebug() << ": l = " << l;
-//        qDebug() << "m = " << l.manhattanLength();
-//    });
-
-
     if (std::optional<QPoint> nearest = findNearest(event->pos()))
     {
-//        qDebug() << "nearest of " << event->pos() << ": " << *nearest
-//                 << "manhattan: " << (*nearest - event->pos()).manhattanLength();
-
         if ((*nearest - event->pos()).manhattanLength() <= penWidth)
         {
             if (hoverPoint != nearest)
