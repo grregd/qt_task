@@ -105,7 +105,7 @@ void GradientTool::mousePressEvent(QMouseEvent *event)
         // startDragging();
         dragging = true;
     }
-    else if (event->button() == Qt::RightButton)
+    else if (event->button() == Qt::RightButton && !hoverPoint)
     {
         finishCurrentLine();
     }
