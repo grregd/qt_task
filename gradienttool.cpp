@@ -120,6 +120,12 @@ void GradientTool::paint7(QPainter *painter)
 
 void GradientTool::mousePressEvent(QMouseEvent *event)
 {
+    if (hoverPoint)
+        dragging = true;
+}
+
+void GradientTool::mouseReleaseEvent(QMouseEvent *event)
+{
     undoPoints.clear();
 
     addPointAtEnd(event->pos());

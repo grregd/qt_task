@@ -18,14 +18,15 @@ Window {
         anchors.fill: parent
 
         RowLayout {
+            id: layoutMenu
             CheckBox {
-                id: checkBox
+                id: checkBoxCtrlPoints
                 text: qsTr("Show control points")
-                onClicked: gradientTool.showControlPoints = checkBox.checked
-                Component.onCompleted: checkBox.checked = gradientTool.showControlPoints
+                onClicked: gradientTool.showControlPoints = checkBoxCtrlPoints.checked
+                Component.onCompleted: checkBoxCtrlPoints.checked = gradientTool.showControlPoints
                 Connections {
                     target: gradientTool
-                    onShowControlPointsChanged: checkBox.checked = gradientTool.showControlPoints
+                    onShowControlPointsChanged: checkBoxCtrlPoints.checked = gradientTool.showControlPoints
                 }
             }
 
@@ -33,8 +34,7 @@ Window {
                 text: "Select begin color"
 
                 onClicked: {
-                    selectColorBegin.currentColor = gradientTool.colorBegin
-                    selectColorBegin.open()
+                    openColorDialog(selectColorBegin, gradientTool.colorBegin)
                 }
             }
 
@@ -42,8 +42,7 @@ Window {
                 text: "Select end color"
 
                 onClicked: {
-                    selectColorEnd.currentColor = gradientTool.colorEnd
-                    selectColorEnd.open()
+                    openColorDialog(selectColorEnd, gradientTool.colorEnd)
                 }
             }
 
@@ -103,11 +102,39 @@ Window {
             sequence: "Ctrl+F"
             onActivated: window.showFullScreen()
         }
-        Shortcut {
+       Shortcut {
             sequence: "ESC"
             onActivated: window.showNormal()
         }
+       Shortcut {
+            sequence: "Ctrl+D"
+            onActivated: {
+                if (layoutMenu.visible == false)
+                    layoutMenu.visible = true
+                else
+                    layoutMenu.visible = false
+            }
+        }
+       Shortcut {
+           sequence: "Ctrl+B"
+           onActivated: openColorDialog(selectColorBegin, gradientTool.colorBegin)
+       }
+       Shortcut {
+           sequence: "Ctrl+E"
+           onActivated: openColorDialog(selectColorEnd, gradientTool.colorEnd)
+       }
+       Shortcut {
+           sequence: "Ctrl+T"
+           onActivated: {
+               checkBoxCtrlPoints.checked = !checkBoxCtrlPoints.checked
+               gradientTool.showControlPoints = !gradientTool.showControlPoints
+           }
+       }
     }
 
-
+    function openColorDialog(colorDialog, color)
+    {
+        colorDialog.currentColor = color
+        colorDialog.open()
+    }
 }

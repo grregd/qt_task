@@ -35,6 +35,7 @@ protected:
     void paint7(QPainter *painter);
 
     void mousePressEvent(QMouseEvent* event) override;
+    void mouseReleaseEvent(QMouseEvent* event) override;
     void hoverMoveEvent(QHoverEvent* event) override;
     void wheelEvent(QWheelEvent* event) override;
 
@@ -64,6 +65,7 @@ private:
     qreal penWidth = 0;
     EasingColor easingColor;
     std::optional<QPoint> hoverPoint;
+    bool dragging = false;
 };
 
 #endif // GRADIENTTOOL_H
