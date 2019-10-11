@@ -5,6 +5,7 @@ import QtQuick.Layouts 1.13
 import QtQuick.Controls 1.4
 import QtQuick.Dialogs 1.3
 
+
 Window {
     id: window
     visible: true

@@ -31,31 +31,31 @@ void GradientTool::paint(QPainter *painter)
 
 void GradientTool::addPointAtEnd(const QPoint & point)
 {
-    if (!lines.empty())
+    if (!lines_points.empty())
     {
         qDebug() << __PRETTY_FUNCTION__ << "addPointAtEnd: "
-                 << QLineF(lines.back(), point).length();
-        linesLength += QLineF(lines.back(), point).length();
+                 << QLineF(lines_points.back(), point).length();
+        linesLength += QLineF(lines_points.back(), point).length();
         qDebug() << "linesLength: " << linesLength;
     }
 
-    lines.push_back(point);
+    lines_points.push_back(point);
 }
 
 void GradientTool::removeLastPoint()
 {
-    if (!lines.empty())
+    if (!lines_points.empty())
     {
-        if (lines.size() >= 2)
+        if (lines_points.size() >= 2)
         {
             qDebug() << __PRETTY_FUNCTION__ << "removeLastPoint: "
-                     << QLineF(lines.back(), *(lines.rbegin()+1)).length();
-            linesLength -= QLineF(lines.back(), *(lines.rbegin()+1)).length();
+                     << QLineF(lines_points.back(), *(lines_points.rbegin()+1)).length();
+            linesLength -= QLineF(lines_points.back(), *(lines_points.rbegin()+1)).length();
             qDebug() << "linesLength: " << linesLength;
         }
 
-        undoPoints.push_back(lines.back());
-        lines.pop_back();
+        undoPoints.push_back(lines_points.back());
+        lines_points.pop_back();
         update();
     }
 }
@@ -77,11 +77,11 @@ void GradientTool::paint7(QPainter *painter)
 
     qreal accLength = 0;
 
-    if (lines.size() >= 2)
+    if (lines_points.size() >= 2)
     {
-        for (size_t i = 0; i < lines.size()-1; ++i)
+        for (size_t i = 0; i < lines_points.size()-1; ++i)
         {
-            QLineF line(lines[i], lines[i+1]);
+            QLineF line(lines_points[i], lines_points[i+1]);
 
             qreal curLength = line.length()/linesLength;
 
@@ -102,7 +102,7 @@ void GradientTool::paint7(QPainter *painter)
     {
         painter->setPen(QPen(QColor(128, 128, 128), 3));
         QRect r(0, 0, std::max(15.0, penWidth), std::max(15.0, penWidth));
-        std::for_each(lines.begin(), lines.end(), [painter, &r](auto & point){
+        std::for_each(lines_points.begin(), lines_points.end(), [painter, &r](auto & point){
             r.moveCenter(point);
             painter->drawEllipse(r);
         });
@@ -225,7 +225,7 @@ std::optional<QPoint> GradientTool::findNearest(const QPoint & other) const
 {
     int minManhattan = 1000;
     std::optional<QPoint> nearest;
-    for (const QPoint& p: lines)
+    for (const QPoint& p: lines_points)
     {
         auto newManhattan = (p - other).manhattanLength();
         if (newManhattan < minManhattan)

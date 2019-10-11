@@ -56,9 +56,15 @@ private:
 
     std::optional<QPoint> findNearest(const QPoint & other) const;
 
+    class Line
+    {
+        QVector<QPoint> points;
+        EasingColor colors;
+    };
+
 private:
     bool showControlPoints = false;
-    QVector<QPoint> lines;
+    QVector<QPoint> lines_points;
     QVector<QPoint> undoPoints;
     qreal linesLength = 0;
     qreal penWidthMax = 100;
