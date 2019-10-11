@@ -33,7 +33,7 @@ public slots:
     void redoLastPoint();
 
 protected:
-    void paint7(QPainter *painter);
+    void paintBrokenLine(const BrokenLine &line, QPainter *painter) const;
 
     void mousePressEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;

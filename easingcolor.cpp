@@ -30,7 +30,7 @@ void EasingColor::setEasingCurveType(QEasingCurve::Type curveType)
     easing.setType(curveType);
 }
 
-QColor EasingColor::colorForProgress(qreal progress)
+QColor EasingColor::colorForProgress(qreal progress) const
 {
     auto easingValue = easing.valueForProgress(progress);
 

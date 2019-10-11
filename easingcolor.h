@@ -17,7 +17,7 @@ public:
 
     void setEasingCurveType(QEasingCurve::Type curveType);
 
-    QColor colorForProgress(qreal progress);
+    QColor colorForProgress(qreal progress) const;
 
 private:
     QColor colorBegin;

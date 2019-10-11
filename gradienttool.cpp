@@ -22,12 +22,17 @@ GradientTool::GradientTool()
 
 void GradientTool::paint(QPainter *painter)
 {
-    paint7(painter);
+    std::for_each(lines.begin(), lines.end(),
+                  [this, painter](auto & line){
+                    GradientTool::paintBrokenLine(line, painter);});
+
+    paintBrokenLine(line, painter);
 }
 
 void GradientTool::finishCurrentLine()
 {
     lines.push_back(line);
+    line = BrokenLine();
 }
 
 void GradientTool::removeLastPoint()
@@ -55,7 +60,7 @@ void GradientTool::redoLastPoint()
     update();
 }
 
-void GradientTool::paint7(QPainter *painter)
+void GradientTool::paintBrokenLine(const BrokenLine & line, QPainter *painter) const
 {
     if (line.points().size() >= 2)
     {
