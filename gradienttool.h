@@ -55,8 +55,6 @@ private:
     QColor getColorBegin() const;
     QColor getColorEnd() const;
 
-    std::optional<QPoint> findNearest(const QPoint & other) const;
-
 private:
     BrokenLine line;
     bool showControlPoints = false;

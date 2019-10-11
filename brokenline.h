@@ -3,6 +3,8 @@
 
 #include "easingcolor.h"
 
+#include <optional>
+
 #include <QVector>
 #include <QPoint>
 
@@ -25,6 +27,7 @@ public:
     qreal const & length() const { return length_ ; }
 
     BrokenLine & removePoint(const QPoint & point);
+    std::optional<QPoint> findNearest(const QPoint & other) const;
 };
 
 #endif // BROKENLINE_H

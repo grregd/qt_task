@@ -134,7 +134,7 @@ void GradientTool::mouseReleaseEvent(QMouseEvent *event)
 
 void GradientTool::hoverMoveEvent(QHoverEvent *event)
 {
-    if (std::optional<QPoint> nearest = findNearest(event->pos()))
+    if (auto nearest = line.findNearest(event->pos()))
     {
         if ((*nearest - event->pos()).manhattanLength() <= penWidth)
         {
@@ -210,19 +210,3 @@ void GradientTool::setShowControlPoints(bool newValue)
     update();
 }
 
-std::optional<QPoint> GradientTool::findNearest(const QPoint & other) const
-{
-    int minManhattan = 1000;
-    std::optional<QPoint> nearest;
-    for (const QPoint& p: line.points())
-    {
-        auto newManhattan = (p - other).manhattanLength();
-        if (newManhattan < minManhattan)
-        {
-            minManhattan = newManhattan;
-            nearest = p;
-        }
-    }
-
-    return nearest;
-}
