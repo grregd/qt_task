@@ -32,21 +32,14 @@ Window {
 
             Button {
                 text: "Select begin color"
-
-                onClicked: {
-                    openColorDialog(selectColorBegin, gradientTool.colorBegin)
-                }
-            }
+                onClicked: openColorDialog(selectColorBegin, gradientTool.colorBegin) }
 
             Button {
                 text: "Select end color"
+                onClicked: openColorDialog(selectColorEnd, gradientTool.colorEnd) }
 
-                onClicked: {
-                    openColorDialog(selectColorEnd, gradientTool.colorEnd)
-                }
-            }
+            Label { text: qsTr("Pen width [pixels]: ") }
 
-            Label { text: qsTr("Pen width [pixels]") }
             Slider {
                 id: penWidthSlider
                 stepSize: 1
@@ -56,7 +49,6 @@ Window {
                 Component.onCompleted: penWidthSlider.value = gradientTool.penWidth
                 onValueChanged: gradientTool.penWidth = penWidthSlider.value
                 Connections {
-                    target: gradientTool
                     onPenWidthChanged: penWidthSlider.value = gradientTool.penWidth
                 }
             }
