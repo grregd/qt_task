@@ -95,7 +95,7 @@ void GradientTool::paintBrokenLine(const BrokenLine & line, QPainter *painter) c
     if (hoverPoint)
     {
         QRect occ(QPoint(), QSize(penWidth*1.1, penWidth*1.1));
-        occ.moveCenter(*hoverPoint);
+        occ.moveCenter(hoverPoint->first);
         painter->setPen(QPen(QColor(0xff1493), 3));
         painter->drawEllipse(occ);
     }
@@ -126,7 +126,7 @@ void GradientTool::mouseReleaseEvent(QMouseEvent *event)
     {
         if (hoverPoint)
         {
-            line.removePoint(*hoverPoint);
+            line.removePoint(hoverPoint->first);
         }
     }
     update();
@@ -138,9 +138,10 @@ void GradientTool::hoverMoveEvent(QHoverEvent *event)
     {
         if ((*nearest - event->pos()).manhattanLength() <= penWidth)
         {
-            if (hoverPoint != nearest)
+            if (!hoverPoint || hoverPoint->first != nearest)
             {
-                hoverPoint = nearest;
+                qDebug() << "assign new nearest";
+                hoverPoint = std::make_pair(*nearest, &line);
                 update();
             }
         }
@@ -148,10 +149,15 @@ void GradientTool::hoverMoveEvent(QHoverEvent *event)
         {
             if (hoverPoint)
             {
+                qDebug() << "reset nearest";
                 hoverPoint.reset();
                 update();
             }
         }
+    }
+    else
+    {
+        hoverPoint.reset();
     }
 }
 

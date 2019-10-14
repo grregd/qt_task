@@ -63,7 +63,7 @@ private:
     QVector<QPoint> undoPoints;
     qreal penWidthMax = 100;
     qreal penWidth = 0;
-    std::optional<QPoint> hoverPoint;
+    std::optional< std::pair<QPoint, const BrokenLine * > > hoverPoint;
     bool dragging = false;
 };
 
