@@ -17,6 +17,9 @@ GradientTool::GradientTool()
     setAcceptedMouseButtons(Qt::AllButtons);
     setAcceptHoverEvents(true);
     setFlag(ItemAcceptsInputMethod, true);
+
+    lines.push_back(BrokenLine());
+    line_ = &lines.back();
 }
 
 
@@ -26,13 +29,21 @@ void GradientTool::paint(QPainter *painter)
                   [this, painter](auto & line){
                     GradientTool::paintBrokenLine(line, painter);});
 
-    paintBrokenLine(line, painter);
+    if (hoverPoint)
+    {
+        QRect occ(QPoint(), QSize(
+                      std::max(15.0, penWidth),
+                      std::max(15.0, penWidth)));
+        occ.moveCenter(hoverPoint->first);
+        painter->setPen(QPen(QColor(0xff1493), 4, Qt::DotLine));
+        painter->drawEllipse(occ);
+    }
 }
 
 void GradientTool::finishCurrentLine()
 {
-    lines.push_back(line);
-    line = BrokenLine();
+    lines.push_back(BrokenLine());
+    line_ = &lines.back();
     emit penWidthChanged();
     emit colorBeginChanged();
     emit colorEndChanged();
@@ -40,15 +51,15 @@ void GradientTool::finishCurrentLine()
 
 void GradientTool::removeLastPoint()
 {
-    if (!line.points().empty())
+    if (!line_->points().empty())
     {
-        if (line.points().size() >= 2)
+        if (line_->points().size() >= 2)
         {
-            line.length() -= QLineF(line.points().back(), *(line.points().rbegin()+1)).length();
+            line_->length() -= QLineF(line_->points().back(), *(line_->points().rbegin()+1)).length();
         }
 
-        undoPoints.push_back(line.points().back());
-        line.points().pop_back();
+        undoPoints.push_back(line_->points().back());
+        line_->points().pop_back();
         update();
     }
 }
@@ -57,7 +68,7 @@ void GradientTool::redoLastPoint()
 {
     if (!undoPoints.empty())
     {
-        line.addPointAtEnd(undoPoints.back());
+        line_->addPointAtEnd(undoPoints.back());
         undoPoints.pop_back();
     }
     update();
@@ -85,20 +96,15 @@ void GradientTool::paintBrokenLine(const BrokenLine & line, QPainter *painter) c
     {
         painter->setPen(QPen(QColor(128, 128, 128), 3));
         QRect r(0, 0, std::max(15.0, penWidth), std::max(15.0, penWidth));
-        std::for_each(line.points().begin(), line.points().end(), [painter, &r](auto & point){
-            r.moveCenter(point);
-            painter->drawEllipse(r);
-        });
+        std::for_each(
+                line.points().begin(), line.points().end(),
+                [painter, &r](auto & point)
+                {
+                    r.moveCenter(point);
+                    painter->drawEllipse(r);
+                });
     }
 
-
-    if (hoverPoint)
-    {
-        QRect occ(QPoint(), QSize(penWidth*1.1, penWidth*1.1));
-        occ.moveCenter(hoverPoint->first);
-        painter->setPen(QPen(QColor(0xff1493), 3));
-        painter->drawEllipse(occ);
-    }
 }
 
 void GradientTool::mousePressEvent(QMouseEvent *event)
@@ -120,13 +126,15 @@ void GradientTool::mouseReleaseEvent(QMouseEvent *event)
     {
         undoPoints.clear();
 
-        line.addPointAtEnd(event->pos());
+        line_->addPointAtEnd(event->pos());
     }
     else if (event->button() == Qt::RightButton)
     {
         if (hoverPoint)
         {
-            line.removePoint(hoverPoint->first);
+            hoverPoint->second->removePoint(hoverPoint->first);
+            hoverPoint.reset();
+            update();
         }
     }
     update();
@@ -134,28 +142,33 @@ void GradientTool::mouseReleaseEvent(QMouseEvent *event)
 
 void GradientTool::hoverMoveEvent(QHoverEvent *event)
 {
-    if (auto nearest = line.findNearest(event->pos()))
+    std::optional<QPoint> nearest;
+    for (auto it = lines.begin(); it != lines.end(); ++it)
     {
-        if ((*nearest - event->pos()).manhattanLength() <= penWidth)
+        BrokenLine & line = *it;
+        if ((nearest = line.findNearest(event->pos(), nearest)))
         {
-            if (!hoverPoint || hoverPoint->first != nearest)
+            if ((*nearest - event->pos()).manhattanLength() <= penWidth)
             {
-                hoverPoint = std::make_pair(*nearest, &line);
-                update();
+                if (!hoverPoint || hoverPoint->first != nearest)
+                {
+                    hoverPoint = std::make_pair(*nearest, &line);
+                    update();
+                }
+            }
+            else
+            {
+                if (hoverPoint)
+                {
+                    hoverPoint.reset();
+                    update();
+                }
             }
         }
-        else
-        {
-            if (hoverPoint)
-            {
-                hoverPoint.reset();
-                update();
-            }
-        }
-    }
-    else
-    {
-        hoverPoint.reset();
+//        else
+//        {
+//            hoverPoint.reset();
+//        }
     }
 }
 
@@ -177,13 +190,13 @@ void GradientTool::setPenWidth(qreal newValue)
 
 void GradientTool::setColorBegin(const QColor & newColor)
 {
-    line.colors().setColorBegin(newColor);
+    line_->colors().setColorBegin(newColor);
     update();
 }
 
 void GradientTool::setColorEnd(const QColor & newColor)
 {
-    line.colors().setColorEnd(newColor);
+    line_->colors().setColorEnd(newColor);
     update();
 }
 
@@ -199,12 +212,12 @@ bool GradientTool::getShowControlPoints() const
 
 QColor GradientTool::getColorBegin() const
 {
-    return line.colors().getColorBegin();
+    return line_->colors().getColorBegin();
 }
 
 QColor GradientTool::getColorEnd() const
 {
-    return line.colors().getColorEnd();
+    return line_->colors().getColorEnd();
 }
 
 void GradientTool::setShowControlPoints(bool newValue)

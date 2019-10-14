@@ -34,7 +34,7 @@ public:
     BrokenLine & removePoint(const QPoint & point);
     BrokenLine & removeAllPoints();
 
-    std::optional<QPoint> findNearest(const QPoint & other) const;
+    std::optional<QPoint> findNearest(const QPoint & other, std::optional<QPoint> nearest) const;
 };
 
 #endif // BROKENLINE_H

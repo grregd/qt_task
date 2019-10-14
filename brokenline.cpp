@@ -87,10 +87,10 @@ BrokenLine &BrokenLine::removeAllPoints()
     length_ = 0;
 }
 
-std::optional<QPoint> BrokenLine::findNearest(const QPoint & other) const
+std::optional<QPoint> BrokenLine::findNearest(const QPoint & other, std::optional<QPoint> nearest) const
 {
-    int minManhattan = 1000;
-    std::optional<QPoint> nearest;
+    int minManhattan = nearest ? (*nearest - other).manhattanLength() : 1000;
+//    std::optional<QPoint> nearest;
     for (const QPoint& p: points_)
     {
         auto newManhattan = (p - other).manhattanLength();

@@ -58,12 +58,14 @@ private:
 
 private:
     QVector<BrokenLine> lines;
-    BrokenLine line;
+    BrokenLine* line_;
     bool showControlPoints = false;
     QVector<QPoint> undoPoints;
     qreal penWidthMax = 100;
     qreal penWidth = 0;
-    std::optional< std::pair<QPoint, const BrokenLine * > > hoverPoint;
+
+    using HoverPoint = std::optional< std::pair<QPoint, BrokenLine * > >;
+    HoverPoint hoverPoint;
     bool dragging = false;
 };
 
