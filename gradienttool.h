@@ -37,6 +37,7 @@ protected:
 
     void mousePressEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;
+    void mouseMoveEvent(QMouseEvent* event) override;
     void hoverMoveEvent(QHoverEvent* event) override;
     void wheelEvent(QWheelEvent* event) override;
 
@@ -67,6 +68,7 @@ private:
     using HoverPoint = std::optional< std::pair<QPoint, BrokenLine * > >;
     HoverPoint hoverPoint;
     bool dragging = false;
+    QVector<QPoint>::iterator hoverPointIterator;
 };
 
 #endif // GRADIENTTOOL_H

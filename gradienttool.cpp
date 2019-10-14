@@ -112,7 +112,9 @@ void GradientTool::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton && hoverPoint)
     {
         // startDragging();
+        qDebug() << "dragging <- true";
         dragging = true;
+        hoverPointIterator = hoverPoint->second->getPoint(hoverPoint->first);
     }
     else if (event->button() == Qt::RightButton && !hoverPoint)
     {
@@ -126,7 +128,15 @@ void GradientTool::mouseReleaseEvent(QMouseEvent *event)
     {
         undoPoints.clear();
 
-        line_->addPointAtEnd(event->pos());
+        if (!dragging)
+        {
+            line_->addPointAtEnd(event->pos());
+        }
+        else
+        {
+            qDebug() << "dragging <- false";
+            dragging = false;
+        }
     }
     else if (event->button() == Qt::RightButton)
     {
@@ -140,35 +150,48 @@ void GradientTool::mouseReleaseEvent(QMouseEvent *event)
     update();
 }
 
+void GradientTool::mouseMoveEvent(QMouseEvent *event)
+{
+    if (dragging)
+    {
+        qDebug() << "dragging from" << *hoverPointIterator << " to " << event->pos();
+        *hoverPointIterator = event->pos();
+        update();
+    }
+}
+
 void GradientTool::hoverMoveEvent(QHoverEvent *event)
 {
-    std::optional<QPoint> nearest;
-    for (auto it = lines.begin(); it != lines.end(); ++it)
+    if (!dragging)
     {
-        BrokenLine & line = *it;
-        if ((nearest = line.findNearest(event->pos(), nearest)))
+        std::optional<QPoint> nearest;
+        for (auto it = lines.begin(); it != lines.end(); ++it)
         {
-            if ((*nearest - event->pos()).manhattanLength() <= penWidth)
+            BrokenLine & line = *it;
+            if ((nearest = line.findNearest(event->pos(), nearest)))
             {
-                if (!hoverPoint || hoverPoint->first != nearest)
+                if ((*nearest - event->pos()).manhattanLength() <= penWidth)
                 {
-                    hoverPoint = std::make_pair(*nearest, &line);
-                    update();
+                    if (!hoverPoint || hoverPoint->first != nearest)
+                    {
+                        hoverPoint = std::make_pair(*nearest, &line);
+                        update();
+                    }
+                }
+                else
+                {
+                    if (hoverPoint)
+                    {
+                        hoverPoint.reset();
+                        update();
+                    }
                 }
             }
-            else
-            {
-                if (hoverPoint)
-                {
-                    hoverPoint.reset();
-                    update();
-                }
-            }
+    //        else
+    //        {
+    //            hoverPoint.reset();
+    //        }
         }
-//        else
-//        {
-//            hoverPoint.reset();
-//        }
     }
 }
 

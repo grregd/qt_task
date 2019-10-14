@@ -87,6 +87,11 @@ BrokenLine &BrokenLine::removeAllPoints()
     length_ = 0;
 }
 
+QVector<QPoint>::iterator BrokenLine::getPoint(QPoint point)
+{
+    return std::find(points_.begin(), points_.end(), point);
+}
+
 std::optional<QPoint> BrokenLine::findNearest(const QPoint & other, std::optional<QPoint> nearest) const
 {
     int minManhattan = nearest ? (*nearest - other).manhattanLength() : 1000;
