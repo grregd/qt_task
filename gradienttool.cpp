@@ -140,7 +140,6 @@ void GradientTool::hoverMoveEvent(QHoverEvent *event)
         {
             if (!hoverPoint || hoverPoint->first != nearest)
             {
-                qDebug() << "assign new nearest";
                 hoverPoint = std::make_pair(*nearest, &line);
                 update();
             }
@@ -149,7 +148,6 @@ void GradientTool::hoverMoveEvent(QHoverEvent *event)
         {
             if (hoverPoint)
             {
-                qDebug() << "reset nearest";
                 hoverPoint.reset();
                 update();
             }
