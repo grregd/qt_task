@@ -115,6 +115,7 @@ void GradientTool::mousePressEvent(QMouseEvent *event)
         qDebug() << "dragging <- true";
         mouseLeftPressed = true;
         hoverPointIterator = hoverPoint->second->getPoint(hoverPoint->first);
+        line_ = hoverPoint->second;
     }
     else if (event->button() == Qt::RightButton && !hoverPoint)
     {
@@ -133,7 +134,7 @@ void GradientTool::mouseReleaseEvent(QMouseEvent *event)
             qDebug() << "dragging <- false";
             mouseDragging = false;
         }
-        else
+        else if (!hoverPoint)
         {
             line_->addPointAtEnd(event->pos());
         }
