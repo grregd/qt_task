@@ -25,6 +25,7 @@ GradientTool::GradientTool()
 
 void GradientTool::paint(QPainter *painter)
 {
+    painter->setRenderHint(QPainter::Antialiasing, true);
     std::for_each(lines.begin(), lines.end(),
                   [this, painter](auto & line){
                     GradientTool::paintBrokenLine(line, painter);});
@@ -78,6 +79,8 @@ void GradientTool::paintBrokenLine(const BrokenLine & line, QPainter *painter) c
 {
     if (line.points().size() >= 2)
     {
+        QPen hoveredLinePen(QColor(0xff0090), /*penWidth+*/5, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+
         for (int i = 0; i < line.points().size()-1; ++i)
         {
             QLineF fragment(line.points()[i], line.points()[i+1]);
@@ -89,6 +92,14 @@ void GradientTool::paintBrokenLine(const BrokenLine & line, QPainter *painter) c
 
             painter->setPen(QPen(gradient, penWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
             painter->drawLine(fragment);
+
+            if (/*hoverPoint && hoverPoint->second*/ line_ == &line)
+            {
+                painter->setPen(hoveredLinePen);
+                painter->drawLine(fragment);
+//                painter->setPen(QPen(QColor(0xffffff), penWidth+3, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+//                painter->drawLine(fragment);
+            }
         }
     }
 
@@ -115,7 +126,7 @@ void GradientTool::mousePressEvent(QMouseEvent *event)
         qDebug() << "dragging <- true";
         mouseLeftPressed = true;
         hoverPointIterator = hoverPoint->second->getPoint(hoverPoint->first);
-        line_ = hoverPoint->second;
+        changeActiveLine(hoverPoint->second);
     }
     else if (event->button() == Qt::RightButton && !hoverPoint)
     {
@@ -245,6 +256,13 @@ QColor GradientTool::getColorBegin() const
 QColor GradientTool::getColorEnd() const
 {
     return line_->colors().getColorEnd();
+}
+
+void GradientTool::changeActiveLine(BrokenLine *line)
+{
+    line_ = line;
+    emit colorBeginChanged();
+    emit colorEndChanged();
 }
 
 void GradientTool::setShowControlPoints(bool newValue)

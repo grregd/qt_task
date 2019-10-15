@@ -57,6 +57,8 @@ private:
     QColor getColorBegin() const;
     QColor getColorEnd() const;
 
+    void changeActiveLine(BrokenLine*);
+
 private:
     QVector<BrokenLine> lines;
     BrokenLine* line_;
