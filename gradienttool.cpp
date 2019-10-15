@@ -170,7 +170,7 @@ void GradientTool::hoverMoveEvent(QHoverEvent *event)
             BrokenLine & line = *it;
             if ((nearest = line.findNearest(event->pos(), nearest)))
             {
-                if ((*nearest - event->pos()).manhattanLength() <= penWidth)
+                if ((*nearest - event->pos()).manhattanLength() <= std::max(15.0, penWidth))
                 {
                     if (!hoverPoint || hoverPoint->first != nearest)
                     {
