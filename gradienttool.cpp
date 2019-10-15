@@ -113,7 +113,7 @@ void GradientTool::mousePressEvent(QMouseEvent *event)
     {
         // startDragging();
         qDebug() << "dragging <- true";
-        dragging = true;
+        mouseLeftPressed = true;
         hoverPointIterator = hoverPoint->second->getPoint(hoverPoint->first);
     }
     else if (event->button() == Qt::RightButton && !hoverPoint)
@@ -128,14 +128,14 @@ void GradientTool::mouseReleaseEvent(QMouseEvent *event)
     {
         undoPoints.clear();
 
-        if (!dragging)
+        if (mouseDragging)
         {
-            line_->addPointAtEnd(event->pos());
+            qDebug() << "dragging <- false";
+            mouseDragging = false;
         }
         else
         {
-            qDebug() << "dragging <- false";
-            dragging = false;
+            line_->addPointAtEnd(event->pos());
         }
     }
     else if (event->button() == Qt::RightButton)
@@ -144,16 +144,19 @@ void GradientTool::mouseReleaseEvent(QMouseEvent *event)
         {
             hoverPoint->second->removePoint(hoverPoint->first);
             hoverPoint.reset();
-            update();
         }
     }
+
+    mouseLeftPressed = false;
+
     update();
 }
 
 void GradientTool::mouseMoveEvent(QMouseEvent *event)
 {
-    if (dragging)
+    if (mouseLeftPressed)
     {
+        mouseDragging = true;
         qDebug() << "dragging from" << *hoverPointIterator << " to " << event->pos();
         *hoverPointIterator = event->pos();
         update();
@@ -162,7 +165,7 @@ void GradientTool::mouseMoveEvent(QMouseEvent *event)
 
 void GradientTool::hoverMoveEvent(QHoverEvent *event)
 {
-    if (!dragging)
+    if (!mouseLeftPressed)
     {
         std::optional<QPoint> nearest;
         for (auto it = lines.begin(); it != lines.end(); ++it)

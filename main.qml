@@ -46,7 +46,7 @@ Window {
                 width: 150
                 stepSize: 1
                 minimumValue: 1
-                maximumValue: 100
+                maximumValue: 150
                 value: 10
                 Component.onCompleted: penWidthSlider.value = gradientTool.penWidth
                 onValueChanged: gradientTool.penWidth = penWidthSlider.value
@@ -61,7 +61,7 @@ Window {
             id: gradientTool
             Layout.fillHeight: true
             Layout.fillWidth: true
-            penWidthMax: 100
+            penWidthMax: 150
             colorBegin: "red"
             colorEnd: "yellow"
             showControlPoints: false

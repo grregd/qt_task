@@ -67,7 +67,8 @@ private:
 
     using HoverPoint = std::optional< std::pair<QPoint, BrokenLine * > >;
     HoverPoint hoverPoint;
-    bool dragging = false;
+    bool mouseLeftPressed = false;
+    bool mouseDragging = false;
     QVector<QPoint>::iterator hoverPointIterator;
 };
 
