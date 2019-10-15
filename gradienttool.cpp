@@ -79,7 +79,28 @@ void GradientTool::paintBrokenLine(const BrokenLine & line, QPainter *painter) c
 {
     if (line.points().size() >= 2)
     {
-        QPen hoveredLinePen(QColor(0xff0090), /*penWidth+*/5, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+        QPen hoveredLinePen(QColor(0xff0090), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+
+        for (int i = 0; i < line.points().size()-1; ++i)
+        {
+            QLineF fragment(line.points()[i], line.points()[i+1]);
+
+            if (/*hoverPoint && hoverPoint->second*/ line_ == &line)
+            {
+                QRectF r(fragment.p1(), QSizeF(fragment.length(), penWidth));
+                r += QMarginsF(5, 5, 5, 5);
+                r.moveCenter(fragment.center());
+
+                QTransform t;
+
+                t.translate(r.center().x(), r.center().y());
+                t.rotate(-fragment.angle());
+                t.translate(-r.center().x(), -r.center().y());
+                painter->setPen(hoveredLinePen);
+
+                painter->drawPolygon(t.mapToPolygon(r.toRect()));
+            }
+        }
 
         for (int i = 0; i < line.points().size()-1; ++i)
         {
@@ -93,13 +114,6 @@ void GradientTool::paintBrokenLine(const BrokenLine & line, QPainter *painter) c
             painter->setPen(QPen(gradient, penWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
             painter->drawLine(fragment);
 
-            if (/*hoverPoint && hoverPoint->second*/ line_ == &line)
-            {
-                painter->setPen(hoveredLinePen);
-                painter->drawLine(fragment);
-//                painter->setPen(QPen(QColor(0xffffff), penWidth+3, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-//                painter->drawLine(fragment);
-            }
         }
     }
 
@@ -123,7 +137,6 @@ void GradientTool::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton && hoverPoint)
     {
         // startDragging();
-        qDebug() << "dragging <- true";
         mouseLeftPressed = true;
         hoverPointIterator = hoverPoint->second->getPoint(hoverPoint->first);
         changeActiveLine(hoverPoint->second);
@@ -142,7 +155,6 @@ void GradientTool::mouseReleaseEvent(QMouseEvent *event)
 
         if (mouseDragging)
         {
-            qDebug() << "dragging <- false";
             mouseDragging = false;
         }
         else if (!hoverPoint)
@@ -169,7 +181,6 @@ void GradientTool::mouseMoveEvent(QMouseEvent *event)
     if (mouseLeftPressed)
     {
         mouseDragging = true;
-        qDebug() << "dragging from" << *hoverPointIterator << " to " << event->pos();
         *hoverPointIterator = event->pos();
         update();
     }
