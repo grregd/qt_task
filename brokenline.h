@@ -7,6 +7,7 @@
 
 #include <QVector>
 #include <QPoint>
+#include <QPolygon>
 
 
 class BrokenLine
@@ -14,6 +15,7 @@ class BrokenLine
 public:
     QVector<QPoint> points_;
     QVector<qreal> accLength_;
+    QVector<QPolygon> boundingBoxes_;
     EasingColor colors_;
     qreal length_ = 0;
 

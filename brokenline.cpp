@@ -5,6 +5,7 @@
 
 #include <QtDebug>
 #include <QLineF>
+#include <QTransform>
 
 QVector<qreal> calculateLength1(const QVector<QPoint> & points)
 {
@@ -38,7 +39,7 @@ qreal calculateLength(const QVector<QPoint> & points)
 
     if (points.size() >= 2)
     {
-        for (size_t i = 0; i < points.size()-1; ++i)
+        for (int i = 0; i < points.size()-1; ++i)
         {
             result += QLineF(points[i], points[i+1]).length();
         }
@@ -47,6 +48,22 @@ qreal calculateLength(const QVector<QPoint> & points)
     return result;
 }
 
+QPolygon calcBoundingBox(const QLineF & line, qreal margin, qreal penWidth)
+{
+    QRectF bb(line.p1(), QSizeF(line.length(), penWidth));
+
+    bb += QMarginsF(margin, margin, margin, margin);
+
+    bb.moveCenter(line.center());
+
+    return QTransform()
+            .translate(bb.center().x(), bb.center().y())
+            .rotate(-line.angle())
+            .translate(-bb.center().x(), -bb.center().y())
+            .mapToPolygon(bb.toRect());
+}
+
+
 BrokenLine & BrokenLine::addPointAtEnd(const QPoint & point)
 {
     qreal lastLength = 0;
@@ -54,12 +71,18 @@ BrokenLine & BrokenLine::addPointAtEnd(const QPoint & point)
     if (!points_.empty())
     {
         lastLength = accLength_.back() + QLineF(points_.back(), point).length();
+        boundingBoxes_.push_back(calcBoundingBox(QLineF(points_.back(), point), 5.0, 5.0));
     }
 
     points_.push_back(point);
     accLength_.push_back(lastLength);
 
     length_ = accLength_.back();
+
+    qDebug() << "points_.size(): " << points_.size();
+    qDebug() << "accLength_.size(): " << accLength_.size();
+    qDebug() << "boundingBoxes_.size(): " << boundingBoxes_.size();
+    qDebug() << "length_: " << length_;
 
     return *this;
 }
@@ -74,7 +97,6 @@ BrokenLine & BrokenLine::removePoint(const QPoint & point)
         points_.end());
 
     length_ = calculateLength(points_);
-    qDebug() << "length: " << length();
     accLength_ = calculateLength1(points_);
 
     return *this;
@@ -85,6 +107,8 @@ BrokenLine &BrokenLine::removeAllPoints()
     points_.clear();
     accLength_.clear();
     length_ = 0;
+
+    return *this;
 }
 
 QVector<QPoint>::iterator BrokenLine::getPoint(QPoint point)
