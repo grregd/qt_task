@@ -45,6 +45,16 @@ void GradientTool::paint(QPainter *painter)
     {
         painter->setPen(QPen(QColor(0xff1493), 4, Qt::DotLine));
         paintBoundingBox(*hoverLine, painter);
+
+        auto l1 = QLineF(hoverLine->p1(), mousePos).length();
+        auto l2 = QLineF(hoverLine->p2(), mousePos).length();
+
+        auto p = hoverLine->pointAt(l1/(l1+l2));
+        QRectF r(p, QSizeF());
+        r += QMarginsF(penWidth/2.0, penWidth/2.0,
+                       penWidth/2.0, penWidth/2.0);
+
+        painter->drawEllipse(r);
     }
 }
 
@@ -247,6 +257,7 @@ void GradientTool::mouseMoveEvent(QMouseEvent *event)
         *hoverPointIterator = event->pos();
         update();
     }
+    mousePos = event->pos();
 }
 
 void GradientTool::hoverMoveEvent(QHoverEvent *event)
@@ -272,6 +283,7 @@ void GradientTool::hoverMoveEvent(QHoverEvent *event)
             update();
         }
     }
+    mousePos = event->pos();
 }
 
 

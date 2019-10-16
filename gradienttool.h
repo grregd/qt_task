@@ -66,8 +66,10 @@ private:
     QVector<BrokenLine> lines;
     BrokenLine * line_;
     std::optional<QLineF> hoverLine;
+    QPoint mousePos;
     bool showControlPoints = false;
     QVector<QPoint> undoPoints;
+
     qreal penWidthMax = 100;
     qreal penWidth = 0;
 
