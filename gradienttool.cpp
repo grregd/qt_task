@@ -26,6 +26,7 @@ GradientTool::GradientTool()
 void GradientTool::paint(QPainter *painter)
 {
     painter->setRenderHint(QPainter::Antialiasing, true);
+
     std::for_each(lines.begin(), lines.end(),
                   [this, painter](auto & line){
                     GradientTool::paintBrokenLine(line, painter);});
@@ -46,6 +47,13 @@ void GradientTool::finishCurrentLine()
     lines.push_back(BrokenLine());
     line_ = &lines.back();
     emit penWidthChanged();
+    emit colorBeginChanged();
+    emit colorEndChanged();
+}
+
+void GradientTool::changeActiveLine(BrokenLine *line)
+{
+    line_ = line;
     emit colorBeginChanged();
     emit colorEndChanged();
 }
@@ -75,7 +83,27 @@ void GradientTool::redoLastPoint()
     update();
 }
 
-void GradientTool::paintBrokenLine(const BrokenLine & line, QPainter *painter) const
+QPolygon GradientTool::calcBoundingBox(const QLineF & line, qreal margin) const
+{
+    QRectF bb(line.p1(), QSizeF(line.length(), penWidth));
+
+    bb += QMarginsF(margin, margin, margin, margin);
+
+    bb.moveCenter(line.center());
+
+    return QTransform()
+            .translate(bb.center().x(), bb.center().y())
+            .rotate(-line.angle())
+            .translate(-bb.center().x(), -bb.center().y())
+            .mapToPolygon(bb.toRect());
+}
+
+void GradientTool::paintBoundingBox(const QLineF &fragment, QPainter *painter) const
+{
+    painter->drawPolygon(calcBoundingBox(fragment, 5.0));
+}
+
+void GradientTool::paintBrokenLine(const BrokenLine &line, QPainter *painter) const
 {
     if (line.points().size() >= 2)
     {
@@ -83,22 +111,10 @@ void GradientTool::paintBrokenLine(const BrokenLine & line, QPainter *painter) c
 
         for (int i = 0; i < line.points().size()-1; ++i)
         {
-            QLineF fragment(line.points()[i], line.points()[i+1]);
-
-            if (/*hoverPoint && hoverPoint->second*/ line_ == &line)
+            if (line_ == &line)
             {
-                QRectF r(fragment.p1(), QSizeF(fragment.length(), penWidth));
-                r += QMarginsF(5, 5, 5, 5);
-                r.moveCenter(fragment.center());
-
-                QTransform t;
-
-                t.translate(r.center().x(), r.center().y());
-                t.rotate(-fragment.angle());
-                t.translate(-r.center().x(), -r.center().y());
                 painter->setPen(hoveredLinePen);
-
-                painter->drawPolygon(t.mapToPolygon(r.toRect()));
+                paintBoundingBox(QLineF(line.points()[i], line.points()[i+1]), painter);
             }
         }
 
@@ -267,13 +283,6 @@ QColor GradientTool::getColorBegin() const
 QColor GradientTool::getColorEnd() const
 {
     return line_->colors().getColorEnd();
-}
-
-void GradientTool::changeActiveLine(BrokenLine *line)
-{
-    line_ = line;
-    emit colorBeginChanged();
-    emit colorEndChanged();
 }
 
 void GradientTool::setShowControlPoints(bool newValue)

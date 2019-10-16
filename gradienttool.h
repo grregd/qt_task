@@ -33,6 +33,7 @@ public slots:
     void redoLastPoint();
 
 protected:
+    void paintBoundingBox(const QLineF &fragment, QPainter *painter) const;
     void paintBrokenLine(const BrokenLine &line, QPainter *painter) const;
 
     void mousePressEvent(QMouseEvent* event) override;
@@ -43,6 +44,8 @@ protected:
 
     void addPointAtEnd(const QPoint & point);
     void finishCurrentLine();
+    void changeActiveLine(BrokenLine*);
+    QPolygon calcBoundingBox(const QLineF & line, qreal margin) const;
 
 private:
 //    void setPenWidthMax(qreal newValue);
@@ -56,8 +59,6 @@ private:
     bool getShowControlPoints() const;
     QColor getColorBegin() const;
     QColor getColorEnd() const;
-
-    void changeActiveLine(BrokenLine*);
 
 private:
     QVector<BrokenLine> lines;
