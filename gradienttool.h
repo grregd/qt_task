@@ -10,6 +10,8 @@
 
 class GradientTool : public QQuickPaintedItem
 {
+    using HoverPoint = std::optional< std::pair<QPoint, BrokenLine * > >;
+
     Q_OBJECT
     Q_PROPERTY(qreal penWidthMax MEMBER penWidthMax /*READ getPenWidthMax WRITE setPenWidthMax*/)
     Q_PROPERTY(qreal penWidth MEMBER penWidth READ getPenWidth WRITE setPenWidth NOTIFY penWidthChanged)
@@ -47,6 +49,8 @@ protected:
     void changeActiveLine(BrokenLine*);
     QPolygon calcBoundingBox(const QLineF & line, qreal margin) const;
 
+    HoverPoint findNearestPoint(const QPoint &eventPos);
+
 private:
     void setPenWidth(qreal newValue);
     void setColorBegin(const QColor & newColor);
@@ -66,7 +70,6 @@ private:
     qreal penWidthMax = 100;
     qreal penWidth = 0;
 
-    using HoverPoint = std::optional< std::pair<QPoint, BrokenLine * > >;
     HoverPoint hoverPoint;
     bool mouseLeftPressed = false;
     bool mouseDragging = false;

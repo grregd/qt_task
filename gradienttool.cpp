@@ -202,37 +202,40 @@ void GradientTool::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
+GradientTool::HoverPoint GradientTool::findNearestPoint(const QPoint &eventPos)
+{
+    std::optional<QPoint> nearest;
+    for (auto it = lines.rbegin(); it != lines.rend(); ++it)
+    {
+        BrokenLine & line = *it;
+        if ((nearest = line.findNearest(eventPos, nearest)))
+        {
+            if ((*nearest - eventPos).manhattanLength() <= std::max(15.0, penWidth))
+            {
+                return std::make_pair(*nearest, &line);
+            }
+        }
+    }
+
+    return HoverPoint();
+}
+
 void GradientTool::hoverMoveEvent(QHoverEvent *event)
 {
     if (!mouseLeftPressed)
     {
-        std::optional<QPoint> nearest;
-        for (auto it = lines.begin(); it != lines.end(); ++it)
+        if (HoverPoint h = findNearestPoint(event->pos()))
         {
-            BrokenLine & line = *it;
-            if ((nearest = line.findNearest(event->pos(), nearest)))
+            if (!hoverPoint || hoverPoint->first != h->first)
             {
-                if ((*nearest - event->pos()).manhattanLength() <= std::max(15.0, penWidth))
-                {
-                    if (!hoverPoint || hoverPoint->first != nearest)
-                    {
-                        hoverPoint = std::make_pair(*nearest, &line);
-                        update();
-                    }
-                }
-                else
-                {
-                    if (hoverPoint)
-                    {
-                        hoverPoint.reset();
-                        update();
-                    }
-                }
+                hoverPoint = h;
+                update();
             }
-    //        else
-    //        {
-    //            hoverPoint.reset();
-    //        }
+        }
+        else
+        {
+            hoverPoint.reset();
+            update();
         }
     }
 }
