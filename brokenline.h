@@ -15,7 +15,7 @@ class BrokenLine
 public:
     QVector<QPoint> points_;
     QVector<qreal> accLength_;
-    QVector<QPolygon> boundingBoxes_;
+//    QVector<QPolygon> boundingBoxes_;
     EasingColor colors_;
     qreal length_ = 0;
 

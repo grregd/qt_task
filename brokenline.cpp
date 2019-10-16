@@ -48,20 +48,20 @@ qreal calculateLength(const QVector<QPoint> & points)
     return result;
 }
 
-QPolygon calcBoundingBox(const QLineF & line, qreal margin, qreal penWidth)
-{
-    QRectF bb(line.p1(), QSizeF(line.length(), penWidth));
+//QPolygon calcBoundingBox(const QLineF & line, qreal margin, qreal penWidth)
+//{
+//    QRectF bb(line.p1(), QSizeF(line.length(), penWidth));
 
-    bb += QMarginsF(margin, margin, margin, margin);
+//    bb += QMarginsF(margin, margin, margin, margin);
 
-    bb.moveCenter(line.center());
+//    bb.moveCenter(line.center());
 
-    return QTransform()
-            .translate(bb.center().x(), bb.center().y())
-            .rotate(-line.angle())
-            .translate(-bb.center().x(), -bb.center().y())
-            .mapToPolygon(bb.toRect());
-}
+//    return QTransform()
+//            .translate(bb.center().x(), bb.center().y())
+//            .rotate(-line.angle())
+//            .translate(-bb.center().x(), -bb.center().y())
+//            .mapToPolygon(bb.toRect());
+//}
 
 
 BrokenLine & BrokenLine::addPointAtEnd(const QPoint & point)
@@ -71,7 +71,7 @@ BrokenLine & BrokenLine::addPointAtEnd(const QPoint & point)
     if (!points_.empty())
     {
         lastLength = accLength_.back() + QLineF(points_.back(), point).length();
-        boundingBoxes_.push_back(calcBoundingBox(QLineF(points_.back(), point), 5.0, 5.0));
+//        boundingBoxes_.push_back(calcBoundingBox(QLineF(points_.back(), point), 5.0, 5.0));
     }
 
     points_.push_back(point);
@@ -81,7 +81,7 @@ BrokenLine & BrokenLine::addPointAtEnd(const QPoint & point)
 
     qDebug() << "points_.size(): " << points_.size();
     qDebug() << "accLength_.size(): " << accLength_.size();
-    qDebug() << "boundingBoxes_.size(): " << boundingBoxes_.size();
+//    qDebug() << "boundingBoxes_.size(): " << boundingBoxes_.size();
     qDebug() << "length_: " << length_;
 
     return *this;
