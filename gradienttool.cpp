@@ -142,18 +142,6 @@ std::optional<QLineF> GradientTool::findHoverLine(const QPoint &checkPos)
     }
     return std::optional<QLineF>();
     }
-//    auto it = std::find_if(lines.rbegin(), lines.rend(),
-//        [this, &checkPos](const BrokenLine &line)
-//        {
-//            return std::adjacent_find(line.points().rbegin(), line.points().rend(),
-//               [this, &checkPos](const QPoint & p1, const QPoint & p2)
-//               {
-//                   return calcBoundingBox(QLineF(p1, p2), 0, penWidth)
-//                         .containsPoint(checkPos, Qt::OddEvenFill);
-//               }) != line.points().rend();
-//        });
-
-//    return it != lines.rend() ? it-> : nullptr;
 }
 
 
