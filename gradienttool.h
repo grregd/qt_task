@@ -48,13 +48,11 @@ protected:
     QPolygon calcBoundingBox(const QLineF & line, qreal margin) const;
 
 private:
-//    void setPenWidthMax(qreal newValue);
     void setPenWidth(qreal newValue);
     void setColorBegin(const QColor & newColor);
     void setColorEnd(const QColor & newColor);
     void setShowControlPoints(bool newValue);
 
-//    qreal getPenWidthMax() const;
     qreal getPenWidth() const;
     bool getShowControlPoints() const;
     QColor getColorBegin() const;
