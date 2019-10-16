@@ -40,6 +40,12 @@ void GradientTool::paint(QPainter *painter)
         painter->setPen(QPen(QColor(0xff1493), 4, Qt::DotLine));
         painter->drawEllipse(occ);
     }
+
+    if (hoverLine)
+    {
+        painter->setPen(QPen(QColor(0xff1493), 4, Qt::DotLine));
+        paintBoundingBox(*hoverLine, painter);
+    }
 }
 
 void GradientTool::finishCurrentLine()
@@ -83,7 +89,7 @@ void GradientTool::redoLastPoint()
     update();
 }
 
-QPolygon GradientTool::calcBoundingBox(const QLineF & line, qreal margin) const
+QPolygon calcBoundingBox(const QLineF & line, qreal margin, qreal penWidth)
 {
     QRectF bb(line.p1(), QSizeF(line.length(), penWidth));
 
@@ -98,9 +104,62 @@ QPolygon GradientTool::calcBoundingBox(const QLineF & line, qreal margin) const
             .mapToPolygon(bb.toRect());
 }
 
+GradientTool::HoverPoint GradientTool::findNearestPoint(const QPoint &eventPos)
+{
+    std::optional<QPoint> nearest;
+    for (auto it = lines.rbegin(); it != lines.rend(); ++it)
+    {
+        BrokenLine & line = *it;
+        if ((nearest = line.findNearest(eventPos, nearest)))
+        {
+            if ((*nearest - eventPos).manhattanLength() <= std::max(15.0, penWidth))
+            {
+                return std::make_pair(*nearest, &line);
+            }
+        }
+    }
+
+    return HoverPoint();
+}
+
+std::optional<QLineF> GradientTool::findHoverLine(const QPoint &checkPos)
+{
+    {
+    for (auto line = lines.rbegin(); line != lines.rend(); ++line )
+    {
+        auto point = std::adjacent_find(line->points().rbegin(), line->points().rend(),
+           [this, &checkPos](const QPoint & p1, const QPoint & p2)
+           {
+               return calcBoundingBox(QLineF(p1, p2), 0, penWidth)
+                     .containsPoint(checkPos, Qt::OddEvenFill);
+           });
+
+        if (point != line->points().rend())
+        {
+            return std::make_optional<QLineF>(*point, *(point+1));
+        }
+
+    }
+    return std::optional<QLineF>();
+    }
+//    auto it = std::find_if(lines.rbegin(), lines.rend(),
+//        [this, &checkPos](const BrokenLine &line)
+//        {
+//            return std::adjacent_find(line.points().rbegin(), line.points().rend(),
+//               [this, &checkPos](const QPoint & p1, const QPoint & p2)
+//               {
+//                   return calcBoundingBox(QLineF(p1, p2), 0, penWidth)
+//                         .containsPoint(checkPos, Qt::OddEvenFill);
+//               }) != line.points().rend();
+//        });
+
+//    return it != lines.rend() ? it-> : nullptr;
+}
+
+
 void GradientTool::paintBoundingBox(const QLineF &fragment, QPainter *painter) const
 {
-    painter->drawPolygon(calcBoundingBox(fragment, 5.0));
+    painter->drawPolygon(calcBoundingBox(fragment, 5.0, penWidth));
 }
 
 void GradientTool::paintBrokenLine(const BrokenLine &line, QPainter *painter) const
@@ -202,24 +261,6 @@ void GradientTool::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-GradientTool::HoverPoint GradientTool::findNearestPoint(const QPoint &eventPos)
-{
-    std::optional<QPoint> nearest;
-    for (auto it = lines.rbegin(); it != lines.rend(); ++it)
-    {
-        BrokenLine & line = *it;
-        if ((nearest = line.findNearest(eventPos, nearest)))
-        {
-            if ((*nearest - eventPos).manhattanLength() <= std::max(15.0, penWidth))
-            {
-                return std::make_pair(*nearest, &line);
-            }
-        }
-    }
-
-    return HoverPoint();
-}
-
 void GradientTool::hoverMoveEvent(QHoverEvent *event)
 {
     if (!mouseLeftPressed)
@@ -235,6 +276,11 @@ void GradientTool::hoverMoveEvent(QHoverEvent *event)
         else
         {
             hoverPoint.reset();
+            update();
+        }
+
+        if ((hoverLine = findHoverLine(event->pos())))
+        {
             update();
         }
     }

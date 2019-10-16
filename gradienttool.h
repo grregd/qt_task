@@ -1,12 +1,12 @@
 #ifndef GRADIENTTOOL_H
 #define GRADIENTTOOL_H
 
-//#include "easingcolor.h"
 #include "brokenline.h"
 
 #include <algorithm>
 
 #include <QQuickPaintedItem>
+#include <QLineF>
 
 class GradientTool : public QQuickPaintedItem
 {
@@ -35,9 +35,6 @@ public slots:
     void redoLastPoint();
 
 protected:
-    void paintBoundingBox(const QLineF &fragment, QPainter *painter) const;
-    void paintBrokenLine(const BrokenLine &line, QPainter *painter) const;
-
     void mousePressEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
@@ -47,9 +44,12 @@ protected:
     void addPointAtEnd(const QPoint & point);
     void finishCurrentLine();
     void changeActiveLine(BrokenLine*);
-    QPolygon calcBoundingBox(const QLineF & line, qreal margin) const;
+//    QPolygon calcBoundingBox(const QLineF & line, qreal margin) const;
+    HoverPoint findNearestPoint(const QPoint &checkPos);
+    std::optional<QLineF> findHoverLine(const QPoint &checkPos);
 
-    HoverPoint findNearestPoint(const QPoint &eventPos);
+    void paintBoundingBox(const QLineF &fragment, QPainter *painter) const;
+    void paintBrokenLine(const BrokenLine &line, QPainter *painter) const;
 
 private:
     void setPenWidth(qreal newValue);
@@ -64,7 +64,8 @@ private:
 
 private:
     QVector<BrokenLine> lines;
-    BrokenLine* line_;
+    BrokenLine * line_;
+    std::optional<QLineF> hoverLine;
     bool showControlPoints = false;
     QVector<QPoint> undoPoints;
     qreal penWidthMax = 100;
