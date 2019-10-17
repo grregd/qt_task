@@ -18,6 +18,8 @@ public:
 //    QVector<QPolygon> boundingBoxes_;
     EasingColor colors_;
     qreal length_ = 0;
+    // colorOfPoints vector corresponds to points_ vector
+    QVector<std::optional<QColor>> colorOfPoints;
 
 public:
     QVector<QPoint>& points() { return points_; }

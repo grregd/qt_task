@@ -79,16 +79,15 @@ BrokenLine & BrokenLine::addPointAtEnd(const QPoint & point)
 
     length_ = accLength_.back();
 
-    qDebug() << "points_.size(): " << points_.size();
-    qDebug() << "accLength_.size(): " << accLength_.size();
-//    qDebug() << "boundingBoxes_.size(): " << boundingBoxes_.size();
-    qDebug() << "length_: " << length_;
+    colorOfPoints.push_back(std::optional<QColor>());
+    colorOfPoints.back().swap( *(colorOfPoints.rend()-1) );
 
     return *this;
 }
 
 BrokenLine &BrokenLine::addPointAt(QVector<QPoint>::iterator where, const QPoint &point)
 {
+    colorOfPoints.insert(std::distance(points_.begin(), where), std::optional<QColor>());
     points_.insert(where, point);
 
     length_ = calculateLength(points_);
@@ -100,11 +99,16 @@ BrokenLine &BrokenLine::addPointAt(QVector<QPoint>::iterator where, const QPoint
 
 BrokenLine & BrokenLine::removePoint(const QPoint & point)
 {
-    points_.erase(
-        std::remove(points_.begin(),
-                    points_.end(),
-                    point),
-        points_.end());
+    auto where = std::find(
+                points_.begin(),
+                points_.end(),
+                point);
+
+    if (where != points_.end())
+    {
+        colorOfPoints.remove(std::distance(points_.begin(), where));
+        points_.erase(where);
+    }
 
     length_ = calculateLength(points_);
     accLength_ = calculateLength1(points_);
@@ -116,6 +120,7 @@ BrokenLine &BrokenLine::removeAllPoints()
 {
     points_.clear();
     accLength_.clear();
+    colorOfPoints.clear();
     length_ = 0;
 
     return *this;
