@@ -64,6 +64,20 @@ qreal calculateLength(const QVector<QPoint> & points)
 //}
 
 
+void BrokenLine::updateGradient()
+{
+    gradient.stops().clear();
+
+    for (auto it = colorOfPoints.begin(); it != colorOfPoints.end(); ++it)
+    {
+        if (*it)
+        {
+            auto i = std::distance(colorOfPoints.begin(), it);
+            gradient.stops().push_back(QGradientStop(accLength_[i], **it));
+        }
+    }
+}
+
 BrokenLine & BrokenLine::addPointAtEnd(const QPoint & point)
 {
     qreal lastLength = 0;
@@ -87,6 +101,7 @@ BrokenLine & BrokenLine::addPointAtEnd(const QPoint & point)
     qDebug() << "addPointAtEnd - color: " << *color;
 
     colorOfPoints.back().swap( *(colorOfPoints.rend()-1) );
+    updateGradient();
 
     return *this;
 }
@@ -98,6 +113,8 @@ BrokenLine &BrokenLine::addPointAt(QVector<QPoint>::iterator where, const QPoint
 
     length_ = calculateLength(points_);
     accLength_ = calculateLength1(points_);
+
+    updateGradient();
 
     return *this;
 }
@@ -114,6 +131,8 @@ BrokenLine & BrokenLine::removePoint(const QPoint & point)
     {
         colorOfPoints.remove(std::distance(points_.begin(), where));
         points_.erase(where);
+
+        updateGradient();
     }
 
     length_ = calculateLength(points_);
@@ -127,6 +146,7 @@ BrokenLine &BrokenLine::removeAllPoints()
     points_.clear();
     accLength_.clear();
     colorOfPoints.clear();
+    updateGradient();
     length_ = 0;
 
     return *this;
@@ -135,6 +155,13 @@ BrokenLine &BrokenLine::removeAllPoints()
 QVector<QPoint>::iterator BrokenLine::getPointRef(QPoint point)
 {
     return std::find(points_.begin(), points_.end(), point);
+}
+
+void BrokenLine::setPointColor(QVector<QPoint>::iterator pointRef, const QColor & color)
+{
+    colorOfPoints[std::distance(points_.begin(), pointRef)] =
+            std::make_optional<QColor>(color);
+    updateGradient();
 }
 
 std::optional<QPoint> BrokenLine::findNearest(const QPoint & other, std::optional<QPoint> nearest) const

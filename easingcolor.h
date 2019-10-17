@@ -32,8 +32,15 @@ class MultiGradient
 
 public:
     MultiGradient();
+    MultiGradient(const QGradientStops & stops);
     MultiGradient(const MultiGradient&) = default;
     MultiGradient(MultiGradient&&) = default;
+    MultiGradient & operator=(const MultiGradient&) = default;
+    MultiGradient & operator=(MultiGradient&&) = default;
+
+    QGradientStops& stops() { return gradients; }
+
+//    void push_back(const QGradientStop & stop);
 
     QColor colorForProgress(qreal progress) const;
 };

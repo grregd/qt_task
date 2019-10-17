@@ -268,7 +268,10 @@ void GradientTool::mouseDoubleClickEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton && hoverPoint)
     {
-        emit requestColorChange(QColor(Qt::cyan));
+        emit requestColorChange(Qt::cyan);
+        hoverPoint->second->setPointColor(
+            hoverPoint->second->getPointRef(
+                    hoverPoint->first), Qt::cyan);
     }
 }
 

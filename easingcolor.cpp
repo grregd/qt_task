@@ -62,6 +62,16 @@ MultiGradient::MultiGradient()
     gradients.push_back(QGradientStop(1.0, QColor(Qt::white)));
 }
 
+MultiGradient::MultiGradient(const QGradientStops &stops)
+    : gradients(stops)
+{
+}
+
+//void MultiGradient::push_back(const QGradientStop &stop)
+//{
+//    gradients.push_back(stop);
+//}
+
 QColor MultiGradient::colorForProgress(qreal progress) const
 {
     if (progress == 0.0)

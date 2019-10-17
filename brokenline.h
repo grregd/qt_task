@@ -12,6 +12,8 @@
 
 class BrokenLine
 {
+    void updateGradient();
+
 public:
     QVector<QPoint> points_;
     QVector<qreal> accLength_;
@@ -20,6 +22,7 @@ public:
     qreal length_ = 0;
     // colorOfPoints vector corresponds to points_ vector
     QVector<std::optional<QColor>> colorOfPoints;
+    MultiGradient gradient;
 
 public:
     QVector<QPoint>& points() { return points_; }
@@ -40,6 +43,7 @@ public:
     BrokenLine & removeAllPoints();
 
     QVector<QPoint>::iterator getPointRef(QPoint point);
+    void setPointColor(QVector<QPoint>::iterator pointRef, const QColor &color);
 
     std::optional<QPoint> findNearest(const QPoint & other, std::optional<QPoint> nearest) const;
 };
