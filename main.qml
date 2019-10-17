@@ -9,7 +9,6 @@ import QtQuick.Dialogs 1.3
 Window {
     id: window
     visible: true
-//    visibility: "Maximized"
     width: 640
     height: 480
 
@@ -32,11 +31,11 @@ Window {
             }
 
             Button {
-                text: "Select begin color"
+                text: qsTr("Select begin color")
                 onClicked: openColorDialog(selectColorBegin, gradientTool.colorBegin) }
 
             Button {
-                text: "Select end color"
+                text: qsTr("Select end color")
                 onClicked: openColorDialog(selectColorEnd, gradientTool.colorEnd) }
 
             Label { text: qsTr("Pen width [pixels]: ") }
@@ -75,7 +74,7 @@ Window {
 
         ColorDialog {
             id: selectColorBegin
-            title: "Select begin color"
+            title: qsTr("Select begin color")
             showAlphaChannel: true
 
             onCurrentColorChanged: gradientTool.colorBegin = currentColor
@@ -84,7 +83,7 @@ Window {
 
         ColorDialog {
             id: selectColorEnd
-            title: "Select end color"
+            title: qsTr("Select end color")
             showAlphaChannel: true
 
             onCurrentColorChanged: gradientTool.colorEnd = currentColor

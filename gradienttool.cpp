@@ -214,7 +214,6 @@ void GradientTool::mousePressEvent(QMouseEvent *event)
     {
         if (hoverPoint)
         {
-            // startDragging();
             mouseLeftPressed = true;
             hoverPointIterator = hoverPoint->second->getPointRef(hoverPoint->first);
             changeActiveLine(hoverPoint->second);
