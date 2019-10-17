@@ -12,8 +12,8 @@ public:
     const QColor & getColorBegin() const;
     const QColor & getColorEnd() const;
 
-    void setColorBegin(const QColor & newColor);
-    void setColorEnd(const QColor & newColor);
+    EasingColor &setColorBegin(const QColor & newColor);
+    EasingColor &setColorEnd(const QColor & newColor);
 
     void setEasingCurveType(QEasingCurve::Type curveType);
 

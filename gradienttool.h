@@ -18,6 +18,8 @@ class GradientTool : public QQuickPaintedItem
     Q_PROPERTY(bool showControlPoints MEMBER getShowControlPoints READ getShowControlPoints WRITE setShowControlPoints NOTIFY showControlPointsChanged)
     Q_PROPERTY(QColor colorBegin READ getColorBegin WRITE setColorBegin NOTIFY colorBeginChanged)
     Q_PROPERTY(QColor colorEnd READ getColorEnd WRITE setColorEnd NOTIFY colorEndChanged)
+    Q_PROPERTY(QColor defaultColorBegin MEMBER defaultColorBegin)
+    Q_PROPERTY(QColor defaultColorEnd MEMBER defaultColorEnd)
 
 signals:
     void penWidthChanged();
@@ -40,6 +42,8 @@ protected:
     void mouseMoveEvent(QMouseEvent* event) override;
     void hoverMoveEvent(QHoverEvent* event) override;
     void wheelEvent(QWheelEvent* event) override;
+
+    void componentComplete() override;
 
     void addPointAtEnd(const QPoint & point);
     void finishCurrentLine();
@@ -65,6 +69,9 @@ private:
     QColor getColorEnd() const;
 
 private:
+    QColor defaultColorBegin;
+    QColor defaultColorEnd;
+
     QVector<BrokenLine> lines;
     BrokenLine * line_;
     std::optional<QLineF> hoverSegment;

@@ -11,15 +11,11 @@
 #include <QEasingCurve>
 #include <QGuiApplication>
 
-
 GradientTool::GradientTool()
 {
     setAcceptedMouseButtons(Qt::AllButtons);
     setAcceptHoverEvents(true);
     setFlag(ItemAcceptsInputMethod, true);
-
-    lines.push_back(BrokenLine());
-    line_ = &lines.back();
 }
 
 
@@ -65,6 +61,9 @@ void GradientTool::finishCurrentLine()
 {
     lines.push_back(BrokenLine());
     line_ = &lines.back();
+    line_->colors()
+            .setColorBegin(defaultColorBegin)
+            .setColorEnd(defaultColorEnd);
     emit penWidthChanged();
     emit colorBeginChanged();
     emit colorEndChanged();
@@ -299,6 +298,17 @@ void GradientTool::wheelEvent(QWheelEvent* event)
 {
     setPenWidth(penWidth + event->delta()/10.0);
     update();
+}
+
+void GradientTool::componentComplete()
+{
+    QQuickPaintedItem::componentComplete();
+
+    lines.push_back(BrokenLine());
+    line_ = &lines.back();
+    line_->colors()
+            .setColorBegin(defaultColorBegin)
+            .setColorEnd(defaultColorEnd);
 }
 
 void GradientTool::setPenWidth(qreal newValue)

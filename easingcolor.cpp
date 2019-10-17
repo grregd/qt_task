@@ -15,14 +15,16 @@ const QColor & EasingColor::getColorEnd() const
     return colorEnd;
 }
 
-void EasingColor::setColorBegin(const QColor & newColor)
+EasingColor & EasingColor::setColorBegin(const QColor & newColor)
 {
     colorBegin = newColor;
+    return *this;
 }
 
-void EasingColor::setColorEnd(const QColor & newColor)
+EasingColor & EasingColor::setColorEnd(const QColor & newColor)
 {
     colorEnd = newColor;
+    return *this;
 }
 
 void EasingColor::setEasingCurveType(QEasingCurve::Type curveType)

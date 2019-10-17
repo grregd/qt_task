@@ -61,8 +61,8 @@ Window {
             Layout.fillHeight: true
             Layout.fillWidth: true
             penWidthMax: 150
-            colorBegin: "blue"
-            colorEnd: "yellow"
+            defaultColorBegin: "blue"
+            defaultColorEnd: "yellow"
             showControlPoints: false
             onColorBeginChanged: {
                 selectColorBegin.currentColor = gradientTool.colorBegin
