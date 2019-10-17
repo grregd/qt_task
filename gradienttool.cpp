@@ -18,10 +18,10 @@ GradientTool::GradientTool()
     setAcceptHoverEvents(true);
     setFlag(ItemAcceptsInputMethod, true);
 
-    MultiGradient test;
-    test.colorForProgress(0);
-    test.colorForProgress(1);
-    test.colorForProgress(0.5);
+//    MultiGradient test;
+//    test.colorForProgress(0);
+//    test.colorForProgress(1);
+//    test.colorForProgress(0.5);
 }
 
 
@@ -189,8 +189,10 @@ void GradientTool::paintBrokenLine(const BrokenLine &line, QPainter *painter) co
 
             QLinearGradient gradient(fragment.p1(), fragment.p2());
 
-            gradient.setColorAt(0, line.colors().colorForProgress(line.accLength()[i]/line.length()));
-            gradient.setColorAt(1, line.colors().colorForProgress(line.accLength()[i+1]/line.length()));
+            gradient.setColorAt(0, line.gradient().colorForProgress(line.accLength()[i]/line.length()));
+            gradient.setColorAt(1, line.gradient().colorForProgress(line.accLength()[i+1]/line.length()));
+//            gradient.setColorAt(0, line.colors().colorForProgress(line.accLength()[i]/line.length()));
+//            gradient.setColorAt(1, line.colors().colorForProgress(line.accLength()[i+1]/line.length()));
 
             painter->setPen(QPen(gradient, penWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
             painter->drawLine(fragment);

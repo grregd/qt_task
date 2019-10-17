@@ -66,14 +66,17 @@ qreal calculateLength(const QVector<QPoint> & points)
 
 void BrokenLine::updateGradient()
 {
-    gradient.stops().clear();
+    qDebug() << __PRETTY_FUNCTION__;
+
+    gradient_.stops().clear();
 
     for (auto it = colorOfPoints.begin(); it != colorOfPoints.end(); ++it)
     {
         if (*it)
         {
             auto i = std::distance(colorOfPoints.begin(), it);
-            gradient.stops().push_back(QGradientStop(accLength_[i], **it));
+            gradient_.stops().push_back(QGradientStop(accLength_[i]/accLength_.back(), **it));
+            qDebug() << i << ": " << gradient_.stops().back();
         }
     }
 }
@@ -93,14 +96,19 @@ BrokenLine & BrokenLine::addPointAtEnd(const QPoint & point)
 
     length_ = accLength_.back();
 
-    auto color = colorOfPoints.empty()
-            ? std::make_optional<QColor>(Qt::yellow) : colorOfPoints.size() == 1
-            ? std::make_optional<QColor>(Qt::blue)
-            : std::make_optional<QColor>();
-    colorOfPoints.push_back(color);
-    qDebug() << "addPointAtEnd - color: " << *color;
+//    auto color = colorOfPoints.empty()
+//            ? std::make_optional<QColor>(Qt::yellow) : colorOfPoints.size() == 1
+//            ? std::make_optional<QColor>(Qt::blue)
+//            : std::make_optional<QColor>();
+    colorOfPoints.push_back(/*color*/QColor());
+//    qDebug() << "addPointAtEnd - color: " << *color;
 
-    colorOfPoints.back().swap( *(colorOfPoints.rend()-1) );
+    if (colorOfPoints.size() > 2)
+    {
+        // swap two last elements to keep old last color as last still
+        std::iter_swap(*colorOfPoints.rbegin(), *(colorOfPoints.rbegin()-1));
+    }
+
     updateGradient();
 
     return *this;

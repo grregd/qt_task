@@ -98,6 +98,7 @@ Window {
             id: controlPointColorDialog
             title: qsTr("Choose color for selected control point")
             showAlphaChannel: true
+            modality: "WindowModal"
 
             onCurrentColorChanged: { console. log("todo: forward color to GradientTool") }
             Component.onCompleted: visible = false

@@ -22,7 +22,7 @@ public:
     qreal length_ = 0;
     // colorOfPoints vector corresponds to points_ vector
     QVector<std::optional<QColor>> colorOfPoints;
-    MultiGradient gradient;
+    MultiGradient gradient_;
 
 public:
     QVector<QPoint>& points() { return points_; }
@@ -34,8 +34,10 @@ public:
     EasingColor& colors() { return colors_; }
     EasingColor const & colors() const { return colors_; }
 
-    qreal & length() { return length_ ; }
-    qreal const & length() const { return length_ ; }
+    qreal & length() { return length_; }
+    qreal const & length() const { return length_; }
+
+    MultiGradient const & gradient() const { return gradient_; }
 
     BrokenLine & addPointAtEnd(const QPoint & point);
     BrokenLine & addPointAt(QVector<QPoint>::iterator where, const QPoint & point);
