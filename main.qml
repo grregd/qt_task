@@ -62,7 +62,7 @@ Window {
             Layout.fillHeight: true
             Layout.fillWidth: true
             penWidthMax: 150
-            colorBegin: "red"
+            colorBegin: "blue"
             colorEnd: "yellow"
             showControlPoints: false
             onColorBeginChanged: {

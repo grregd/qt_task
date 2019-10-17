@@ -87,6 +87,16 @@ BrokenLine & BrokenLine::addPointAtEnd(const QPoint & point)
     return *this;
 }
 
+BrokenLine &BrokenLine::addPointAt(QVector<QPoint>::iterator where, const QPoint &point)
+{
+    points_.insert(where, point);
+
+    length_ = calculateLength(points_);
+    accLength_ = calculateLength1(points_);
+
+    return *this;
+}
+
 
 BrokenLine & BrokenLine::removePoint(const QPoint & point)
 {
@@ -111,7 +121,7 @@ BrokenLine &BrokenLine::removeAllPoints()
     return *this;
 }
 
-QVector<QPoint>::iterator BrokenLine::getPoint(QPoint point)
+QVector<QPoint>::iterator BrokenLine::getPointRef(QPoint point)
 {
     return std::find(points_.begin(), points_.end(), point);
 }

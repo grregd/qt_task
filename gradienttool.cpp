@@ -23,6 +23,13 @@ GradientTool::GradientTool()
 }
 
 
+QPointF GradientTool::hoverLinePointFromMouse()
+{
+    auto l1 = QLineF(hoverSegment->p1(), mousePos).length();
+    auto l2 = QLineF(hoverSegment->p2(), mousePos).length();
+    return hoverSegment->pointAt(l1/(l1+l2));
+}
+
 void GradientTool::paint(QPainter *painter)
 {
     painter->setRenderHint(QPainter::Antialiasing, true);
@@ -41,16 +48,12 @@ void GradientTool::paint(QPainter *painter)
         painter->drawEllipse(occ);
     }
 
-    if (hoverLine)
+    if (hoverSegment)
     {
         painter->setPen(QPen(QColor(0xff1493), 4, Qt::DotLine));
-        paintBoundingBox(*hoverLine, painter);
+        paintBoundingBox(*hoverSegment, painter);
 
-        auto l1 = QLineF(hoverLine->p1(), mousePos).length();
-        auto l2 = QLineF(hoverLine->p2(), mousePos).length();
-
-        auto p = hoverLine->pointAt(l1/(l1+l2));
-        QRectF r(p, QSizeF());
+        QRectF r(hoverLinePointFromMouse(), QSizeF());
         r += QMarginsF(penWidth/2.0, penWidth/2.0,
                        penWidth/2.0, penWidth/2.0);
 
@@ -207,12 +210,20 @@ void GradientTool::paintBrokenLine(const BrokenLine &line, QPainter *painter) co
 
 void GradientTool::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton && hoverPoint)
+    if (event->button() == Qt::LeftButton)
     {
-        // startDragging();
-        mouseLeftPressed = true;
-        hoverPointIterator = hoverPoint->second->getPoint(hoverPoint->first);
-        changeActiveLine(hoverPoint->second);
+        if (hoverPoint)
+        {
+            // startDragging();
+            mouseLeftPressed = true;
+            hoverPointIterator = hoverPoint->second->getPointRef(hoverPoint->first);
+            changeActiveLine(hoverPoint->second);
+        }
+        else if (hoverSegment)
+        {
+            auto p1Ref = line_->getPointRef(hoverSegment->p1().toPoint());
+            line_->addPointAt(p1Ref, hoverLinePointFromMouse().toPoint());
+        }
     }
     else if (event->button() == Qt::RightButton && !hoverPoint)
     {
@@ -230,7 +241,7 @@ void GradientTool::mouseReleaseEvent(QMouseEvent *event)
         {
             mouseDragging = false;
         }
-        else if (!hoverPoint)
+        else if (!hoverPoint && !hoverSegment)
         {
             line_->addPointAtEnd(event->pos());
         }
@@ -269,19 +280,17 @@ void GradientTool::hoverMoveEvent(QHoverEvent *event)
             if (!hoverPoint || hoverPoint->first != h->first)
             {
                 hoverPoint = h;
+                hoverSegment.reset();
                 update();
             }
         }
         else
         {
             hoverPoint.reset();
+            hoverSegment = findHoverLine(event->pos());
             update();
         }
 
-        if ((hoverLine = findHoverLine(event->pos())))
-        {
-            update();
-        }
     }
     mousePos = event->pos();
 }

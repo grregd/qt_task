@@ -51,6 +51,8 @@ protected:
     void paintBoundingBox(const QLineF &fragment, QPainter *painter) const;
     void paintBrokenLine(const BrokenLine &line, QPainter *painter) const;
 
+    QPointF hoverLinePointFromMouse();
+
 private:
     void setPenWidth(qreal newValue);
     void setColorBegin(const QColor & newColor);
@@ -65,7 +67,7 @@ private:
 private:
     QVector<BrokenLine> lines;
     BrokenLine * line_;
-    std::optional<QLineF> hoverLine;
+    std::optional<QLineF> hoverSegment;
     QPoint mousePos;
     bool showControlPoints = false;
     QVector<QPoint> undoPoints;

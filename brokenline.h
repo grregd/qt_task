@@ -33,10 +33,11 @@ public:
     qreal const & length() const { return length_ ; }
 
     BrokenLine & addPointAtEnd(const QPoint & point);
+    BrokenLine & addPointAt(QVector<QPoint>::iterator where, const QPoint & point);
     BrokenLine & removePoint(const QPoint & point);
     BrokenLine & removeAllPoints();
 
-    QVector<QPoint>::iterator getPoint(QPoint point);
+    QVector<QPoint>::iterator getPointRef(QPoint point);
 
     std::optional<QPoint> findNearest(const QPoint & other, std::optional<QPoint> nearest) const;
 };
