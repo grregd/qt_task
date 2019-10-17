@@ -26,6 +26,7 @@ signals:
     void showControlPointsChanged();
     void colorBeginChanged();
     void colorEndChanged();
+    void requestColorChange(QColor initColor);
 
 public:
     GradientTool();
@@ -39,6 +40,7 @@ public slots:
 protected:
     void mousePressEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;
+    void mouseDoubleClickEvent(QMouseEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
     void hoverMoveEvent(QHoverEvent* event) override;
     void wheelEvent(QWheelEvent* event) override;
@@ -83,9 +85,10 @@ private:
     qreal penWidth = 0;
 
     HoverPoint hoverPoint;
+    QVector<QPoint>::iterator hoverPointIterator;
+
     bool mouseLeftPressed = false;
     bool mouseDragging = false;
-    QVector<QPoint>::iterator hoverPointIterator;
 };
 
 #endif // GRADIENTTOOL_H

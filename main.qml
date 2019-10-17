@@ -70,6 +70,10 @@ Window {
             onColorEndChanged: {
                 selectColorEnd.currentColor = gradientTool.colorEnd
             }
+            onRequestColorChange: {
+                console.log("onRequestColorChange received - currentColor: ", initColor)
+                openColorDialog(controlPointColorDialog, initColor)
+            }
         }
 
         ColorDialog {
@@ -87,6 +91,15 @@ Window {
             showAlphaChannel: true
 
             onCurrentColorChanged: gradientTool.colorEnd = currentColor
+            Component.onCompleted: visible = false
+        }
+
+        ColorDialog {
+            id: controlPointColorDialog
+            title: qsTr("Choose color for selected control point")
+            showAlphaChannel: true
+
+            onCurrentColorChanged: { console. log("todo: forward color to GradientTool") }
             Component.onCompleted: visible = false
         }
 
