@@ -79,7 +79,13 @@ BrokenLine & BrokenLine::addPointAtEnd(const QPoint & point)
 
     length_ = accLength_.back();
 
-    colorOfPoints.push_back(std::optional<QColor>());
+    auto color = colorOfPoints.empty()
+            ? std::make_optional<QColor>(Qt::yellow) : colorOfPoints.size() == 1
+            ? std::make_optional<QColor>(Qt::blue)
+            : std::make_optional<QColor>();
+    colorOfPoints.push_back(color);
+    qDebug() << "addPointAtEnd - color: " << *color;
+
     colorOfPoints.back().swap( *(colorOfPoints.rend()-1) );
 
     return *this;
@@ -87,7 +93,7 @@ BrokenLine & BrokenLine::addPointAtEnd(const QPoint & point)
 
 BrokenLine &BrokenLine::addPointAt(QVector<QPoint>::iterator where, const QPoint &point)
 {
-    colorOfPoints.insert(std::distance(points_.begin(), where), std::optional<QColor>());
+    colorOfPoints.insert(std::distance(points_.begin(), where), std::make_optional<QColor>());
     points_.insert(where, point);
 
     length_ = calculateLength(points_);
@@ -134,7 +140,6 @@ QVector<QPoint>::iterator BrokenLine::getPointRef(QPoint point)
 std::optional<QPoint> BrokenLine::findNearest(const QPoint & other, std::optional<QPoint> nearest) const
 {
     int minManhattan = nearest ? (*nearest - other).manhattanLength() : 1000;
-//    std::optional<QPoint> nearest;
     for (const QPoint& p: points_)
     {
         auto newManhattan = (p - other).manhattanLength();

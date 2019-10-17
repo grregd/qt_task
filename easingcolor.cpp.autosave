@@ -53,8 +53,6 @@ QColor EasingColor::colorForProgress(qreal progress) const
     return ::colorForProgress(easing.valueForProgress(progress), colorBegin, colorEnd);
 }
 
-
-
 MultiGradient::MultiGradient()
 {
     gradients.push_back(QGradientStop(0.0, QColor(Qt::black)));

@@ -3,6 +3,7 @@
 
 #include <QColor>
 #include <QEasingCurve>
+#include <QGradientStops>
 
 class EasingColor
 {
@@ -23,6 +24,18 @@ private:
     QColor colorBegin;
     QColor colorEnd;
     QEasingCurve easing;
+};
+
+class MultiGradient
+{
+    QGradientStops gradients;
+
+public:
+    MultiGradient();
+    MultiGradient(const MultiGradient&) = default;
+    MultiGradient(MultiGradient&&) = default;
+
+    QColor colorForProgress(qreal progress) const;
 };
 
 #endif // EASINGCOLOR_H

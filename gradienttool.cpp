@@ -1,4 +1,5 @@
 #include "gradienttool.h"
+#include "easingcolor.h"
 
 #include <QDebug>
 
@@ -16,6 +17,11 @@ GradientTool::GradientTool()
     setAcceptedMouseButtons(Qt::AllButtons);
     setAcceptHoverEvents(true);
     setFlag(ItemAcceptsInputMethod, true);
+
+    MultiGradient test;
+    test.colorForProgress(0);
+    test.colorForProgress(1);
+    test.colorForProgress(0.5);
 }
 
 
