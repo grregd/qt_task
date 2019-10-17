@@ -74,13 +74,13 @@ MultiGradient::MultiGradient(const QGradientStops &stops)
 
 QColor MultiGradient::colorForProgress(qreal progress) const
 {
-//    qDebug() << __PRETTY_FUNCTION__;
-//    qDebug() << "progress: " << progress;
+    qDebug() << __PRETTY_FUNCTION__;
+    qDebug() << "progress: " << progress;
 
     if (progress == 0.0)
     {
-//        qDebug() << gradients.begin()->second;
-//        qDebug() << (gradients.begin()+1)->second;
+        qDebug() << gradients.begin()->second;
+        qDebug() << (gradients.begin()+1)->second;
         return ::colorForProgress(progress, gradients.begin()->second, (gradients.begin()+1)->second);
     }
 
@@ -105,9 +105,9 @@ QColor MultiGradient::colorForProgress(qreal progress) const
     auto width = stopPointIt->first - startPointIt->first;
     auto ratio = (progress - startPointIt->first) / width;
 
-//    qDebug() << "ratio: " << ratio;
-//    qDebug() << startPointIt->second;
-//    qDebug() << stopPointIt->second;
+    qDebug() << "ratio: " << ratio;
+    qDebug() << startPointIt->second;
+    qDebug() << stopPointIt->second;
 
     return ::colorForProgress(ratio, startPointIt->second, stopPointIt->second);
 }

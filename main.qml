@@ -30,13 +30,13 @@ Window {
                 }
             }
 
-            Button {
-                text: qsTr("Select begin color")
-                onClicked: openColorDialog(selectColorBegin, gradientTool.colorBegin) }
+//            Button {
+//                text: qsTr("Select begin color")
+//                onClicked: openColorDialog(selectColorBegin, gradientTool.colorBegin) }
 
-            Button {
-                text: qsTr("Select end color")
-                onClicked: openColorDialog(selectColorEnd, gradientTool.colorEnd) }
+//            Button {
+//                text: qsTr("Select end color")
+//                onClicked: openColorDialog(selectColorEnd, gradientTool.colorEnd) }
 
             Label { text: qsTr("Pen width [pixels]: ") }
 
@@ -98,7 +98,7 @@ Window {
             id: controlPointColorDialog
             title: qsTr("Choose color for selected control point")
             showAlphaChannel: true
-            modality: "WindowModal"
+//            modality: "WindowModal"
 
             onCurrentColorChanged: { console. log("todo: forward color to GradientTool") }
             Component.onCompleted: visible = false

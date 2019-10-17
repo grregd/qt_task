@@ -12,10 +12,32 @@
 
 class BrokenLine
 {
-    void updateGradient();
 
 public:
-    QVector<QPoint> points_;
+    struct ControlPoint
+    {
+        QPoint point_;
+        std::optional<QColor> color_;
+
+        ControlPoint(const QPoint & point)
+            : point_(point)
+        {}
+
+        ControlPoint(const QPoint & point, const std::optional<QColor> & color)
+            : point_(point)
+            , color_(color)
+        {}
+
+        bool operator==(const ControlPoint & other) { return point_ == other.point() && color_ == other.color(); }
+
+        QPoint& point() { return point_; }
+        const QPoint& point() const { return point_; }
+
+        std::optional<QColor>& color() { return color_; }
+        const std::optional<QColor>& color() const { return color_; }
+    };
+
+    QVector<ControlPoint> points_;
     QVector<qreal> accLength_;
 //    QVector<QPolygon> boundingBoxes_;
     EasingColor colors_;
@@ -25,8 +47,8 @@ public:
     MultiGradient gradient_;
 
 public:
-    QVector<QPoint>& points() { return points_; }
-    QVector<QPoint> const & points() const { return points_; }
+    QVector<ControlPoint>& points() { return points_; }
+    QVector<ControlPoint> const & points() const { return points_; }
 
     QVector<qreal>& accLength() { return accLength_; }
     QVector<qreal> const & accLength() const { return accLength_; }
@@ -38,14 +60,16 @@ public:
     qreal const & length() const { return length_; }
 
     MultiGradient const & gradient() const { return gradient_; }
+    void updateGradient();
+    void updateLength();
 
     BrokenLine & addPointAtEnd(const QPoint & point);
-    BrokenLine & addPointAt(QVector<QPoint>::iterator where, const QPoint & point);
+    BrokenLine & addPointAt(QVector<ControlPoint>::iterator where, const QPoint & point);
     BrokenLine & removePoint(const QPoint & point);
     BrokenLine & removeAllPoints();
 
-    QVector<QPoint>::iterator getPointRef(QPoint point);
-    void setPointColor(QVector<QPoint>::iterator pointRef, const QColor &color);
+    QVector<ControlPoint>::iterator getPointRef(QPoint point);
+    void setPointColor(QVector<ControlPoint>::iterator pointRef, const QColor &color);
 
     std::optional<QPoint> findNearest(const QPoint & other, std::optional<QPoint> nearest) const;
 };

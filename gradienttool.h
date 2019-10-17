@@ -85,7 +85,7 @@ private:
     qreal penWidth = 0;
 
     HoverPoint hoverPoint;
-    QVector<QPoint>::iterator hoverPointIterator;
+    QVector<BrokenLine::ControlPoint>::iterator hoverPointIterator;
 
     bool mouseLeftPressed = false;
     bool mouseDragging = false;

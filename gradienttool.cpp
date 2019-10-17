@@ -88,10 +88,10 @@ void GradientTool::removeLastPoint()
     {
         if (line_->points().size() >= 2)
         {
-            line_->length() -= QLineF(line_->points().back(), *(line_->points().rbegin()+1)).length();
+            line_->length() -= QLineF(line_->points().back().point(), (line_->points().rbegin()+1)->point()).length();
         }
 
-        undoPoints.push_back(line_->points().back());
+//        undoPoints.push_back(line_->points().back());
         line_->points().pop_back();
         update();
     }
@@ -146,15 +146,15 @@ std::optional<QLineF> GradientTool::findHoverLine(const QPoint &checkPos)
     for (auto line = lines.rbegin(); line != lines.rend(); ++line )
     {
         auto point = std::adjacent_find(line->points().rbegin(), line->points().rend(),
-           [this, &checkPos](const QPoint & p1, const QPoint & p2)
+           [this, &checkPos](const auto & p1, const auto & p2)
            {
-               return calcBoundingBox(QLineF(p1, p2), 0, penWidth)
+               return calcBoundingBox(QLineF(p1.point(), p2.point()), 0, penWidth)
                      .containsPoint(checkPos, Qt::OddEvenFill);
            });
 
         if (point != line->points().rend())
         {
-            return std::make_optional<QLineF>(*point, *(point+1));
+            return std::make_optional<QLineF>(point->point(), (point+1)->point());
         }
 
     }
@@ -179,13 +179,13 @@ void GradientTool::paintBrokenLine(const BrokenLine &line, QPainter *painter) co
             if (line_ == &line)
             {
                 painter->setPen(hoveredLinePen);
-                paintBoundingBox(QLineF(line.points()[i], line.points()[i+1]), painter);
+                paintBoundingBox(QLineF(line.points()[i].point(), line.points()[i+1].point()), painter);
             }
         }
 
         for (int i = 0; i < line.points().size()-1; ++i)
         {
-            QLineF fragment(line.points()[i], line.points()[i+1]);
+            QLineF fragment(line.points()[i].point(), line.points()[i+1].point());
 
             QLinearGradient gradient(fragment.p1(), fragment.p2());
 
@@ -208,7 +208,12 @@ void GradientTool::paintBrokenLine(const BrokenLine &line, QPainter *painter) co
                 line.points().begin(), line.points().end(),
                 [painter, &r](auto & point)
                 {
-                    r.moveCenter(point);
+                    r.moveCenter(point.point());
+                    if (point.color())
+                        painter->setPen(QPen(Qt::black, 6));
+                    else
+                        painter->setPen(QPen(QColor(128, 128, 128), 3));
+
                     painter->drawEllipse(r);
                 });
     }
@@ -270,10 +275,21 @@ void GradientTool::mouseDoubleClickEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton && hoverPoint)
     {
-        emit requestColorChange(Qt::cyan);
-        hoverPoint->second->setPointColor(
-            hoverPoint->second->getPointRef(
-                    hoverPoint->first), Qt::cyan);
+        if (hoverPointIterator->color())
+        {
+            hoverPointIterator->color().reset();
+        }
+        else
+        {
+            hoverPointIterator->color() = QColor(rand()%255, rand()%255, rand()%255, rand()%255);
+        }
+
+        line_->updateGradient();
+        update();
+//        emit requestColorChange(Qt::cyan);
+//        hoverPoint->second->setPointColor(
+//            hoverPoint->second->getPointRef(
+//                    hoverPoint->first), Qt::cyan);
     }
 }
 
@@ -282,7 +298,9 @@ void GradientTool::mouseMoveEvent(QMouseEvent *event)
     if (mouseLeftPressed)
     {
         mouseDragging = true;
-        *hoverPointIterator = event->pos();
+        hoverPointIterator->point() = event->pos();
+        line_->updateLength();
+        line_->updateGradient();
         update();
     }
     mousePos = event->pos();
