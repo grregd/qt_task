@@ -364,16 +364,22 @@ void GradientTool::setPenWidth(qreal newValue)
 void GradientTool::setColorBegin(const QColor & newColor)
 {
 //    line_->colors().setColorBegin(newColor);
-    line_->points().begin()->color() = newColor;
-    line_->updateGradient();
+    if (!line_->points().empty())
+    {
+        line_->points().begin()->color() = newColor;
+        line_->updateGradient();
+    }
     update();
 }
 
 void GradientTool::setColorEnd(const QColor & newColor)
 {
 //    line_->colors().setColorEnd(newColor);
-    line_->points().rbegin()->color() = newColor;
-    line_->updateGradient();
+    if (!line_->points().empty())
+    {
+        line_->points().rbegin()->color() = newColor;
+        line_->updateGradient();
+    }
     update();
 }
 

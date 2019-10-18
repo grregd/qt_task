@@ -46,7 +46,7 @@ Window {
                 stepSize: 1
                 minimumValue: 1
                 maximumValue: 150
-                value: 50
+                value: 100
                 Component.onCompleted: penWidthSlider.value = gradientTool.penWidth
                 onValueChanged: gradientTool.penWidth = penWidthSlider.value
                 Connections {
