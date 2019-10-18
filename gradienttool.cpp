@@ -275,16 +275,20 @@ void GradientTool::mouseDoubleClickEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton && hoverPoint)
     {
-        if (hoverPointIterator->color())
+        if ( (hoverPointIterator != hoverPoint->second->points().rbegin().base()-1) &&
+             (hoverPointIterator != hoverPoint->second->points().begin()) )
         {
-            hoverPointIterator->color().reset();
-        }
-        else
-        {
-            hoverPointIterator->color() = QColor(rand()%255, rand()%255, rand()%255, rand()%255);
+            if (hoverPointIterator->color())
+            {
+                hoverPointIterator->color().reset();
+            }
+            else
+            {
+                hoverPointIterator->color() = QColor(rand()%255, rand()%255, rand()%255, 255);
+            }
+            line_->updateGradient();
         }
 
-        line_->updateGradient();
         update();
 //        emit requestColorChange(Qt::cyan);
 //        hoverPoint->second->setPointColor(
@@ -359,13 +363,17 @@ void GradientTool::setPenWidth(qreal newValue)
 
 void GradientTool::setColorBegin(const QColor & newColor)
 {
-    line_->colors().setColorBegin(newColor);
+//    line_->colors().setColorBegin(newColor);
+    line_->points().begin()->color() = newColor;
+    line_->updateGradient();
     update();
 }
 
 void GradientTool::setColorEnd(const QColor & newColor)
 {
-    line_->colors().setColorEnd(newColor);
+//    line_->colors().setColorEnd(newColor);
+    line_->points().rbegin()->color() = newColor;
+    line_->updateGradient();
     update();
 }
 
@@ -381,12 +389,14 @@ bool GradientTool::getShowControlPoints() const
 
 QColor GradientTool::getColorBegin() const
 {
-    return line_->colors().getColorBegin();
+//    return line_->colors().getColorBegin();
+    return *line_->points().begin()->color();
 }
 
 QColor GradientTool::getColorEnd() const
 {
-    return line_->colors().getColorEnd();
+//    return line_->colors().getColorEnd();
+    return *line_->points().rbegin()->color();
 }
 
 void GradientTool::setShowControlPoints(bool newValue)

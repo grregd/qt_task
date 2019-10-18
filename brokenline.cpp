@@ -77,11 +77,11 @@ void BrokenLine::updateGradient()
         {
             gradient_.stops().push_back(QGradientStop(*accIt/accLength_.back(), *pointIt->color_));
         }
-        else if (gradient_.stops().size() > 1)
-        {
-            gradient_.stops().back().first = *accIt/accLength_.back();
-            qDebug() << "no color";
-        }
+//        else if (gradient_.stops().size() > 1)
+//        {
+//            gradient_.stops().back().first = *accIt/accLength_.back();
+//            qDebug() << "no color";
+//        }
         qDebug() << gradient_.stops().size() << ": " << gradient_.stops().back();
     }
 }

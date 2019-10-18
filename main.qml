@@ -19,6 +19,7 @@ Window {
 
         RowLayout {
             id: layoutMenu
+
             CheckBox {
                 id: checkBoxCtrlPoints
                 text: qsTr("Show control points")
@@ -27,16 +28,15 @@ Window {
                 Connections {
                     target: gradientTool
                     onShowControlPointsChanged: checkBoxCtrlPoints.checked = gradientTool.showControlPoints
-                }
-            }
+                } }
 
-//            Button {
-//                text: qsTr("Select begin color")
-//                onClicked: openColorDialog(selectColorBegin, gradientTool.colorBegin) }
+            Button {
+                text: qsTr("Select begin color")
+                onClicked: openColorDialog(selectColorBegin, gradientTool.colorBegin) }
 
-//            Button {
-//                text: qsTr("Select end color")
-//                onClicked: openColorDialog(selectColorEnd, gradientTool.colorEnd) }
+            Button {
+                text: qsTr("Select end color")
+                onClicked: openColorDialog(selectColorEnd, gradientTool.colorEnd) }
 
             Label { text: qsTr("Pen width [pixels]: ") }
 
@@ -46,7 +46,7 @@ Window {
                 stepSize: 1
                 minimumValue: 1
                 maximumValue: 150
-                value: 10
+                value: 50
                 Component.onCompleted: penWidthSlider.value = gradientTool.penWidth
                 onValueChanged: gradientTool.penWidth = penWidthSlider.value
                 Connections {
