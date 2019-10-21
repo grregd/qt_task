@@ -77,15 +77,15 @@ private:
     QVector<BrokenLine> lines;
     BrokenLine * line_;
     std::optional<QLineF> hoverSegment;
-    QPoint mousePos;
     bool showControlPoints = false;
     QVector<QPoint> undoPoints;
 
     qreal penWidthMax = 100;
     qreal penWidth = 0;
     qreal scale = 1;
-    QPoint originOffset;
-    QPoint lastMouseMovePos;
+    QPoint mousePos; // not transformed
+    QPoint originOffset; // not transformed
+    QPoint lastMouseMovePos; // not transformed
 
     HoverPoint hoverPoint;
     QVector<BrokenLine::ControlPoint>::iterator hoverPointIterator;

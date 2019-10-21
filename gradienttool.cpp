@@ -7,10 +7,12 @@
 #include <optional>
 #include <algorithm>
 
+#include <QPoint>
 #include <QPainter>
 #include <QVector3D>
 #include <QEasingCurve>
 #include <QGuiApplication>
+#include <QStaticText>
 
 static QTransform tra;
 
@@ -39,8 +41,8 @@ GradientTool::GradientTool()
 
 QPointF GradientTool::hoverLinePointFromMouse()
 {
-    auto l1 = QLineF(hoverSegment->p1(), mousePos).length();
-    auto l2 = QLineF(hoverSegment->p2(), mousePos).length();
+    auto l1 = QLineF(hoverSegment->p1(), ::transform(mousePos)).length();
+    auto l2 = QLineF(hoverSegment->p2(), ::transform(mousePos)).length();
     return hoverSegment->pointAt(l1/(l1+l2));
 }
 
@@ -48,8 +50,56 @@ void GradientTool::paint(QPainter *painter)
 {
     painter->setRenderHint(QPainter::Antialiasing, true);
 
-    painter->scale(scale, scale);
+    {
+        tra.reset();
+        tra.translate(originOffset.rx(), originOffset.ry()).scale(scale, scale);
+        bool invertible = false;
+        tra = tra.inverted(&invertible);
+        if (!invertible)
+        {
+            tra = QTransform();
+        }
+    }
+
+    int infoBoxWidth = 200;
+    int infoLineHeight = 15;
+
+    painter->drawStaticText(width()-infoBoxWidth, 0*infoLineHeight, QStaticText(
+                                (QString("scale: %1").arg(scale))));
+
+    painter->drawStaticText(width()-infoBoxWidth, 1*infoLineHeight, QStaticText(
+                                (QString("originOffset: %1, %2 (%3, %4)").
+                                 arg(originOffset.rx()).
+                                 arg(originOffset.ry()).
+                                 arg(::transform(originOffset).rx()).
+                                 arg(::transform(originOffset).ry()))));
+
+    painter->drawStaticText(width()-infoBoxWidth, 2*infoLineHeight, QStaticText(
+                                (QString("lastMouseMovePos: %1, %2 (%3, %4)").
+                                    arg(lastMouseMovePos.rx()).
+                                    arg(lastMouseMovePos.ry()).
+                                    arg(::transform(lastMouseMovePos).rx()).
+                                    arg(::transform(lastMouseMovePos).ry()))));
+
+    painter->drawStaticText(width()-infoBoxWidth, 3*infoLineHeight, QStaticText(
+                                (QString("mousePos: %1, %2 (%3, %4)").
+                                 arg(mousePos.rx()).
+                                 arg(mousePos.ry()).
+                                 arg(::transform(mousePos).rx()).
+                                 arg(::transform(mousePos).ry())
+                                )));
+
+    painter->drawStaticText(width()-infoBoxWidth, 4*infoLineHeight, QStaticText(
+                                (QString("width, height: %1, %2 (%3, %4)").
+                                 arg(width()).
+                                 arg(height()).
+                                 arg(width()*scale).
+                                 arg(height()*scale)
+                                )));
+
+
     painter->translate(originOffset);
+    painter->scale(scale, scale);
 
     bool invertible = false;
     tra = painter->combinedTransform().inverted(&invertible);
@@ -57,6 +107,11 @@ void GradientTool::paint(QPainter *painter)
     {
         tra = QTransform();
     }
+
+    painter->drawLine(0, 0, width()/scale/2, 0);
+    painter->drawLine(0, 0, 0, height()/scale/2);
+    painter->drawLine(width()/scale/2-100, height()/scale/2, width()/scale/2+100, height()/scale/2);
+    painter->drawLine(width()/scale/2, height()/scale/2-100, width()/scale/2, height()/scale/2+100);
 
     std::for_each(lines.begin(), lines.end(),
                   [this, painter](auto & line){
@@ -246,7 +301,7 @@ void GradientTool::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
     {
-        lastMouseMovePos = ::transform(event->pos());
+        lastMouseMovePos = event->pos();
         if (hoverPoint)
         {
             mouseLeftPressed = true;
@@ -339,10 +394,10 @@ void GradientTool::mouseMoveEvent(QMouseEvent *event)
         qDebug() << "lastMouseMovePos: " << lastMouseMovePos;
         qDebug() << "event->pos()-lastMouseMovePos: " << event->pos()-lastMouseMovePos;
         qDebug() << "originOffset: " << originOffset;
-        originOffset += ::transform(event->pos()) - lastMouseMovePos;
+        originOffset += event->pos() - lastMouseMovePos;
         qDebug() << "originOffset: " << originOffset;
 
-        lastMouseMovePos = ::transform(event->pos());
+        lastMouseMovePos = event->pos();
 
         update();
     }
@@ -354,7 +409,7 @@ void GradientTool::mouseMoveEvent(QMouseEvent *event)
         line_->updateGradient();
         update();
     }
-    mousePos = ::transform(event->pos());
+    mousePos = event->pos();
 }
 
 void GradientTool::hoverMoveEvent(QHoverEvent *event)
@@ -378,7 +433,7 @@ void GradientTool::hoverMoveEvent(QHoverEvent *event)
         }
 
     }
-    mousePos = ::transform(event->pos());
+    mousePos = event->pos();
 }
 
 
@@ -386,10 +441,21 @@ void GradientTool::wheelEvent(QWheelEvent* event)
 {
     if (event->modifiers() == Qt::ControlModifier)
     {
+        auto oldScale = scale;
         scale += event->delta()/500.0;
         if (scale < 0.25)
+        {
             scale = 0.25;
-        qDebug() << "scale: " << scale;
+        }
+
+        auto diffScaleRatio = (oldScale - scale);
+        auto a = ::transform(event->pos()).x() / (width()*scale);
+        auto b = ::transform(event->pos()).y() / (height()*scale);
+        qDebug() << "a: " << a << ", b: " << b;
+        qDebug() << "diffScaleRatio: " << diffScaleRatio;
+        QPoint addMove(width()*diffScaleRatio*a, height()*diffScaleRatio*b);
+        qDebug() << "originOffset("<<originOffset<<") + addMove("<<addMove<<") = " << originOffset + addMove;
+        originOffset += addMove;
     }
     else
     {
