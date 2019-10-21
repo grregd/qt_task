@@ -83,6 +83,9 @@ private:
 
     qreal penWidthMax = 100;
     qreal penWidth = 0;
+    qreal scale = 1;
+    QPoint originOffset;
+    QPoint lastMouseMovePos;
 
     HoverPoint hoverPoint;
     QVector<BrokenLine::ControlPoint>::iterator hoverPointIterator;

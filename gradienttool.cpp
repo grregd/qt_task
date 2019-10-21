@@ -12,6 +12,18 @@
 #include <QEasingCurve>
 #include <QGuiApplication>
 
+static QTransform tra;
+
+QPoint transform(const QPoint & p)
+{
+    return tra.map(p);
+}
+
+QPointF transform(const QPointF & p)
+{
+    return tra.map(p);
+}
+
 GradientTool::GradientTool()
 {
     setAcceptedMouseButtons(Qt::AllButtons);
@@ -35,6 +47,16 @@ QPointF GradientTool::hoverLinePointFromMouse()
 void GradientTool::paint(QPainter *painter)
 {
     painter->setRenderHint(QPainter::Antialiasing, true);
+
+    painter->scale(scale, scale);
+    painter->translate(originOffset);
+
+    bool invertible = false;
+    tra = painter->combinedTransform().inverted(&invertible);
+    if (!invertible)
+    {
+        tra = QTransform();
+    }
 
     std::for_each(lines.begin(), lines.end(),
                   [this, painter](auto & line){
@@ -224,6 +246,7 @@ void GradientTool::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
     {
+        lastMouseMovePos = ::transform(event->pos());
         if (hoverPoint)
         {
             mouseLeftPressed = true;
@@ -254,7 +277,7 @@ void GradientTool::mouseReleaseEvent(QMouseEvent *event)
         }
         else if (!hoverPoint && !hoverSegment)
         {
-            line_->addPointAtEnd(event->pos());
+            line_->addPointAtEnd(::transform(event->pos()));
         }
     }
     else if (event->button() == Qt::RightButton)
@@ -299,22 +322,46 @@ void GradientTool::mouseDoubleClickEvent(QMouseEvent *event)
 
 void GradientTool::mouseMoveEvent(QMouseEvent *event)
 {
-    if (mouseLeftPressed)
+    if (event->button() != Qt::NoButton)
+    {
+        qDebug() << __PRETTY_FUNCTION__;
+
+        qDebug() << "event->modifiers(): " << event->modifiers();
+        qDebug() << "Qt::ControlModifier: " << Qt::ControlModifier;
+        qDebug() << "event->button(): " << event->button();
+        qDebug() << "Qt::LeftButton: " << Qt::LeftButton;
+    }
+
+    if (event->modifiers() == Qt::ControlModifier /*&&*/
+        /*event->button() == Qt::LeftButton*//*mouseLeftPressed*/)
+    {
+        qDebug() << "event->pos(): " << event->pos();
+        qDebug() << "lastMouseMovePos: " << lastMouseMovePos;
+        qDebug() << "event->pos()-lastMouseMovePos: " << event->pos()-lastMouseMovePos;
+        qDebug() << "originOffset: " << originOffset;
+        originOffset += ::transform(event->pos()) - lastMouseMovePos;
+        qDebug() << "originOffset: " << originOffset;
+
+        lastMouseMovePos = ::transform(event->pos());
+
+        update();
+    }
+    else if (mouseLeftPressed)
     {
         mouseDragging = true;
-        hoverPointIterator->point() = event->pos();
+        hoverPointIterator->point() = ::transform(event->pos());
         line_->updateLength();
         line_->updateGradient();
         update();
     }
-    mousePos = event->pos();
+    mousePos = ::transform(event->pos());
 }
 
 void GradientTool::hoverMoveEvent(QHoverEvent *event)
 {
     if (!mouseLeftPressed)
     {
-        if (HoverPoint h = findNearestPoint(event->pos()))
+        if (HoverPoint h = findNearestPoint(::transform(event->pos())))
         {
             if (!hoverPoint || hoverPoint->first != h->first)
             {
@@ -326,18 +373,28 @@ void GradientTool::hoverMoveEvent(QHoverEvent *event)
         else
         {
             hoverPoint.reset();
-            hoverSegment = findHoverLine(event->pos());
+            hoverSegment = findHoverLine(::transform(event->pos()));
             update();
         }
 
     }
-    mousePos = event->pos();
+    mousePos = ::transform(event->pos());
 }
 
 
 void GradientTool::wheelEvent(QWheelEvent* event)
 {
-    setPenWidth(penWidth + event->delta()/10.0);
+    if (event->modifiers() == Qt::ControlModifier)
+    {
+        scale += event->delta()/500.0;
+        if (scale < 0.25)
+            scale = 0.25;
+        qDebug() << "scale: " << scale;
+    }
+    else
+    {
+        setPenWidth(penWidth + event->delta()/10.0);
+    }
     update();
 }
 

@@ -66,7 +66,7 @@ qreal calculateLength(const QVector<BrokenLine::ControlPoint> & points)
 
 void BrokenLine::updateGradient()
 {
-    qDebug() << __PRETTY_FUNCTION__;
+//    qDebug() << __PRETTY_FUNCTION__;
 
     gradient_.stops().clear();
 
@@ -82,7 +82,7 @@ void BrokenLine::updateGradient()
 //            gradient_.stops().back().first = *accIt/accLength_.back();
 //            qDebug() << "no color";
 //        }
-        qDebug() << gradient_.stops().size() << ": " << gradient_.stops().back();
+//        qDebug() << gradient_.stops().size() << ": " << gradient_.stops().back();
     }
 }
 
@@ -125,16 +125,16 @@ BrokenLine & BrokenLine::addPointAtEnd(const QPoint & point)
 
     for (auto i = points_.begin(); i != points_.end(); ++i)
     {
-        qDebug() << std::distance(points_.begin(), i);
-        qDebug() << "  point: " << i->point();
-        if (i->color())
-        {
-            qDebug() << "  color: " << *(i->color());
-        }
-        else
-        {
-            qDebug() << "  color: none";
-        }
+//        qDebug() << std::distance(points_.begin(), i);
+//        qDebug() << "  point: " << i->point();
+//        if (i->color())
+//        {
+//            qDebug() << "  color: " << *(i->color());
+//        }
+//        else
+//        {
+//            qDebug() << "  color: none";
+//        }
     }
 
     updateGradient();
