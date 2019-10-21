@@ -108,10 +108,10 @@ void GradientTool::paint(QPainter *painter)
         tra = QTransform();
     }
 
-    painter->drawLine(0, 0, width()/scale/2, 0);
-    painter->drawLine(0, 0, 0, height()/scale/2);
-    painter->drawLine(width()/scale/2-100, height()/scale/2, width()/scale/2+100, height()/scale/2);
-    painter->drawLine(width()/scale/2, height()/scale/2-100, width()/scale/2, height()/scale/2+100);
+//    painter->drawLine(0, 0, width()/scale/2, 0);
+//    painter->drawLine(0, 0, 0, height()/scale/2);
+//    painter->drawLine(width()/scale/2-100, height()/scale/2, width()/scale/2+100, height()/scale/2);
+//    painter->drawLine(width()/scale/2, height()/scale/2-100, width()/scale/2, height()/scale/2+100);
 
     std::for_each(lines.begin(), lines.end(),
                   [this, painter](auto & line){
@@ -448,14 +448,24 @@ void GradientTool::wheelEvent(QWheelEvent* event)
             scale = 0.25;
         }
 
-        auto diffScaleRatio = (oldScale - scale);
-        auto a = ::transform(event->pos()).x() / (width()*scale);
-        auto b = ::transform(event->pos()).y() / (height()*scale);
-        qDebug() << "a: " << a << ", b: " << b;
-        qDebug() << "diffScaleRatio: " << diffScaleRatio;
-        QPoint addMove(width()*diffScaleRatio*a, height()*diffScaleRatio*b);
-        qDebug() << "originOffset("<<originOffset<<") + addMove("<<addMove<<") = " << originOffset + addMove;
-        originOffset += addMove;
+//        auto diffScaleRatio = (scale - oldScale)/scale;
+//        auto ab = ::transform(event->pos()) - ::transform(originOffset);
+//        qDebug() << "ab: " << ab;
+//        qDebug() << "relative distance: " << ab.rx() / width() << ", " << ab.ry() / height() ;
+
+//        auto a = (event->pos()-originOffset).x();
+//        auto b = (event->pos()-originOffset).y();
+//        qDebug() << "a: " << a << ", b: " << b;
+//        qDebug() << "relative distance: " << a / width() << ", " << b / height() ;
+
+//        qDebug() << "diffScaleRatio: " << oldScale << " - " << scale << " = " << diffScaleRatio;
+//        QPoint addMove(width()*(1-a/width())*diffScaleRatio,
+//                       height()*(1-b/height())*diffScaleRatio);
+//        qDebug() << "originOffset("<<originOffset<<") + addMove("<<addMove<<") = " << originOffset + addMove;
+////        originOffset -= addMove;
+
+
+        originOffset = event->pos() - scale/oldScale * (event->pos()-originOffset);
     }
     else
     {
