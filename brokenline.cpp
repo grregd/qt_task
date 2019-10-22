@@ -74,6 +74,17 @@ qreal BrokenLine::normalizedLength(int startPointIndex) const
     return accLength_[startPointIndex] / length_;
 }
 
+QLinearGradient BrokenLine::gradient(int startPointIndex) const
+{
+    QLineF f(fragment(startPointIndex));
+    QLinearGradient result(f.p1(), f.p2());
+
+    result.setColorAt(0, gradient_.colorForProgress(normalizedLength(startPointIndex)));
+    result.setColorAt(1, gradient_.colorForProgress(normalizedLength(startPointIndex+1)));
+
+    return result;
+}
+
 void BrokenLine::updateGradient()
 {
 //    qDebug() << __PRETTY_FUNCTION__;

@@ -49,16 +49,14 @@ public:
     QVector<ControlPoint>& points() { return points_; }
     QVector<ControlPoint> const & points() const { return points_; }
 
-    QVector<qreal>& accLength() { return accLength_; }
-    QVector<qreal> const & accLength() const { return accLength_; }
-
     qreal & length() { return length_; }
     qreal const & length() const { return length_; }
 
     QLineF fragment(int startPointIndex) const;
     qreal normalizedLength(int startPointIndex) const;
+    QLinearGradient gradient(int startPointIndex) const;
 
-    MultiGradient const & gradient() const { return gradient_; }
+//    MultiGradient const & gradient() const { return gradient_; }
     void updateGradient();
     void updateLength();
 

@@ -255,15 +255,9 @@ void GradientTool::paintBrokenLine(const BrokenLine &line, QPainter *painter) co
 
         for (int i = 0; i < line.points().size()-1; ++i)
         {
-            QLineF fragment(line.fragment(i));
-
-            QLinearGradient gradient(fragment.p1(), fragment.p2());
-
-            gradient.setColorAt(0, line.gradient().colorForProgress(line.normalizedLength(i)));
-            gradient.setColorAt(1, line.gradient().colorForProgress(line.normalizedLength(i+1)));
-
-            painter->setPen(QPen(gradient, penWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-            painter->drawLine(fragment);
+            painter->setPen(QPen(QLinearGradient(line.gradient(i)),
+                                 penWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+            painter->drawLine(line.fragment(i));
 
         }
     }
