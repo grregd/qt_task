@@ -6,37 +6,6 @@
 #include <algorithm>
 
 
-EasingColor::EasingColor()
-{
-};
-
-const QColor & EasingColor::getColorBegin() const
-{
-    return colorBegin;
-}
-
-const QColor & EasingColor::getColorEnd() const
-{
-    return colorEnd;
-}
-
-EasingColor & EasingColor::setColorBegin(const QColor & newColor)
-{
-    colorBegin = newColor;
-    return *this;
-}
-
-EasingColor & EasingColor::setColorEnd(const QColor & newColor)
-{
-    colorEnd = newColor;
-    return *this;
-}
-
-void EasingColor::setEasingCurveType(QEasingCurve::Type curveType)
-{
-    easing.setType(curveType);
-}
-
 QColor colorForProgress(qreal progress, const QColor & colorBegin, const QColor & colorEnd)
 {
     auto componentR = colorBegin.red() + progress*(colorEnd.red() - colorBegin.red());
@@ -47,12 +16,6 @@ QColor colorForProgress(qreal progress, const QColor & colorBegin, const QColor 
     return QColor(componentR, componentG, componentB, componentA);
 
 }
-
-QColor EasingColor::colorForProgress(qreal progress) const
-{
-    return ::colorForProgress(easing.valueForProgress(progress), colorBegin, colorEnd);
-}
-
 
 
 MultiGradient::MultiGradient()

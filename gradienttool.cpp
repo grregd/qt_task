@@ -388,8 +388,6 @@ void GradientTool::mouseMoveEvent(QMouseEvent *event)
         qDebug() << "event->pos()-lastMouseMovePos: " << event->pos()-lastMouseMovePos;
         qDebug() << "originOffset: " << originOffset;
         originOffset += event->pos() - lastMouseMovePos;
-        qDebug() << "originOffset: " << originOffset;
-
         lastMouseMovePos = event->pos();
 
         update();
