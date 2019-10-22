@@ -156,31 +156,6 @@ void GradientTool::changeActiveLine(BrokenLine *line)
     emit colorEndChanged();
 }
 
-void GradientTool::removeLastPoint()
-{
-    if (!line_->points().empty())
-    {
-        if (line_->points().size() >= 2)
-        {
-            line_->length() -= QLineF(line_->points().back().point(), (line_->points().rbegin()+1)->point()).length();
-        }
-
-//        undoPoints.push_back(line_->points().back());
-        line_->points().pop_back();
-        update();
-    }
-}
-
-void GradientTool::redoLastPoint()
-{
-    if (!undoPoints.empty())
-    {
-        line_->addPointAtEnd(undoPoints.back());
-        undoPoints.pop_back();
-    }
-    update();
-}
-
 QPolygon calcBoundingBox(const QLineF & line, qreal margin, qreal penWidth)
 {
     QRectF bb(line.p1(), QSizeF(line.length(), penWidth));
@@ -313,8 +288,6 @@ void GradientTool::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
     {
-        undoPoints.clear();
-
         if (mouseDragging)
         {
             mouseDragging = false;

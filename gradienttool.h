@@ -33,10 +33,6 @@ public:
 
     void paint(QPainter *painter) override;
 
-public slots:
-    void removeLastPoint();
-    void redoLastPoint();
-
 protected:
     void mousePressEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;
@@ -80,7 +76,6 @@ private:
     BrokenLine * line_;
     std::optional<QLineF> hoverSegment;
     bool showControlPoints = false;
-    QVector<QPoint> undoPoints;
 
     qreal penWidthMax = 100;
     qreal penWidth = 0;

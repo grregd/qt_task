@@ -105,14 +105,6 @@ Window {
         }
 
        Shortcut {
-           sequence: "Ctrl+Z"
-           onActivated: gradientTool.removeLastPoint()
-       }
-       Shortcut {
-           sequence: "Ctrl+Y"
-           onActivated: gradientTool.redoLastPoint()
-       }
-       Shortcut {
             sequence: "Ctrl+F"
             onActivated: window.showFullScreen()
         }
