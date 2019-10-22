@@ -31,11 +31,6 @@ GradientTool::GradientTool()
     setAcceptedMouseButtons(Qt::AllButtons);
     setAcceptHoverEvents(true);
     setFlag(ItemAcceptsInputMethod, true);
-
-//    MultiGradient test;
-//    test.colorForProgress(0);
-//    test.colorForProgress(1);
-//    test.colorForProgress(0.5);
 }
 
 
@@ -48,8 +43,12 @@ QPointF GradientTool::hoverLinePointFromMouse()
 
 void GradientTool::paintInfo(QPainter *painter)
 {
-    int infoBoxWidth = 200;
-    int infoLineHeight = 15;
+    const int infoBoxWidth = 200;
+    const int infoLineHeight = 15;
+
+    painter->save();
+    painter->resetTransform();
+    painter->setPen(QPen());
 
     painter->drawStaticText(width()-infoBoxWidth, 0*infoLineHeight, QStaticText(
                                 (QString("scale: %1").arg(scale))));
@@ -83,6 +82,8 @@ void GradientTool::paintInfo(QPainter *painter)
                                  arg(width()*scale).
                                  arg(height()*scale)
                                 )));
+
+    painter->restore();
 }
 
 void GradientTool::paint(QPainter *painter)
@@ -100,7 +101,6 @@ void GradientTool::paint(QPainter *painter)
         }
     }
 
-    paintInfo(painter);
 
     painter->translate(originOffset);
     painter->scale(scale, scale);
@@ -138,6 +138,8 @@ void GradientTool::paint(QPainter *painter)
 
         painter->drawEllipse(r);
     }
+
+    paintInfo(painter);
 }
 
 void GradientTool::finishCurrentLine()
