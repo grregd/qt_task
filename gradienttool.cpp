@@ -46,21 +46,8 @@ QPointF GradientTool::hoverLinePointFromMouse()
     return hoverSegment->pointAt(l1/(l1+l2));
 }
 
-void GradientTool::paint(QPainter *painter)
+void GradientTool::paintInfo(QPainter *painter)
 {
-    painter->setRenderHint(QPainter::Antialiasing, true);
-
-    {
-        tra.reset();
-        tra.translate(originOffset.rx(), originOffset.ry()).scale(scale, scale);
-        bool invertible = false;
-        tra = tra.inverted(&invertible);
-        if (!invertible)
-        {
-            tra = QTransform();
-        }
-    }
-
     int infoBoxWidth = 200;
     int infoLineHeight = 15;
 
@@ -96,7 +83,24 @@ void GradientTool::paint(QPainter *painter)
                                  arg(width()*scale).
                                  arg(height()*scale)
                                 )));
+}
 
+void GradientTool::paint(QPainter *painter)
+{
+    painter->setRenderHint(QPainter::Antialiasing, true);
+
+    {
+        tra.reset();
+        tra.translate(originOffset.rx(), originOffset.ry()).scale(scale, scale);
+        bool invertible = false;
+        tra = tra.inverted(&invertible);
+        if (!invertible)
+        {
+            tra = QTransform();
+        }
+    }
+
+    paintInfo(painter);
 
     painter->translate(originOffset);
     painter->scale(scale, scale);

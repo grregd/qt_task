@@ -59,6 +59,8 @@ protected:
 
     QPointF hoverLinePointFromMouse();
 
+    void paintInfo(QPainter *painter);
+    
 private:
     void setPenWidth(qreal newValue);
     void setColorBegin(const QColor & newColor);
