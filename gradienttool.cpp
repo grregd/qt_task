@@ -438,7 +438,7 @@ void GradientTool::wheelEvent(QWheelEvent* event)
     if (event->modifiers() == Qt::ControlModifier)
     {
         auto oldScale = scale;
-        scale += event->delta()/500.0;
+        scale += event->delta()/1000.0;
         if (scale < 0.25)
         {
             scale = 0.25;
