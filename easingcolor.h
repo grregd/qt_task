@@ -20,7 +20,7 @@ public:
 
     QGradientStops& stops() { return gradients; }
 
-//    void push_back(const QGradientStop & stop);
+    void push_back(const QGradientStop & stop);
 
     QColor colorForProgress(qreal progress) const;
 };

@@ -30,10 +30,10 @@ MultiGradient::MultiGradient(const QGradientStops &stops)
 {
 }
 
-//void MultiGradient::push_back(const QGradientStop &stop)
-//{
-//    gradients.push_back(stop);
-//}
+void MultiGradient::push_back(const QGradientStop &stop)
+{
+    gradients.push_back(stop);
+}
 
 QColor MultiGradient::colorForProgress(qreal progress) const
 {

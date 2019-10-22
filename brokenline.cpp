@@ -7,7 +7,7 @@
 #include <QLineF>
 #include <QTransform>
 
-QVector<qreal> calculateLength1(const QVector<BrokenLine::ControlPoint> & points)
+QVector<qreal> calculateAccLength(const QVector<BrokenLine::ControlPoint> & points)
 {
     QVector<qreal> result;
 
@@ -33,21 +33,6 @@ QVector<qreal> calculateLength1(const QVector<BrokenLine::ControlPoint> & points
     return result;
 }
 
-qreal calculateLength(const QVector<BrokenLine::ControlPoint> & points)
-{
-    qreal result = 0;
-
-    if (points.size() >= 2)
-    {
-        for (int i = 0; i < points.size()-1; ++i)
-        {
-            result += QLineF(points[i].point(), points[i+1].point()).length();
-        }
-    }
-
-    return result;
-}
-
 QLineF BrokenLine::fragment(int startPointIndex) const
 {
     return QLineF(points_[startPointIndex].point(), points_[startPointIndex+1].point());
@@ -58,7 +43,7 @@ qreal BrokenLine::normalizedLength(int startPointIndex) const
     return accLength_[startPointIndex] / length_;
 }
 
-QLinearGradient BrokenLine::gradient(int startPointIndex) const
+QLinearGradient BrokenLine::gradientInPoint(int startPointIndex) const
 {
     QLineF f(fragment(startPointIndex));
     QLinearGradient result(f.p1(), f.p2());
@@ -78,14 +63,14 @@ void BrokenLine::updateGradient()
     {
         if (pointIt->color_)
         {
-            gradient_.stops().push_back(QGradientStop(*accIt/accLength_.back(), *pointIt->color_));
+            gradient_.push_back(QGradientStop(*accIt/accLength_.back(), *pointIt->color_));
         }
     }
 }
 
 void BrokenLine::updateLength()
 {
-    accLength_ = calculateLength1(points_);
+    accLength_ = calculateAccLength(points_);
     length_ = accLength_.empty() ? 0.0 : accLength_.back();
 }
 
@@ -126,8 +111,8 @@ BrokenLine &BrokenLine::addPointAt(QVector<ControlPoint>::iterator where, const 
 {
     points_.insert(where, point);
 
-    length_ = calculateLength(points_);
-    accLength_ = calculateLength1(points_);
+    accLength_ = calculateAccLength(points_);
+    length_ = accLength_.back();
 
     updateGradient();
 
@@ -155,9 +140,8 @@ BrokenLine & BrokenLine::removePoint(const QPoint & point)
         updateGradient();
     }
 
-    length_ = calculateLength(points_);
-    accLength_ = calculateLength1(points_);
-
+    accLength_ = calculateAccLength(points_);
+    length_ = accLength_.back();
 
     return *this;
 }

@@ -234,7 +234,7 @@ void GradientTool::paintBrokenLine(const BrokenLine &line, QPainter *painter) co
 
         for (int i = 0; i < line.points().size()-1; ++i)
         {
-            painter->setPen(QPen(QLinearGradient(line.gradient(i)),
+            painter->setPen(QPen(QLinearGradient(line.gradientInPoint(i)),
                                  penWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
             painter->drawLine(line.fragment(i));
 
