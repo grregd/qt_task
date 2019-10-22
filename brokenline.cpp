@@ -64,6 +64,11 @@ qreal calculateLength(const QVector<BrokenLine::ControlPoint> & points)
 //}
 
 
+QLineF BrokenLine::fragment(int startPointIndex) const
+{
+    return QLineF(points_[startPointIndex].point(), points_[startPointIndex+1].point());
+}
+
 void BrokenLine::updateGradient()
 {
 //    qDebug() << __PRETTY_FUNCTION__;

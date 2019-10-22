@@ -55,6 +55,8 @@ public:
     qreal & length() { return length_; }
     qreal const & length() const { return length_; }
 
+    QLineF fragment(int pointNum) const;
+
     MultiGradient const & gradient() const { return gradient_; }
     void updateGradient();
     void updateLength();

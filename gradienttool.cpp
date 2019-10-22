@@ -249,13 +249,13 @@ void GradientTool::paintBrokenLine(const BrokenLine &line, QPainter *painter) co
             if (line_ == &line)
             {
                 painter->setPen(hoveredLinePen);
-                paintBoundingBox(QLineF(line.points()[i].point(), line.points()[i+1].point()), painter);
+                paintBoundingBox(line.fragment(i), painter);
             }
         }
 
         for (int i = 0; i < line.points().size()-1; ++i)
         {
-            QLineF fragment(line.points()[i].point(), line.points()[i+1].point());
+            QLineF fragment(line.fragment(i));
 
             QLinearGradient gradient(fragment.p1(), fragment.p2());
 
