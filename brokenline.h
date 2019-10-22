@@ -1,7 +1,7 @@
 #ifndef BROKENLINE_H
 #define BROKENLINE_H
 
-#include "easingcolor.h"
+#include "multigradient.h"
 
 #include <optional>
 

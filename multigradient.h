@@ -1,5 +1,5 @@
-#ifndef EASINGCOLOR_H
-#define EASINGCOLOR_H
+#ifndef MULTIGRADIENT_H
+#define MULTIGRADIENT_H
 
 #include <QColor>
 #include <QEasingCurve>
@@ -24,4 +24,4 @@ public:
     QColor colorForProgress(qreal progress) const;
 };
 
-#endif // EASINGCOLOR_H
+#endif // MULTIGRADIENT_H

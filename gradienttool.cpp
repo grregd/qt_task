@@ -1,5 +1,5 @@
 #include "gradienttool.h"
-#include "easingcolor.h"
+#include "multigradient.h"
 
 #include <QDebug>
 
