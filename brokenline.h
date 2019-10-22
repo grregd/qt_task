@@ -57,10 +57,10 @@ public:
     void updateGradient();
     void updateLength();
 
-    BrokenLine & addPointAtEnd(const QPoint & point);
-    BrokenLine & addPointAt(QVector<ControlPoint>::iterator where, const QPoint & point);
-    BrokenLine & removePoint(const QPoint & point);
-    BrokenLine & removeAllPoints();
+    void addPointAtEnd(const QPoint & point);
+    void addPointAt(QVector<ControlPoint>::iterator where, const QPoint & point);
+    void removePoint(const QPoint & point);
+    void removeAllPoints();
 
     QVector<ControlPoint>::iterator getPointRef(QPoint point);
     void setPointColor(QVector<ControlPoint>::iterator pointRef, const QColor &color);

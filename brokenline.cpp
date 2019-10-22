@@ -74,7 +74,7 @@ void BrokenLine::updateLength()
     length_ = accLength_.empty() ? 0.0 : accLength_.back();
 }
 
-BrokenLine & BrokenLine::addPointAtEnd(const QPoint & point)
+void BrokenLine::addPointAtEnd(const QPoint & point)
 {
     qreal lastLength = 0;
     std::optional<QColor> color;
@@ -103,11 +103,9 @@ BrokenLine & BrokenLine::addPointAtEnd(const QPoint & point)
     length_ = accLength_.back();
 
     updateGradient();
-
-    return *this;
 }
 
-BrokenLine &BrokenLine::addPointAt(QVector<ControlPoint>::iterator where, const QPoint &point)
+void BrokenLine::addPointAt(QVector<ControlPoint>::iterator where, const QPoint &point)
 {
     points_.insert(where, point);
 
@@ -115,12 +113,10 @@ BrokenLine &BrokenLine::addPointAt(QVector<ControlPoint>::iterator where, const 
     length_ = accLength_.back();
 
     updateGradient();
-
-    return *this;
 }
 
 
-BrokenLine & BrokenLine::removePoint(const QPoint & point)
+void BrokenLine::removePoint(const QPoint & point)
 {
     auto where = std::find_if( points_.begin(), points_.end(),
                 [point](const auto& p) { return p.point() == point; } );
@@ -142,19 +138,15 @@ BrokenLine & BrokenLine::removePoint(const QPoint & point)
 
     accLength_ = calculateAccLength(points_);
     length_ = accLength_.back();
-
-    return *this;
 }
 
-BrokenLine &BrokenLine::removeAllPoints()
+void BrokenLine::removeAllPoints()
 {
     points_.clear();
     accLength_.clear();
     length_ = 0;
 
     updateGradient();
-
-    return *this;
 }
 
 QVector<BrokenLine::ControlPoint>::iterator BrokenLine::getPointRef(QPoint point)
