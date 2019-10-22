@@ -48,22 +48,6 @@ qreal calculateLength(const QVector<BrokenLine::ControlPoint> & points)
     return result;
 }
 
-//QPolygon calcBoundingBox(const QLineF & line, qreal margin, qreal penWidth)
-//{
-//    QRectF bb(line.p1(), QSizeF(line.length(), penWidth));
-
-//    bb += QMarginsF(margin, margin, margin, margin);
-
-//    bb.moveCenter(line.center());
-
-//    return QTransform()
-//            .translate(bb.center().x(), bb.center().y())
-//            .rotate(-line.angle())
-//            .translate(-bb.center().x(), -bb.center().y())
-//            .mapToPolygon(bb.toRect());
-//}
-
-
 QLineF BrokenLine::fragment(int startPointIndex) const
 {
     return QLineF(points_[startPointIndex].point(), points_[startPointIndex+1].point());
@@ -87,8 +71,6 @@ QLinearGradient BrokenLine::gradient(int startPointIndex) const
 
 void BrokenLine::updateGradient()
 {
-//    qDebug() << __PRETTY_FUNCTION__;
-
     gradient_.stops().clear();
 
     auto accIt = accLength_.begin();
@@ -98,12 +80,6 @@ void BrokenLine::updateGradient()
         {
             gradient_.stops().push_back(QGradientStop(*accIt/accLength_.back(), *pointIt->color_));
         }
-//        else if (gradient_.stops().size() > 1)
-//        {
-//            gradient_.stops().back().first = *accIt/accLength_.back();
-//            qDebug() << "no color";
-//        }
-//        qDebug() << gradient_.stops().size() << ": " << gradient_.stops().back();
     }
 }
 
@@ -121,7 +97,6 @@ BrokenLine & BrokenLine::addPointAtEnd(const QPoint & point)
     if (!points_.empty())
     {
         lastLength = accLength_.back() + QLineF(points_.back().point(), point).length();
-//        boundingBoxes_.push_back(calcBoundingBox(QLineF(points_.back(), point), 5.0, 5.0));
 
         if (points_.size() == 1)
         {
@@ -139,24 +114,8 @@ BrokenLine & BrokenLine::addPointAtEnd(const QPoint & point)
     }
 
     points_.push_back(ControlPoint(point, color));
-
     accLength_.push_back(lastLength);
-
     length_ = accLength_.back();
-
-    for (auto i = points_.begin(); i != points_.end(); ++i)
-    {
-//        qDebug() << std::distance(points_.begin(), i);
-//        qDebug() << "  point: " << i->point();
-//        if (i->color())
-//        {
-//            qDebug() << "  color: " << *(i->color());
-//        }
-//        else
-//        {
-//            qDebug() << "  color: none";
-//        }
-    }
 
     updateGradient();
 
