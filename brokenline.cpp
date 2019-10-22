@@ -69,6 +69,11 @@ QLineF BrokenLine::fragment(int startPointIndex) const
     return QLineF(points_[startPointIndex].point(), points_[startPointIndex+1].point());
 }
 
+qreal BrokenLine::normalizedLength(int startPointIndex) const
+{
+    return accLength_[startPointIndex] / length_;
+}
+
 void BrokenLine::updateGradient()
 {
 //    qDebug() << __PRETTY_FUNCTION__;
