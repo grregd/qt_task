@@ -140,9 +140,6 @@ void GradientTool::finishCurrentLine()
 {
     lines.push_back(BrokenLine());
     line_ = &lines.back();
-    line_->colors()
-            .setColorBegin(defaultColorBegin)
-            .setColorEnd(defaultColorEnd);
     emit penWidthChanged();
     emit colorBeginChanged();
     emit colorEndChanged();
@@ -459,9 +456,6 @@ void GradientTool::componentComplete()
 
     lines.push_back(BrokenLine());
     line_ = &lines.back();
-    line_->colors()
-            .setColorBegin(defaultColorBegin)
-            .setColorEnd(defaultColorEnd);
 }
 
 void GradientTool::setPenWidth(qreal newValue)
@@ -475,7 +469,6 @@ void GradientTool::setPenWidth(qreal newValue)
 
 void GradientTool::setColorBegin(const QColor & newColor)
 {
-//    line_->colors().setColorBegin(newColor);
     if (!line_->points().empty())
     {
         line_->points().begin()->color() = newColor;
@@ -486,7 +479,6 @@ void GradientTool::setColorBegin(const QColor & newColor)
 
 void GradientTool::setColorEnd(const QColor & newColor)
 {
-//    line_->colors().setColorEnd(newColor);
     if (!line_->points().empty())
     {
         line_->points().rbegin()->color() = newColor;
@@ -507,13 +499,11 @@ bool GradientTool::getShowControlPoints() const
 
 QColor GradientTool::getColorBegin() const
 {
-//    return line_->colors().getColorBegin();
     return *line_->points().begin()->color();
 }
 
 QColor GradientTool::getColorEnd() const
 {
-//    return line_->colors().getColorEnd();
     return *line_->points().rbegin()->color();
 }
 

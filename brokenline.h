@@ -40,7 +40,6 @@ public:
     QVector<ControlPoint> points_;
     QVector<qreal> accLength_;
 //    QVector<QPolygon> boundingBoxes_;
-    EasingColor colors_;
     qreal length_ = 0;
     // colorOfPoints vector corresponds to points_ vector
     QVector<std::optional<QColor>> colorOfPoints;
@@ -52,9 +51,6 @@ public:
 
     QVector<qreal>& accLength() { return accLength_; }
     QVector<qreal> const & accLength() const { return accLength_; }
-
-    EasingColor& colors() { return colors_; }
-    EasingColor const & colors() const { return colors_; }
 
     qreal & length() { return length_; }
     qreal const & length() const { return length_; }
