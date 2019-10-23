@@ -123,13 +123,13 @@ void GradientTool::paint(QPainter *painter)
                       std::max(15.0, penWidth),
                       std::max(15.0, penWidth)));
         occ.moveCenter(hoverPoint->first);
-        painter->setPen(QPen(QColor(0xff1493), 4, Qt::DotLine));
+        painter->setPen(QPen(hoverSelectColor, 4, Qt::DotLine));
         painter->drawEllipse(occ);
     }
 
     if (hoverSegment)
     {
-        painter->setPen(QPen(QColor(0xff1493), 4, Qt::DotLine));
+        painter->setPen(QPen(hoverSelectColor, 4, Qt::DotLine));
         paintBoundingBox(*hoverSegment, painter);
 
         QRectF r(hoverLinePointFromMouse(), QSizeF());

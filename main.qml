@@ -61,6 +61,7 @@ Window {
             Layout.fillHeight: true
             Layout.fillWidth: true
             penWidthMax: 150
+            hoverSelectColor: "#3300cc" // kolor chabrowy
             defaultColorBegin: "blue"
             defaultColorEnd: "yellow"
             showControlPoints: false

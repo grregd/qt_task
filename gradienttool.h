@@ -20,6 +20,7 @@ class GradientTool : public QQuickPaintedItem
     Q_PROPERTY(QColor colorEnd READ getColorEnd WRITE setColorEnd NOTIFY colorEndChanged)
     Q_PROPERTY(QColor defaultColorBegin MEMBER defaultColorBegin)
     Q_PROPERTY(QColor defaultColorEnd MEMBER defaultColorEnd)
+    Q_PROPERTY(QColor hoverSelectColor MEMBER hoverSelectColor)
 
 signals:
     void penWidthChanged();
@@ -71,6 +72,7 @@ private:
 private:
     QColor defaultColorBegin;
     QColor defaultColorEnd;
+    QColor hoverSelectColor = 0xff1493;
 
     QVector<BrokenLine> lines;
     BrokenLine * line_;
