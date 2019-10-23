@@ -13,7 +13,7 @@ class GradientTool : public QQuickPaintedItem
     using HoverPoint = std::optional< std::pair<QPoint, BrokenLine * > >;
 
     Q_OBJECT
-    Q_PROPERTY(qreal penWidthMax MEMBER penWidthMax /*READ getPenWidthMax WRITE setPenWidthMax*/)
+    Q_PROPERTY(qreal penWidthMax MEMBER penWidthMax)
     Q_PROPERTY(qreal penWidth MEMBER penWidth READ getPenWidth WRITE setPenWidth NOTIFY penWidthChanged)
     Q_PROPERTY(bool showControlPoints MEMBER getShowControlPoints READ getShowControlPoints WRITE setShowControlPoints NOTIFY showControlPointsChanged)
     Q_PROPERTY(QColor colorBegin READ getColorBegin WRITE setColorBegin NOTIFY colorBeginChanged)

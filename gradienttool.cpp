@@ -429,11 +429,14 @@ void GradientTool::componentComplete()
 
 void GradientTool::setPenWidth(qreal newValue)
 {
-    penWidth = newValue > penWidthMax
-            ? penWidthMax : newValue < 1
-            ? 1 : newValue;
-    emit penWidthChanged();
-    update();
+    if (!qFuzzyCompare(newValue, penWidth))
+    {
+        penWidth = newValue > penWidthMax
+                ? penWidthMax : newValue < 1
+                ? 1 : newValue;
+        emit penWidthChanged();
+        update();
+    }
 }
 
 void GradientTool::setColorBegin(const QColor & newColor)
@@ -442,8 +445,8 @@ void GradientTool::setColorBegin(const QColor & newColor)
     {
         line_->points().begin()->color() = newColor;
         line_->updateGradient();
+        update();
     }
-    update();
 }
 
 void GradientTool::setColorEnd(const QColor & newColor)
@@ -452,8 +455,8 @@ void GradientTool::setColorEnd(const QColor & newColor)
     {
         line_->points().rbegin()->color() = newColor;
         line_->updateGradient();
+        update();
     }
-    update();
 }
 
 qreal GradientTool::getPenWidth() const
