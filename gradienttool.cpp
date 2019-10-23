@@ -176,15 +176,15 @@ void GradientTool::finishCurrentLine()
     lines.push_back(BrokenLine());
     line_ = &lines.back();
     emit penWidthChanged();
-    emit colorBeginChanged();
-    emit colorEndChanged();
+//    emit colorBeginChanged();
+//    emit colorEndChanged();
 }
 
 void GradientTool::changeActiveLine(BrokenLine *line)
 {
     line_ = line;
-    emit colorBeginChanged();
-    emit colorEndChanged();
+//    emit colorBeginChanged();
+//    emit colorEndChanged();
 }
 
 QPolygon calcBoundingBox(const QLineF & line, qreal margin, qreal penWidth)
@@ -474,26 +474,6 @@ void GradientTool::setPenWidth(qreal newValue)
     }
 }
 
-void GradientTool::setColorBegin(const QColor & newColor)
-{
-    if (!line_->points().empty() && line_->points().begin()->color() != newColor)
-    {
-        line_->points().begin()->color() = newColor;
-        line_->updateGradient();
-        update();
-    }
-}
-
-void GradientTool::setColorEnd(const QColor & newColor)
-{
-    if (!line_->points().empty() && line_->points().rbegin()->color() != newColor)
-    {
-        line_->points().rbegin()->color() = newColor;
-        line_->updateGradient();
-        update();
-    }
-}
-
 qreal GradientTool::getPenWidth() const
 {
     return penWidth;
@@ -502,16 +482,6 @@ qreal GradientTool::getPenWidth() const
 bool GradientTool::getShowControlPoints() const
 {
     return showControlPoints;
-}
-
-QColor GradientTool::getColorBegin() const
-{
-    return *line_->points().begin()->color();
-}
-
-QColor GradientTool::getColorEnd() const
-{
-    return *line_->points().rbegin()->color();
 }
 
 void GradientTool::setShowControlPoints(bool newValue)

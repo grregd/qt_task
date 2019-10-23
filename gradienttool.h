@@ -16,8 +16,6 @@ class GradientTool : public QQuickPaintedItem
     Q_PROPERTY(qreal penWidthMax MEMBER penWidthMax)
     Q_PROPERTY(qreal penWidth MEMBER penWidth READ getPenWidth WRITE setPenWidth NOTIFY penWidthChanged)
     Q_PROPERTY(bool showControlPoints MEMBER getShowControlPoints READ getShowControlPoints WRITE setShowControlPoints NOTIFY showControlPointsChanged)
-    Q_PROPERTY(QColor colorBegin READ getColorBegin WRITE setColorBegin NOTIFY colorBeginChanged)
-    Q_PROPERTY(QColor colorEnd READ getColorEnd WRITE setColorEnd NOTIFY colorEndChanged)
     Q_PROPERTY(QColor defaultColorBegin MEMBER defaultColorBegin)
     Q_PROPERTY(QColor defaultColorEnd MEMBER defaultColorEnd)
     Q_PROPERTY(QColor hoverSelectColor MEMBER hoverSelectColor)
@@ -25,8 +23,6 @@ class GradientTool : public QQuickPaintedItem
 signals:
     void penWidthChanged();
     void showControlPointsChanged();
-    void colorBeginChanged();
-    void colorEndChanged();
     void requestColorChange(QColor initColor);
     void pointSelectionChanged(QColor pointColor);
 
@@ -64,14 +60,10 @@ protected:
     
 private:
     void setPenWidth(qreal newValue);
-    void setColorBegin(const QColor & newColor);
-    void setColorEnd(const QColor & newColor);
     void setShowControlPoints(bool newValue);
 
     qreal getPenWidth() const;
     bool getShowControlPoints() const;
-    QColor getColorBegin() const;
-    QColor getColorEnd() const;
 
 private:
     QColor defaultColorBegin;

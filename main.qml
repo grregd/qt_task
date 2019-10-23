@@ -30,14 +30,6 @@ Window {
                     onShowControlPointsChanged: checkBoxCtrlPoints.checked = gradientTool.showControlPoints
                 } }
 
-            Button {
-                text: qsTr("Select begin color")
-                onClicked: openColorDialog(selectColorBegin, gradientTool.colorBegin) }
-
-            Button {
-                text: qsTr("Select end color")
-                onClicked: openColorDialog(selectColorEnd, gradientTool.colorEnd) }
-
             Label { text: qsTr("Pen width [pixels]: ") }
 
             Slider {
@@ -65,12 +57,6 @@ Window {
             defaultColorBegin: "#8fbcbc"
             defaultColorEnd: "#180a18"
             showControlPoints: false
-            onColorBeginChanged: {
-                selectColorBegin.currentColor = gradientTool.colorBegin
-            }
-            onColorEndChanged: {
-                selectColorEnd.currentColor = gradientTool.colorEnd
-            }
             onRequestColorChange: {
                 openColorDialog(controlPointColorDialog, initColor)
             }
@@ -80,28 +66,9 @@ Window {
         }
 
         ColorDialog {
-            id: selectColorBegin
-            title: qsTr("Select begin color")
-            showAlphaChannel: true
-
-            onCurrentColorChanged: gradientTool.colorBegin = currentColor
-            Component.onCompleted: visible = false
-        }
-
-        ColorDialog {
-            id: selectColorEnd
-            title: qsTr("Select end color")
-            showAlphaChannel: true
-
-            onCurrentColorChanged: gradientTool.colorEnd = currentColor
-            Component.onCompleted: visible = false
-        }
-
-        ColorDialog {
             id: controlPointColorDialog
             title: qsTr("Choose color for selected control point")
             showAlphaChannel: true
-//            modality: "WindowModal"
 
             onCurrentColorChanged: gradientTool.setColorOfSelectedPoint(currentColor)
             Component.onCompleted: visible = false
@@ -124,14 +91,6 @@ Window {
                     layoutMenu.visible = false
             }
         }
-       Shortcut {
-           sequence: "Ctrl+B"
-           onActivated: openColorDialog(selectColorBegin, gradientTool.colorBegin)
-       }
-       Shortcut {
-           sequence: "Ctrl+E"
-           onActivated: openColorDialog(selectColorEnd, gradientTool.colorEnd)
-       }
        Shortcut {
            sequence: "Ctrl+T"
            onActivated: {
