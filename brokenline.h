@@ -57,8 +57,8 @@ public:
     void updateGradient();
     void updateLength();
 
-    void addPointAtEnd(const QPoint & point);
-    void addPointAt(QVector<ControlPoint>::iterator where, const QPoint & point);
+    void addPoint(const QPoint & point);
+    void insertPoint(QVector<ControlPoint>::iterator where, const QPoint & point);
     void removePoint(const QPoint & point);
     void removeAllPoints();
 

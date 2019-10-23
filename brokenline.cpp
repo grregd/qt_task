@@ -74,7 +74,7 @@ void BrokenLine::updateLength()
     length_ = accLength_.empty() ? 0.0 : accLength_.back();
 }
 
-void BrokenLine::addPointAtEnd(const QPoint & point)
+void BrokenLine::addPoint(const QPoint & point)
 {
     qreal lastLength = 0;
     std::optional<QColor> color;
@@ -105,7 +105,7 @@ void BrokenLine::addPointAtEnd(const QPoint & point)
     updateGradient();
 }
 
-void BrokenLine::addPointAt(QVector<ControlPoint>::iterator where, const QPoint &point)
+void BrokenLine::insertPoint(QVector<ControlPoint>::iterator where, const QPoint &point)
 {
     points_.insert(where, point);
 

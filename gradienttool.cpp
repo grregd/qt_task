@@ -285,7 +285,7 @@ void GradientTool::mousePressEvent(QMouseEvent *event)
         else if (hoverSegment)
         {
             auto p1Ref = line_->getPointRef(hoverSegment->p1().toPoint());
-            line_->addPointAt(p1Ref, hoverLinePointFromMouse().toPoint());
+            line_->insertPoint(p1Ref, hoverLinePointFromMouse().toPoint());
             update();
         }
     }
@@ -306,7 +306,7 @@ void GradientTool::mouseReleaseEvent(QMouseEvent *event)
         }
         else if (!hoverPoint && !hoverSegment)
         {
-            line_->addPointAtEnd(::transform(event->pos()));
+            line_->addPoint(::transform(event->pos()));
         }
     }
     else if (event->button() == Qt::RightButton)
