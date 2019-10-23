@@ -341,23 +341,9 @@ void GradientTool::mouseDoubleClickEvent(QMouseEvent *event)
 
 void GradientTool::mouseMoveEvent(QMouseEvent *event)
 {
-    if (event->button() != Qt::NoButton)
-    {
-        qDebug() << __PRETTY_FUNCTION__;
-
-        qDebug() << "event->modifiers(): " << event->modifiers();
-        qDebug() << "Qt::ControlModifier: " << Qt::ControlModifier;
-        qDebug() << "event->button(): " << event->button();
-        qDebug() << "Qt::LeftButton: " << Qt::LeftButton;
-    }
-
     if (event->modifiers() == Qt::ControlModifier /*&&*/
         /*event->button() == Qt::LeftButton*//*mouseLeftPressed*/)
     {
-        qDebug() << "event->pos(): " << event->pos();
-        qDebug() << "lastMouseMovePos: " << lastMouseMovePos;
-        qDebug() << "event->pos()-lastMouseMovePos: " << event->pos()-lastMouseMovePos;
-        qDebug() << "originOffset: " << originOffset;
         originOffset += event->pos() - lastMouseMovePos;
         lastMouseMovePos = event->pos();
 
