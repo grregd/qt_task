@@ -62,8 +62,8 @@ Window {
             Layout.fillWidth: true
             penWidthMax: 150
             hoverSelectColor: "#3300cc" // kolor chabrowy
-            defaultColorBegin: "blue"
-            defaultColorEnd: "yellow"
+            defaultColorBegin: "#8fbcbc"
+            defaultColorEnd: "#180a18"
             showControlPoints: false
             onColorBeginChanged: {
                 selectColorBegin.currentColor = gradientTool.colorBegin

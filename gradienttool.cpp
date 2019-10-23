@@ -356,7 +356,6 @@ void GradientTool::mouseMoveEvent(QMouseEvent *event)
     if (event->modifiers() == Qt::ControlModifier &&
         event->buttons() & Qt::LeftButton/*mouseLeftPressed*/)
     {
-//        qDebug() << "XXXXXXXXXXXXX" << event->buttons();
         mouseDragging = true;
         originOffset += event->pos() - lastMouseMovePos;
         lastMouseMovePos = event->pos();
@@ -442,7 +441,7 @@ void GradientTool::setPenWidth(qreal newValue)
 
 void GradientTool::setColorBegin(const QColor & newColor)
 {
-    if (!line_->points().empty())
+    if (!line_->points().empty() && line_->points().begin()->color() != newColor)
     {
         line_->points().begin()->color() = newColor;
         line_->updateGradient();
@@ -452,7 +451,7 @@ void GradientTool::setColorBegin(const QColor & newColor)
 
 void GradientTool::setColorEnd(const QColor & newColor)
 {
-    if (!line_->points().empty())
+    if (!line_->points().empty() && line_->points().rbegin()->color() != newColor)
     {
         line_->points().rbegin()->color() = newColor;
         line_->updateGradient();
@@ -482,8 +481,11 @@ QColor GradientTool::getColorEnd() const
 
 void GradientTool::setShowControlPoints(bool newValue)
 {
-    showControlPoints = newValue;
-    emit showControlPointsChanged();
-    update();
+    if (showControlPoints != newValue)
+    {
+        showControlPoints = newValue;
+        emit showControlPointsChanged();
+        update();
+    }
 }
 
