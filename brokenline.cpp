@@ -100,7 +100,7 @@ void BrokenLine::addPointAtEnd(const QPoint & point)
 
     points_.push_back(ControlPoint(point, color));
     accLength_.push_back(lastLength);
-    length_ = accLength_.back();
+    length_ = accLength_.empty() ? 0.0 : accLength_.back();
 
     updateGradient();
 }
@@ -110,7 +110,7 @@ void BrokenLine::addPointAt(QVector<ControlPoint>::iterator where, const QPoint 
     points_.insert(where, point);
 
     accLength_ = calculateAccLength(points_);
-    length_ = accLength_.back();
+    length_ = accLength_.empty() ? 0.0 : accLength_.back();
 
     updateGradient();
 }
@@ -137,7 +137,7 @@ void BrokenLine::removePoint(const QPoint & point)
     }
 
     accLength_ = calculateAccLength(points_);
-    length_ = accLength_.back();
+    length_ = accLength_.empty() ? 0.0 : accLength_.back();
 }
 
 void BrokenLine::removeAllPoints()
