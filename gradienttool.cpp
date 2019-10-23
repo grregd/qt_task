@@ -250,6 +250,9 @@ void GradientTool::paintBoundingBox(const QLineF &fragment, QPainter *painter) c
 
 void GradientTool::paintBrokenLine(const BrokenLine &line, QPainter *painter) const
 {
+    QVector<QPoint> boundingPolygon;
+    QVector<QPoint>::iterator left = boundingPolygon.begin();
+
     if (line.points().size() >= 2)
     {
         QPen hoveredLinePen(QColor(0xff0090), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
@@ -259,7 +262,13 @@ void GradientTool::paintBrokenLine(const BrokenLine &line, QPainter *painter) co
             if (line_ == &line)
             {
                 painter->setPen(hoveredLinePen);
+                auto bb = calcBoundingBox(line.fragment(i), 5.0, penWidth);
+                left = boundingPolygon.insert(left, bb[0]);
+                left = boundingPolygon.insert(left, bb[1]);
+                boundingPolygon.push_back(bb[3]);
+                boundingPolygon.push_back(bb[2]);
                 paintBoundingBox(line.fragment(i), painter);
+                painter->drawStaticText(*(bb.begin()+2), QStaticText("x"));
             }
         }
 
@@ -271,6 +280,10 @@ void GradientTool::paintBrokenLine(const BrokenLine &line, QPainter *painter) co
 
         }
     }
+
+    std::reverse(left, boundingPolygon.end());
+    painter->setPen(QPen(QColor(Qt::black), 5));
+    painter->drawPolygon(boundingPolygon);
 
     if (showControlPoints)
     {
