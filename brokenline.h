@@ -39,10 +39,7 @@ public:
 
     QVector<ControlPoint> points_;
     QVector<qreal> accLength_;
-//    QVector<QPolygon> boundingBoxes_;
     qreal length_ = 0;
-    // colorOfPoints vector corresponds to points_ vector
-    QVector<std::optional<QColor>> colorOfPoints;
     MultiGradient gradient_;
 
 public:
@@ -63,7 +60,6 @@ public:
     void removeAllPoints();
 
     QVector<ControlPoint>::iterator getPointRef(QPoint point);
-    void setPointColor(QVector<ControlPoint>::iterator pointRef, const QColor &color);
 
     std::optional<QPoint> findNearest(const QPoint & other, std::optional<QPoint> nearest) const;
 };

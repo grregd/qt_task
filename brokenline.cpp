@@ -79,7 +79,11 @@ void BrokenLine::addPoint(const QPoint & point)
     qreal lastLength = 0;
     std::optional<QColor> color;
 
-    if (!points_.empty())
+    if (points_.empty())
+    {
+        color = Qt::cyan;
+    }
+    else
     {
         lastLength = accLength_.back() + QLineF(points_.back().point(), point).length();
 
@@ -92,10 +96,6 @@ void BrokenLine::addPoint(const QPoint & point)
             color = points_.back().color();
             points_.back().color().reset();
         }
-    }
-    else
-    {
-        color = Qt::cyan;
     }
 
     points_.push_back(ControlPoint(point, color));
@@ -152,13 +152,6 @@ void BrokenLine::removeAllPoints()
 QVector<BrokenLine::ControlPoint>::iterator BrokenLine::getPointRef(QPoint point)
 {
     return std::find_if(points_.begin(), points_.end(), [point](const auto& p){ return p.point() == point; } );
-}
-
-void BrokenLine::setPointColor(QVector<ControlPoint>::iterator pointRef, const QColor & color)
-{
-    colorOfPoints[std::distance(points_.begin(), pointRef)] =
-            std::make_optional<QColor>(color);
-    updateGradient();
 }
 
 std::optional<QPoint> BrokenLine::findNearest(const QPoint & other, std::optional<QPoint> nearest) const
