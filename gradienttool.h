@@ -28,6 +28,10 @@ signals:
     void colorBeginChanged();
     void colorEndChanged();
     void requestColorChange(QColor initColor);
+    void pointSelectionChanged(QColor pointColor);
+
+public slots:
+    void setColorOfSelectedPoint(const QColor & color);
 
 public:
     GradientTool();
@@ -73,6 +77,7 @@ private:
     QColor defaultColorBegin;
     QColor defaultColorEnd;
     QColor hoverSelectColor = 0xff1493;
+    QColor selectedPointColor = Qt::gray;
 
     QVector<BrokenLine> lines;
     BrokenLine * line_;
@@ -87,6 +92,7 @@ private:
     QPoint lastMouseMovePos; // not transformed
 
     HoverPoint hoverPoint;
+    QVector<BrokenLine::ControlPoint>::iterator selectedPointIterator;
     QVector<BrokenLine::ControlPoint>::iterator hoverPointIterator;
 
     bool mouseLeftPressed = false;

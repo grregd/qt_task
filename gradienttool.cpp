@@ -26,6 +26,17 @@ QPointF transform(const QPointF & p)
     return tra.map(p);
 }
 
+void GradientTool::setColorOfSelectedPoint(const QColor &color)
+{
+    if (selectedPointIterator != line_->points().end())
+    {
+        qDebug() << __PRETTY_FUNCTION__ << color;
+        selectedPointIterator->color() = color;
+        line_->updateGradient();
+        update();
+    }
+}
+
 GradientTool::GradientTool()
 {
     setAcceptedMouseButtons(Qt::AllButtons);
@@ -137,6 +148,24 @@ void GradientTool::paint(QPainter *painter)
                        penWidth/2.0, penWidth/2.0);
 
         painter->drawEllipse(r);
+    }
+
+    if (selectedPointIterator != line_->points().end())
+    {
+        QRect occ(QPoint(), QSize(
+                      std::max(15.0, penWidth),
+                      std::max(15.0, penWidth)));
+        occ.moveCenter(selectedPointIterator->point());
+        occ += QMargins(10, 10, 10, 10);
+
+        painter->setPen(QPen(QColor(Qt::gray), 12));
+        painter->drawEllipse(occ);
+
+        if (selectedPointIterator->color())
+        {
+            painter->setPen(QPen(*selectedPointIterator->color(), 8, Qt::DashLine));
+            painter->drawEllipse(occ);
+        }
     }
 
     paintInfo(painter);
@@ -279,8 +308,11 @@ void GradientTool::mousePressEvent(QMouseEvent *event)
         if (hoverPoint)
         {
             mouseLeftPressed = true;
-            hoverPointIterator = hoverPoint->second->getPointRef(hoverPoint->first);
+            selectedPointIterator =
+                    hoverPoint->second->getPointRef(hoverPoint->first);
             changeActiveLine(hoverPoint->second);
+            emit pointSelectionChanged(*selectedPointIterator->color());
+            update();
         }
         else if (hoverSegment)
         {
@@ -328,22 +360,23 @@ void GradientTool::mouseDoubleClickEvent(QMouseEvent *event)
     qDebug() << __PRETTY_FUNCTION__;
     if (event->button() == Qt::LeftButton && hoverPoint)
     {
-        if ( (hoverPointIterator != hoverPoint->second->points().rbegin().base()-1) &&
-             (hoverPointIterator != hoverPoint->second->points().begin()) )
+        if ( (selectedPointIterator != hoverPoint->second->points().rbegin().base()-1) &&
+             (selectedPointIterator != hoverPoint->second->points().begin()) )
         {
-            if (hoverPointIterator->color())
+            if (selectedPointIterator->color())
             {
-                hoverPointIterator->color().reset();
+                selectedPointIterator->color().reset();
             }
             else
             {
-                hoverPointIterator->color() = QColor(rand()%255, rand()%255, rand()%255, 255);
+                selectedPointIterator->color() = QColor(rand()%255, rand()%255, rand()%255, 255);
             }
             line_->updateGradient();
         }
 
         update();
-//        emit requestColorChange(Qt::cyan);
+        emit requestColorChange(selectedPointIterator->color() ?
+                                    *selectedPointIterator->color() : QColor());
 //        hoverPoint->second->setPointColor(
 //            hoverPoint->second->getPointRef(
 //                    hoverPoint->first), Qt::cyan);
@@ -352,7 +385,7 @@ void GradientTool::mouseDoubleClickEvent(QMouseEvent *event)
 
 void GradientTool::mouseMoveEvent(QMouseEvent *event)
 {
-    qDebug() << __PRETTY_FUNCTION__;
+//    qDebug() << __PRETTY_FUNCTION__;
     if (event->modifiers() == Qt::ControlModifier &&
         event->buttons() & Qt::LeftButton/*mouseLeftPressed*/)
     {
@@ -365,7 +398,7 @@ void GradientTool::mouseMoveEvent(QMouseEvent *event)
     else if (mouseLeftPressed)
     {
         mouseDragging = true;
-        hoverPointIterator->point() = ::transform(event->pos());
+        selectedPointIterator->point() = ::transform(event->pos());
         line_->updateLength();
         line_->updateGradient();
         update();
@@ -375,7 +408,7 @@ void GradientTool::mouseMoveEvent(QMouseEvent *event)
 
 void GradientTool::hoverMoveEvent(QHoverEvent *event)
 {
-    qDebug() << __PRETTY_FUNCTION__;
+//    qDebug() << __PRETTY_FUNCTION__;
     if (!mouseLeftPressed)
     {
         if (HoverPoint h = findNearestPoint(::transform(event->pos())))
@@ -383,6 +416,7 @@ void GradientTool::hoverMoveEvent(QHoverEvent *event)
             if (!hoverPoint || hoverPoint->first != h->first)
             {
                 hoverPoint = h;
+                hoverPointIterator = hoverPoint->second->getPointRef(hoverPoint->first);
                 hoverSegment.reset();
                 update();
             }
@@ -425,6 +459,7 @@ void GradientTool::componentComplete()
 
     lines.push_back(BrokenLine());
     line_ = &lines.back();
+    selectedPointIterator = line_->points().end();
 }
 
 void GradientTool::setPenWidth(qreal newValue)

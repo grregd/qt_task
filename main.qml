@@ -72,8 +72,10 @@ Window {
                 selectColorEnd.currentColor = gradientTool.colorEnd
             }
             onRequestColorChange: {
-                console.log("onRequestColorChange received - currentColor: ", initColor)
                 openColorDialog(controlPointColorDialog, initColor)
+            }
+            onPointSelectionChanged: {
+                controlPointColorDialog.currentColor = pointColor
             }
         }
 
@@ -101,7 +103,7 @@ Window {
             showAlphaChannel: true
 //            modality: "WindowModal"
 
-            onCurrentColorChanged: { console. log("todo: forward color to GradientTool") }
+            onCurrentColorChanged: gradientTool.setColorOfSelectedPoint(currentColor)
             Component.onCompleted: visible = false
         }
 
