@@ -70,7 +70,7 @@ Window {
             title: qsTr("Choose color for selected control point")
             showAlphaChannel: true
 
-            onCurrentColorChanged: gradientTool.setColorOfSelectedPoint(currentColor)
+            onCurrentColorChanged: if (visible) gradientTool.setColorOfSelectedPoint(currentColor)
             Component.onCompleted: visible = false
         }
 
