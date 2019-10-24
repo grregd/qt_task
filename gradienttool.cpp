@@ -416,8 +416,17 @@ void GradientTool::mouseReleaseEvent(QMouseEvent *event)
     {
         if (hoverPoint)
         {
-            hoverPoint->second->removePoint(hoverPoint->first);
-            hoverPoint.reset();
+            if (event->modifiers() == Qt::ControlModifier)
+            {
+                hoverPointIterator->color().reset();
+                line_->updateGradient();
+                update();
+            }
+            else
+            {
+                hoverPoint->second->removePoint(hoverPoint->first);
+                hoverPoint.reset();
+            }
         }
     }
 
