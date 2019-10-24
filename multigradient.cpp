@@ -5,6 +5,7 @@
 
 #include <algorithm>
 
+static const QColor noneColor;
 
 QColor colorForProgress(qreal progress, const QColor & colorBegin, const QColor & colorEnd)
 {
@@ -30,6 +31,15 @@ void MultiGradient::push_back(const QGradientStop &stop)
 
 QColor MultiGradient::colorForProgress(qreal progress) const
 {
+    if (gradients.size() < 1)
+    {
+        return noneColor;
+    }
+//    else if (gradients.size() == 1)
+//    {
+//        return gr
+//    }
+
     if (progress == 0.0)
     {
         return ::colorForProgress(progress, gradients.begin()->second, (gradients.begin()+1)->second);
