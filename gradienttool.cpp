@@ -242,35 +242,97 @@ std::optional<QLineF> GradientTool::findHoverLine(const QPoint &checkPos)
     }
 }
 
+static const auto activeLineBorderWidth = 10;
+static const auto activeLineBorderOffset = activeLineBorderWidth/2 + 2;
 
 void GradientTool::paintBoundingBox(const QLineF &fragment, QPainter *painter) const
 {
-    painter->drawPolygon(calcBoundingBox(fragment, 5.0, penWidth));
+    painter->drawPolygon(calcBoundingBox(fragment, activeLineBorderOffset, penWidth));
+}
+
+void GradientTool::paintLineBorder(const BrokenLine &line, QPainter *painter) const
+{
+    const QPen hoveredLinePen(QColor(0xff0090), activeLineBorderWidth,
+                        Qt::SolidLine, Qt::MPenCapStyle, Qt::MPenJoinStyle);
+    QVector<QPoint> boundingPolygon;
+    QVector<QPoint>::iterator left = boundingPolygon.begin();
+    QPolygon prevBb;
+
+    for (int i = 0; i < line.points().size()-1; ++i)
+    {
+        if (line_ == &line)
+        {
+            painter->setPen(hoveredLinePen);
+            auto bb = calcBoundingBox(line.fragment(i), activeLineBorderOffset, penWidth);
+
+            if (prevBb.isEmpty())
+            {
+                left = boundingPolygon.insert(left, bb[0]);
+            }
+            else
+            {
+                QPointF intersectionPoint;
+                auto itype = QLineF(bb[0], bb[1]).
+                        intersect(QLineF(prevBb[0], prevBb[1]),
+                        &intersectionPoint);
+                if (itype == QLineF::BoundedIntersection)
+                {
+                    *left = intersectionPoint.toPoint();
+                    left = boundingPolygon.insert(left, intersectionPoint.toPoint());
+                }
+                else if (itype == QLineF::UnboundedIntersection)
+                {
+                    left = boundingPolygon.insert(left, bb[0]);
+                }
+                else
+                {
+                    qDebug() << itype;
+                }
+            }
+            left = boundingPolygon.insert(left, bb[1]);
+
+
+            if (prevBb.isEmpty())
+            {
+                boundingPolygon.push_back(bb[3]);
+            }
+            else
+            {
+                QPointF intersectionPoint;
+                auto itype = QLineF(bb[2], bb[3]).
+                        intersect(QLineF(prevBb[2], prevBb[3]),
+                        &intersectionPoint);
+                if (itype == QLineF::BoundedIntersection)
+                {
+                    boundingPolygon.back() = intersectionPoint.toPoint();
+                    boundingPolygon.push_back(intersectionPoint.toPoint());
+                }
+                else if (itype == QLineF::UnboundedIntersection)
+                {
+                    boundingPolygon.push_back(bb[3]);
+                }
+                else
+                {
+                    qDebug() << itype;
+                }
+            }
+            boundingPolygon.push_back(bb[2]);
+
+            prevBb = bb;
+        }
+    }
+
+    std::reverse(left, boundingPolygon.end());
+    painter->setPen(hoveredLinePen);
+    painter->drawPolyline(boundingPolygon);
 }
 
 void GradientTool::paintBrokenLine(const BrokenLine &line, QPainter *painter) const
 {
-    QVector<QPoint> boundingPolygon;
-    QVector<QPoint>::iterator left = boundingPolygon.begin();
-
     if (line.points().size() >= 2)
     {
-        QPen hoveredLinePen(QColor(0xff0090), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
 
-        for (int i = 0; i < line.points().size()-1; ++i)
-        {
-            if (line_ == &line)
-            {
-                painter->setPen(hoveredLinePen);
-                auto bb = calcBoundingBox(line.fragment(i), 5.0, penWidth);
-                left = boundingPolygon.insert(left, bb[0]);
-                left = boundingPolygon.insert(left, bb[1]);
-                boundingPolygon.push_back(bb[3]);
-                boundingPolygon.push_back(bb[2]);
-                paintBoundingBox(line.fragment(i), painter);
-                painter->drawStaticText(*(bb.begin()+2), QStaticText("x"));
-            }
-        }
+        paintLineBorder(line, painter);
 
         for (int i = 0; i < line.points().size()-1; ++i)
         {
@@ -280,10 +342,6 @@ void GradientTool::paintBrokenLine(const BrokenLine &line, QPainter *painter) co
 
         }
     }
-
-    std::reverse(left, boundingPolygon.end());
-    painter->setPen(QPen(QColor(Qt::black), 5));
-    painter->drawPolygon(boundingPolygon);
 
     if (showControlPoints)
     {

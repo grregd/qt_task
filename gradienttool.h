@@ -34,6 +34,8 @@ public:
 
     void paint(QPainter *painter) override;
 
+    void paintLineBorder(const BrokenLine &line, QPainter *painter) const;
+
 protected:
     void mousePressEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;
