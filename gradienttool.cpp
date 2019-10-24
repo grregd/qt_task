@@ -431,26 +431,8 @@ void GradientTool::mouseDoubleClickEvent(QMouseEvent *event)
     qDebug() << __PRETTY_FUNCTION__;
     if (event->button() == Qt::LeftButton && hoverPoint)
     {
-        if ( (selectedPointIterator != hoverPoint->second->points().rbegin().base()-1) &&
-             (selectedPointIterator != hoverPoint->second->points().begin()) )
-        {
-            if (selectedPointIterator->color())
-            {
-                selectedPointIterator->color().reset();
-            }
-            else
-            {
-                selectedPointIterator->color() = QColor(rand()%255, rand()%255, rand()%255, 255);
-            }
-            line_->updateGradient();
-        }
-
-        update();
         emit requestColorChange(selectedPointIterator->color() ?
                                     *selectedPointIterator->color() : QColor());
-//        hoverPoint->second->setPointColor(
-//            hoverPoint->second->getPointRef(
-//                    hoverPoint->first), Qt::cyan);
     }
 }
 
