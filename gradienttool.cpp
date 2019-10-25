@@ -418,9 +418,13 @@ void GradientTool::mouseReleaseEvent(QMouseEvent *event)
         {
             if (event->modifiers() == Qt::ControlModifier)
             {
-                hoverPointIterator->color().reset();
-                line_->updateGradient();
-                update();
+                if ( !(*hoverPointIterator == line_->points().first()) &&
+                     !(*hoverPointIterator == line_->points().last()) )
+                {
+                    hoverPointIterator->color().reset();
+                    line_->updateGradient();
+                    update();
+                }
             }
             else
             {
