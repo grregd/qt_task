@@ -322,16 +322,74 @@ void GradientTool::paintLineBorder(const BrokenLine &line, QPainter *painter) co
         }
     }
 
+
     std::reverse(left, boundingPolygon.end());
     painter->setPen(hoveredLinePen);
     painter->drawPolyline(boundingPolygon);
+
+
+
+    qDebug() << "-----------";
+    const QMarginsF arcMargin(activeLineBorderOffset, activeLineBorderOffset, activeLineBorderOffset, activeLineBorderOffset);
+
+//    painter->setPen(QPen(Qt::black, 2));
+    auto pInd = line_->points().size()-1;
+    qDebug() << "pInd: " << pInd;
+
+    auto itF = boundingPolygon.begin();
+    auto itB = boundingPolygon.rbegin();
+
+    while (itF < itB.base() && pInd > 1)
+    {
+        if (line.points().size() < 3)
+            return ;
+
+        painter->drawStaticText(*itF, QStaticText(QString("%1").arg(itF-boundingPolygon.begin())));
+        painter->drawStaticText(*itB, QStaticText(QString("%1").arg(itB.base()-boundingPolygon.begin()-1)));
+
+        if (pInd < line_->points().size()-1)
+        {
+            auto const & point = line.points()[pInd].point();
+            auto const & prevPoint = line.points()[pInd-1].point();
+            auto const & nextPoint = line.points()[pInd+1].point();
+            const QLineF prevLine(prevPoint, point);
+            const QLineF nextLine(point, nextPoint);
+
+            if (*itF == *(itF+1) &&
+                *itB != *(itB+1))
+            {
+                painter->drawStaticText( point, QStaticText("x"));
+                QRectF rect(0, 0, penWidth, penWidth);
+                rect.moveCenter(point);
+                rect += arcMargin;
+                painter->drawArc(rect, (prevLine.angle()+90)*16,
+                                 -(nextLine.angleTo(prevLine))*16);
+                qDebug() << "XXXXXXXXXXXXXXXXXXX";
+            }
+
+            if (*itB == *(itB+1) &&
+                *itF != *(itF+1))
+            {
+                painter->drawStaticText( point, QStaticText("x"));
+                QRectF rect(0, 0, penWidth, penWidth);
+                rect.moveCenter(point);
+                rect += arcMargin;
+                painter->drawArc(rect, (prevLine.angle()+270)*16,
+                                 (prevLine.angleTo(nextLine))*16);
+                qDebug() << "YYYYYYYYYYYYYYYYYY";
+            }
+        }
+
+        ++itF;
+        ++itB;
+        --pInd;
+    }
 }
 
 void GradientTool::paintBrokenLine(const BrokenLine &line, QPainter *painter) const
 {
     if (line.points().size() >= 2)
     {
-
         paintLineBorder(line, painter);
 
         for (int i = 0; i < line.points().size()-1; ++i)
@@ -341,6 +399,7 @@ void GradientTool::paintBrokenLine(const BrokenLine &line, QPainter *painter) co
             painter->drawLine(line.fragment(i));
 
         }
+
     }
 
     if (showControlPoints)
