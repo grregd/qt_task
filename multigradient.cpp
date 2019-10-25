@@ -5,7 +5,7 @@
 
 #include <algorithm>
 
-static const QColor noneColor;
+static const QColor noneColor(Qt::transparent);
 
 QColor colorForProgress(qreal progress, const QColor & colorBegin, const QColor & colorEnd)
 {
@@ -31,7 +31,7 @@ void MultiGradient::push_back(const QGradientStop &stop)
 
 QColor MultiGradient::colorForProgress(qreal progress) const
 {
-    if (gradients.size() < 1)
+    if (gradients.size() < 2)
     {
         return noneColor;
     }
