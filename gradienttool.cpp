@@ -243,7 +243,7 @@ std::optional<QLineF> GradientTool::findHoverLine(const QPoint &checkPos)
 }
 
 static const auto activeLineBorderWidth = 10;
-static const auto activeLineBorderOffset = activeLineBorderWidth/2 + 2;
+static const auto activeLineBorderOffset = activeLineBorderWidth/2 + 0;
 
 void GradientTool::paintBoundingBox(const QLineF &fragment, QPainter *painter) const
 {
@@ -252,6 +252,8 @@ void GradientTool::paintBoundingBox(const QLineF &fragment, QPainter *painter) c
 
 void GradientTool::paintLineBorder(const BrokenLine &line, QPainter *painter) const
 {
+    const QMarginsF arcMargin(activeLineBorderOffset, activeLineBorderOffset,
+                              activeLineBorderOffset, activeLineBorderOffset);
     const QPen hoveredLinePen(QColor(0xff0090), activeLineBorderWidth,
                         Qt::SolidLine, Qt::MPenCapStyle, Qt::MPenJoinStyle);
     QVector<QPoint> boundingPolygon;
@@ -328,61 +330,50 @@ void GradientTool::paintLineBorder(const BrokenLine &line, QPainter *painter) co
     painter->drawPolyline(boundingPolygon);
 
 
-
-    qDebug() << "-----------";
-    const QMarginsF arcMargin(activeLineBorderOffset, activeLineBorderOffset, activeLineBorderOffset, activeLineBorderOffset);
-
 //    painter->setPen(QPen(Qt::black, 2));
-    auto pInd = line_->points().size()-1;
-    qDebug() << "pInd: " << pInd;
 
-    auto itF = boundingPolygon.begin();
-    auto itB = boundingPolygon.rbegin();
-
-    while (itF < itB.base() && pInd > 1)
+    for (auto itPolyPoint = boundingPolygon.begin(); itPolyPoint != boundingPolygon.end(); ++itPolyPoint)
     {
-        if (line.points().size() < 3)
-            return ;
-
-        painter->drawStaticText(*itF, QStaticText(QString("%1").arg(itF-boundingPolygon.begin())));
-        painter->drawStaticText(*itB, QStaticText(QString("%1").arg(itB.base()-boundingPolygon.begin()-1)));
-
-        if (pInd < line_->points().size()-1)
+        if (itPolyPoint == boundingPolygon.begin() ||
+            itPolyPoint == boundingPolygon.rbegin().base())
         {
-            auto const & point = line.points()[pInd].point();
-            auto const & prevPoint = line.points()[pInd-1].point();
-            auto const & nextPoint = line.points()[pInd+1].point();
-            const QLineF prevLine(prevPoint, point);
-            const QLineF nextLine(point, nextPoint);
-
-            if (*itF == *(itF+1) &&
-                *itB != *(itB+1))
-            {
-                painter->drawStaticText( point, QStaticText("x"));
-                QRectF rect(0, 0, penWidth, penWidth);
-                rect.moveCenter(point);
-                rect += arcMargin;
-                painter->drawArc(rect, (prevLine.angle()+90)*16,
-                                 -(nextLine.angleTo(prevLine))*16);
-                qDebug() << "XXXXXXXXXXXXXXXXXXX";
-            }
-
-            if (*itB == *(itB+1) &&
-                *itF != *(itF+1))
-            {
-                painter->drawStaticText( point, QStaticText("x"));
-                QRectF rect(0, 0, penWidth, penWidth);
-                rect.moveCenter(point);
-                rect += arcMargin;
-                painter->drawArc(rect, (prevLine.angle()+270)*16,
-                                 (prevLine.angleTo(nextLine))*16);
-                qDebug() << "YYYYYYYYYYYYYYYYYY";
-            }
+            continue;
         }
 
-        ++itF;
-        ++itB;
-        --pInd;
+        auto cntPolyPoint = boundingPolygon.size();
+        auto cntHalfPolyPoint = cntPolyPoint / 2;
+        const int indexPolyPoint = std::distance(boundingPolygon.begin(), itPolyPoint);
+        const int indexCtrlPoint = ((indexPolyPoint < cntHalfPolyPoint)
+                              ? (indexPolyPoint+1)/2
+                              : (cntPolyPoint-indexPolyPoint)/2);
+
+        auto const & currentCtrlPoint = line.points()[indexCtrlPoint].point();
+
+        if (indexPolyPoint % 2 == 1 &&
+            *itPolyPoint != *(itPolyPoint+1) &&
+            indexCtrlPoint != 0 &&
+            indexCtrlPoint < line.points().size()-1)
+        {
+            auto const & prevCtrlPoint = line.points()[indexCtrlPoint-1].point();
+            auto const & nextCtrlPoint = line.points()[indexCtrlPoint+1].point();
+            const QLineF prevCtrlLine(currentCtrlPoint, prevCtrlPoint);
+            const QLineF nextCtrlLine(currentCtrlPoint, nextCtrlPoint);
+
+            QRectF rect(0, 0, penWidth, penWidth);
+            rect.moveCenter(currentCtrlPoint);
+            rect += arcMargin;
+
+            if (nextCtrlLine.angleTo(prevCtrlLine) > 180)
+            {
+                painter->drawArc(rect, (prevCtrlLine.angle()+270)*16,
+                                 -(nextCtrlLine.angleTo(prevCtrlLine)-180)*16);
+            }
+            else
+            {
+                painter->drawArc(rect, (nextCtrlLine.angle()+270)*16,
+                                 -(prevCtrlLine.angleTo(nextCtrlLine)-180)*16);
+            }
+        }
     }
 }
 
@@ -397,9 +388,7 @@ void GradientTool::paintBrokenLine(const BrokenLine &line, QPainter *painter) co
             painter->setPen(QPen(QLinearGradient(line.gradientInPoint(i)),
                                  penWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
             painter->drawLine(line.fragment(i));
-
         }
-
     }
 
     if (showControlPoints)
