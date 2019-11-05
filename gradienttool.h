@@ -2,6 +2,7 @@
 #define GRADIENTTOOL_H
 
 #include "brokenline.h"
+#include "infobox.h"
 
 #include <algorithm>
 
@@ -31,6 +32,7 @@ public slots:
 
 public:
     GradientTool();
+    void setupInfoBox();
 
     void paint(QPainter *painter) override;
 
@@ -58,8 +60,6 @@ protected:
 
     QPointF hoverLinePointFromMouse();
 
-    void paintInfo(QPainter *painter);
-    
 private:
     void setPenWidth(qreal newValue);
     void setShowControlPoints(bool newValue);
@@ -91,6 +91,8 @@ private:
 
     bool mouseLeftPressed = false;
     bool mouseDragging = false;
+
+    InfoBox infoBox;
 };
 
 #endif // GRADIENTTOOL_H

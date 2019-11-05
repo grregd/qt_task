@@ -42,6 +42,33 @@ GradientTool::GradientTool()
     setAcceptedMouseButtons(Qt::AllButtons);
     setAcceptHoverEvents(true);
     setFlag(ItemAcceptsInputMethod, true);
+
+    setupInfoBox();
+}
+
+void GradientTool::setupInfoBox()
+{
+    infoBox.addInfoLine([this](){ return QString("scale: %1").arg(scale); });
+    infoBox.addInfoLine([this](){ return QString("originOffset: %1, %2 (%3, %4)").
+                                              arg(originOffset.rx()).
+                                              arg(originOffset.ry()).
+                                              arg(::transform(originOffset).rx()).
+                                              arg(::transform(originOffset).ry()); });
+    infoBox.addInfoLine([this](){ return QString("lastMouseMovePos: %1, %2 (%3, %4)").
+                                              arg(lastMouseMovePos.rx()).
+                                              arg(lastMouseMovePos.ry()).
+                                              arg(::transform(lastMouseMovePos).rx()).
+                                              arg(::transform(lastMouseMovePos).ry()); });
+    infoBox.addInfoLine([this](){ return QString("mousePos: %1, %2 (%3, %4)").
+                                              arg(mousePos.rx()).
+                                              arg(mousePos.ry()).
+                                              arg(::transform(mousePos).rx()).
+                                              arg(::transform(mousePos).ry()); });
+    infoBox.addInfoLine([this](){ return QString("width, height: %1, %2 (%3, %4)").
+                                              arg(width()).
+                                              arg(height()).
+                                              arg(width()*scale).
+                                              arg(height()*scale); });
 }
 
 
@@ -50,51 +77,6 @@ QPointF GradientTool::hoverLinePointFromMouse()
     auto l1 = QLineF(hoverSegment->p1(), ::transform(mousePos)).length();
     auto l2 = QLineF(hoverSegment->p2(), ::transform(mousePos)).length();
     return hoverSegment->pointAt(l1/(l1+l2));
-}
-
-void GradientTool::paintInfo(QPainter *painter)
-{
-    const int infoBoxWidth = 200;
-    const int infoLineHeight = 15;
-
-    painter->save();
-    painter->resetTransform();
-    painter->setPen(QPen());
-
-    painter->drawStaticText(width()-infoBoxWidth, 0*infoLineHeight, QStaticText(
-                                (QString("scale: %1").arg(scale))));
-
-    painter->drawStaticText(width()-infoBoxWidth, 1*infoLineHeight, QStaticText(
-                                (QString("originOffset: %1, %2 (%3, %4)").
-                                 arg(originOffset.rx()).
-                                 arg(originOffset.ry()).
-                                 arg(::transform(originOffset).rx()).
-                                 arg(::transform(originOffset).ry()))));
-
-    painter->drawStaticText(width()-infoBoxWidth, 2*infoLineHeight, QStaticText(
-                                (QString("lastMouseMovePos: %1, %2 (%3, %4)").
-                                    arg(lastMouseMovePos.rx()).
-                                    arg(lastMouseMovePos.ry()).
-                                    arg(::transform(lastMouseMovePos).rx()).
-                                    arg(::transform(lastMouseMovePos).ry()))));
-
-    painter->drawStaticText(width()-infoBoxWidth, 3*infoLineHeight, QStaticText(
-                                (QString("mousePos: %1, %2 (%3, %4)").
-                                 arg(mousePos.rx()).
-                                 arg(mousePos.ry()).
-                                 arg(::transform(mousePos).rx()).
-                                 arg(::transform(mousePos).ry())
-                                )));
-
-    painter->drawStaticText(width()-infoBoxWidth, 4*infoLineHeight, QStaticText(
-                                (QString("width, height: %1, %2 (%3, %4)").
-                                 arg(width()).
-                                 arg(height()).
-                                 arg(width()*scale).
-                                 arg(height()*scale)
-                                )));
-
-    painter->restore();
 }
 
 void GradientTool::paint(QPainter *painter)
@@ -168,7 +150,7 @@ void GradientTool::paint(QPainter *painter)
         }
     }
 
-    paintInfo(painter);
+    infoBox.paint(QPoint(std::lround(width()-200), 0), painter);
 }
 
 void GradientTool::finishCurrentLine()
@@ -176,15 +158,11 @@ void GradientTool::finishCurrentLine()
     lines.push_back(BrokenLine());
     line_ = &lines.back();
     emit penWidthChanged();
-//    emit colorBeginChanged();
-//    emit colorEndChanged();
 }
 
 void GradientTool::changeActiveLine(BrokenLine *line)
 {
     line_ = line;
-//    emit colorBeginChanged();
-//    emit colorEndChanged();
 }
 
 QPolygon calcBoundingBox(const QLineF & line, qreal margin, qreal penWidth)
@@ -335,7 +313,7 @@ void GradientTool::paintLineBorder(const BrokenLine &line, QPainter *painter) co
 
     for (auto itPolyPoint = boundingPolygon.begin(); itPolyPoint != boundingPolygon.end(); ++itPolyPoint)
     {
-        painter->drawText(*itPolyPoint, QString("%1").arg(itPolyPoint - boundingPolygon.begin()));
+//        painter->drawText(*itPolyPoint, QString("%1").arg(itPolyPoint - boundingPolygon.begin()));
 
         if (itPolyPoint == boundingPolygon.begin() ||
             itPolyPoint == boundingPolygon.rbegin().base())

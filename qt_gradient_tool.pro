@@ -15,6 +15,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         brokenline.cpp \
+        infobox.cpp \
         multigradient.cpp \
         gradienttool.cpp \
         main.cpp
@@ -34,5 +35,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     brokenline.h \
+    infobox.h \
     multigradient.h \
     gradienttool.h
