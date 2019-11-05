@@ -326,14 +326,17 @@ void GradientTool::paintLineBorder(const BrokenLine &line, QPainter *painter) co
 
 
     std::reverse(left, boundingPolygon.end());
-    painter->setPen(hoveredLinePen);
-    painter->drawPolyline(boundingPolygon);
+//    painter->setPen(hoveredLinePen);
+//    painter->setPen(QColor(Qt::black));
+//    painter->drawPolyline(boundingPolygon);
 
 
 //    painter->setPen(QPen(Qt::black, 2));
 
     for (auto itPolyPoint = boundingPolygon.begin(); itPolyPoint != boundingPolygon.end(); ++itPolyPoint)
     {
+        painter->drawText(*itPolyPoint, QString("%1").arg(itPolyPoint - boundingPolygon.begin()));
+
         if (itPolyPoint == boundingPolygon.begin() ||
             itPolyPoint == boundingPolygon.rbegin().base())
         {
@@ -347,32 +350,37 @@ void GradientTool::paintLineBorder(const BrokenLine &line, QPainter *painter) co
                               ? (indexPolyPoint+1)/2
                               : (cntPolyPoint-indexPolyPoint)/2);
 
-        auto const & currentCtrlPoint = line.points()[indexCtrlPoint].point();
-
-        if (indexPolyPoint % 2 == 1 &&
-            *itPolyPoint != *(itPolyPoint+1) &&
-            indexCtrlPoint != 0 &&
-            indexCtrlPoint < line.points().size()-1)
+        if (indexPolyPoint % 2 == 1)
         {
-            auto const & prevCtrlPoint = line.points()[indexCtrlPoint-1].point();
-            auto const & nextCtrlPoint = line.points()[indexCtrlPoint+1].point();
-            const QLineF prevCtrlLine(currentCtrlPoint, prevCtrlPoint);
-            const QLineF nextCtrlLine(currentCtrlPoint, nextCtrlPoint);
-
-            QRectF rect(0, 0, penWidth, penWidth);
-            rect.moveCenter(currentCtrlPoint);
-            rect += arcMargin;
-
-            if (nextCtrlLine.angleTo(prevCtrlLine) > 180)
+            if (*itPolyPoint != *(itPolyPoint+1) &&
+                indexCtrlPoint != 0 &&
+                indexCtrlPoint < line.points().size()-1)
             {
-                painter->drawArc(rect, (prevCtrlLine.angle()+270)*16,
-                                 -(nextCtrlLine.angleTo(prevCtrlLine)-180)*16);
+                auto const & currentCtrlPoint = line.points()[indexCtrlPoint].point();
+                auto const & prevCtrlPoint = line.points()[indexCtrlPoint-1].point();
+                auto const & nextCtrlPoint = line.points()[indexCtrlPoint+1].point();
+                const QLineF prevCtrlLine(currentCtrlPoint, prevCtrlPoint);
+                const QLineF nextCtrlLine(currentCtrlPoint, nextCtrlPoint);
+
+                QRectF arcRect(0, 0, penWidth, penWidth);
+                arcRect.moveCenter(currentCtrlPoint);
+                arcRect += arcMargin;
+
+                if (nextCtrlLine.angleTo(prevCtrlLine) > 180)
+                {
+                    painter->drawArc(arcRect,
+                                     std::lround((prevCtrlLine.angle()+270)*16),
+                                     std::lround((180-nextCtrlLine.angleTo(prevCtrlLine))*16));
+                }
+                else
+                {
+                    painter->drawArc(arcRect,
+                                     std::lround((nextCtrlLine.angle()+270)*16),
+                                     std::lround((180-prevCtrlLine.angleTo(nextCtrlLine))*16));
+                }
             }
-            else
-            {
-                painter->drawArc(rect, (nextCtrlLine.angle()+270)*16,
-                                 -(prevCtrlLine.angleTo(nextCtrlLine)-180)*16);
-            }
+
+            painter->drawLine(*(itPolyPoint-1), *itPolyPoint);
         }
     }
 }
@@ -413,7 +421,7 @@ void GradientTool::paintBrokenLine(const BrokenLine &line, QPainter *painter) co
 
 void GradientTool::mousePressEvent(QMouseEvent *event)
 {
-    qDebug() << __PRETTY_FUNCTION__;
+//    qDebug() << __PRETTY_FUNCTION__;
 
     if (event->button() == Qt::LeftButton)
     {
@@ -448,7 +456,7 @@ void GradientTool::mousePressEvent(QMouseEvent *event)
 
 void GradientTool::mouseReleaseEvent(QMouseEvent *event)
 {
-    qDebug() << __PRETTY_FUNCTION__;
+//    qDebug() << __PRETTY_FUNCTION__;
     if (event->button() == Qt::LeftButton)
     {
         if (mouseDragging)
@@ -489,7 +497,7 @@ void GradientTool::mouseReleaseEvent(QMouseEvent *event)
 
 void GradientTool::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    qDebug() << __PRETTY_FUNCTION__;
+//    qDebug() << __PRETTY_FUNCTION__;
     if (event->button() == Qt::LeftButton && hoverPoint)
     {
         emit requestColorChange(selectedPointIterator->color() ?
