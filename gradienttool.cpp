@@ -538,19 +538,26 @@ void GradientTool::wheelEvent(QWheelEvent* event)
     if (event->modifiers() == Qt::ControlModifier)
     {
         auto oldScale = scale;
-        scale += event->delta()/1000.0;
-        if (scale < 0.25)
+        if (event->delta() < 0 && scale > 0.1)
         {
-            scale = 0.25;
+            scale /= 1.1;
+        }
+        else if (event->delta() > 0)
+        {
+            scale *= 1.1;
         }
 
-        originOffset = event->pos() - scale/oldScale * (event->pos()-originOffset);
+        if (scale != oldScale)
+        {
+            originOffset = event->pos() - scale/oldScale * (event->pos()-originOffset);
+            update();
+        }
     }
     else
     {
         setPenWidth(penWidth + event->delta()/10.0);
+        update();
     }
-    update();
 }
 
 void GradientTool::componentComplete()
