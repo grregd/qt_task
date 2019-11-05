@@ -380,7 +380,7 @@ void GradientTool::paintBrokenLine(const BrokenLine &line, QPainter *painter) co
     if (showControlPoints)
     {
         painter->setPen(QPen(QColor(128, 128, 128), 3));
-        QRect r(0, 0, std::max(15.0, penWidth), std::max(15.0, penWidth));
+        QRectF r(0, 0, std::max(15.0, penWidth), std::max(15.0, penWidth));
         std::for_each(
                 line.points().begin(), line.points().end(),
                 [painter, &r](auto & point)
