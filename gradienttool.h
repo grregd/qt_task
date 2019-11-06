@@ -36,9 +36,21 @@ public:
 
     void paint(QPainter *painter) override;
 
-    void paintLineBorder(const BrokenLine &line, QPainter *painter) const;
-
 protected:
+    void componentComplete() override;
+
+    void finishCurrentLine();
+    void changeActiveLine(BrokenLine*);
+//    QPolygon calcBoundingBox(const QLineF & line, qreal margin) const;
+    HoverPoint findNearestPoint(const QPoint &checkPos);
+    std::optional<QLineF> findHoverLine(const QPoint &checkPos);
+
+    void paintHoverSelectedSegment(const QLineF &fragment, QPainter *painter) const;
+    void paintHoverSelectedControlPoint(const QPoint &point, QPainter *painter) const;
+    void paintSelectedControlPoint(const BrokenLine::ControlPoint &ctrlPoint, QPainter *painter) const;
+    void paintLineBorder(const BrokenLine &line, QPainter *painter) const;
+    void paintBrokenLine(const BrokenLine &line, QPainter *painter) const;
+
     void mousePressEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;
     void mouseDoubleClickEvent(QMouseEvent* event) override;
@@ -46,19 +58,7 @@ protected:
     void hoverMoveEvent(QHoverEvent* event) override;
     void wheelEvent(QWheelEvent* event) override;
 
-    void componentComplete() override;
-
-    void addPointAtEnd(const QPoint & point);
-    void finishCurrentLine();
-    void changeActiveLine(BrokenLine*);
-//    QPolygon calcBoundingBox(const QLineF & line, qreal margin) const;
-    HoverPoint findNearestPoint(const QPoint &checkPos);
-    std::optional<QLineF> findHoverLine(const QPoint &checkPos);
-
-    void paintBoundingBox(const QLineF &fragment, QPainter *painter) const;
-    void paintBrokenLine(const BrokenLine &line, QPainter *painter) const;
-
-    QPointF hoverLinePointFromMouse();
+    QPointF hoverLinePointFromMouse() const;
 
 private:
     void setPenWidth(qreal newValue);

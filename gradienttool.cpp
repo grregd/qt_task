@@ -72,7 +72,7 @@ void GradientTool::setupInfoBox()
 }
 
 
-QPointF GradientTool::hoverLinePointFromMouse()
+QPointF GradientTool::hoverLinePointFromMouse() const
 {
     auto l1 = QLineF(hoverSegment->p1(), ::transform(mousePos)).length();
     auto l2 = QLineF(hoverSegment->p2(), ::transform(mousePos)).length();
@@ -112,42 +112,17 @@ void GradientTool::paint(QPainter *painter)
 
     if (hoverPoint)
     {
-        QRectF occ(QPointF(), QSizeF(
-                      std::max(15.0, penWidth),
-                      std::max(15.0, penWidth)));
-        occ.moveCenter(hoverPoint->first);
-        painter->setPen(QPen(hoverSelectColor, 4, Qt::DotLine));
-        painter->drawEllipse(occ);
+        paintHoverSelectedControlPoint(hoverPoint->first, painter);
     }
 
     if (hoverSegment)
     {
-        painter->setPen(QPen(hoverSelectColor, 4, Qt::DotLine));
-        paintBoundingBox(*hoverSegment, painter);
-
-        QRectF r(hoverLinePointFromMouse(), QSizeF());
-        r += QMarginsF(penWidth/2.0, penWidth/2.0,
-                       penWidth/2.0, penWidth/2.0);
-
-        painter->drawEllipse(r);
+        paintHoverSelectedSegment(*hoverSegment, painter);
     }
 
     if (selectedPointIterator != line_->points().end())
     {
-        QRectF occ(QPointF(), QSizeF(
-                      std::max(15.0, penWidth),
-                      std::max(15.0, penWidth)));
-        occ.moveCenter(selectedPointIterator->point());
-        occ += QMargins(10, 10, 10, 10);
-
-        painter->setPen(QPen(QColor(Qt::gray), 12));
-        painter->drawEllipse(occ);
-
-        if (selectedPointIterator->color())
-        {
-            painter->setPen(QPen(*selectedPointIterator->color(), 8, Qt::DashLine));
-            painter->drawEllipse(occ);
-        }
+        paintSelectedControlPoint(*selectedPointIterator, painter);
     }
 
     infoBox.paint(QPoint(std::lround(width()-200), 0), painter);
@@ -221,9 +196,55 @@ std::optional<QLineF> GradientTool::findHoverLine(const QPoint &checkPos)
 static const auto activeLineBorderWidth = 10;
 static const auto activeLineBorderOffset = activeLineBorderWidth/2 + 0;
 
-void GradientTool::paintBoundingBox(const QLineF &fragment, QPainter *painter) const
+void GradientTool::paintHoverSelectedSegment(const QLineF &fragment, QPainter *painter) const
 {
+    painter->save();
+
+    painter->setPen(QPen(hoverSelectColor, 4, Qt::DotLine));
     painter->drawPolygon(calcBoundingBox(fragment, activeLineBorderOffset, penWidth));
+
+    QRectF r(hoverLinePointFromMouse(), QSizeF());
+    r += QMarginsF(penWidth/2.0, penWidth/2.0,
+                   penWidth/2.0, penWidth/2.0);
+    painter->drawEllipse(r);
+
+    painter->restore();
+}
+
+void GradientTool::paintHoverSelectedControlPoint(const QPoint &point, QPainter *painter) const
+{
+    painter->save();
+
+    QRectF occ(QPointF(), QSizeF(
+                  std::max(15.0, penWidth),
+                  std::max(15.0, penWidth)));
+    occ.moveCenter(point);
+    painter->setPen(QPen(hoverSelectColor, 4, Qt::DotLine));
+    painter->drawEllipse(occ);
+
+    painter->restore();
+}
+
+void GradientTool::paintSelectedControlPoint(const BrokenLine::ControlPoint &ctrlPoint, QPainter *painter) const
+{
+    painter->save();
+
+    QRectF occ(QPointF(), QSizeF(
+                  std::max(15.0, penWidth),
+                  std::max(15.0, penWidth)));
+    occ.moveCenter(ctrlPoint.point());
+    occ += QMargins(10, 10, 10, 10);
+
+    painter->setPen(QPen(QColor(Qt::gray), 12));
+    painter->drawEllipse(occ);
+
+    if (ctrlPoint.color())
+    {
+        painter->setPen(QPen(*ctrlPoint.color(), 8, Qt::DashLine));
+        painter->drawEllipse(occ);
+    }
+
+    painter->restore();
 }
 
 void GradientTool::paintLineBorder(const BrokenLine &line, QPainter *painter) const
@@ -238,8 +259,8 @@ void GradientTool::paintLineBorder(const BrokenLine &line, QPainter *painter) co
 
     for (int i = 0; i < line.points().size()-1; ++i)
     {
-        painter->setPen(hoveredLinePen);
         auto bb = calcBoundingBox(line.fragment(i), activeLineBorderOffset, penWidth);
+        painter->setPen(hoveredLinePen);
 
         if (prevBb.isEmpty())
         {
