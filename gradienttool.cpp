@@ -31,9 +31,12 @@ void GradientTool::setColorOfSelectedPoint(const QColor &color)
     if (selectedPointIterator != line_->points().end())
     {
         qDebug() << __PRETTY_FUNCTION__ << color;
-        selectedPointIterator->color() = color;
-        line_->updateGradient();
-        update();
+        if (color.spec() != QColor::Invalid)
+        {
+            selectedPointIterator->color() = color;
+            line_->updateGradient();
+            update();
+        }
     }
 }
 
@@ -435,7 +438,9 @@ void GradientTool::mousePressEvent(QMouseEvent *event)
             selectedPointIterator =
                     hoverPoint->second->getPointRef(hoverPoint->first);
             changeActiveLine(hoverPoint->second);
-            emit pointSelectionChanged(*selectedPointIterator->color());
+            emit pointSelectionChanged(selectedPointIterator->color()
+                                       ? *selectedPointIterator->color()
+                                       : QColor());
             update();
         }
         else if (hoverSegment)
