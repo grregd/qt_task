@@ -112,7 +112,7 @@ void GradientTool::paint(QPainter *painter)
 
     if (hoverPoint)
     {
-        QRect occ(QPoint(), QSize(
+        QRectF occ(QPointF(), QSizeF(
                       std::max(15.0, penWidth),
                       std::max(15.0, penWidth)));
         occ.moveCenter(hoverPoint->first);
@@ -134,7 +134,7 @@ void GradientTool::paint(QPainter *painter)
 
     if (selectedPointIterator != line_->points().end())
     {
-        QRect occ(QPoint(), QSize(
+        QRectF occ(QPointF(), QSizeF(
                       std::max(15.0, penWidth),
                       std::max(15.0, penWidth)));
         occ.moveCenter(selectedPointIterator->point());
@@ -200,7 +200,6 @@ GradientTool::HoverPoint GradientTool::findNearestPoint(const QPoint &eventPos)
 
 std::optional<QLineF> GradientTool::findHoverLine(const QPoint &checkPos)
 {
-    {
     for (auto line = lines.rbegin(); line != lines.rend(); ++line )
     {
         auto point = std::adjacent_find(line->points().rbegin(), line->points().rend(),
@@ -217,7 +216,6 @@ std::optional<QLineF> GradientTool::findHoverLine(const QPoint &checkPos)
 
     }
     return std::optional<QLineF>();
-    }
 }
 
 static const auto activeLineBorderWidth = 10;
@@ -240,66 +238,63 @@ void GradientTool::paintLineBorder(const BrokenLine &line, QPainter *painter) co
 
     for (int i = 0; i < line.points().size()-1; ++i)
     {
-        if (line_ == &line)
-        {
-            painter->setPen(hoveredLinePen);
-            auto bb = calcBoundingBox(line.fragment(i), activeLineBorderOffset, penWidth);
+        painter->setPen(hoveredLinePen);
+        auto bb = calcBoundingBox(line.fragment(i), activeLineBorderOffset, penWidth);
 
-            if (prevBb.isEmpty())
+        if (prevBb.isEmpty())
+        {
+            left = boundingPolygon.insert(left, bb[0]);
+        }
+        else
+        {
+            QPointF intersectionPoint;
+            auto itype = QLineF(bb[0], bb[1]).
+                    intersect(QLineF(prevBb[0], prevBb[1]),
+                    &intersectionPoint);
+            if (itype == QLineF::BoundedIntersection)
+            {
+                *left = intersectionPoint.toPoint();
+                left = boundingPolygon.insert(left, intersectionPoint.toPoint());
+            }
+            else if (itype == QLineF::UnboundedIntersection)
             {
                 left = boundingPolygon.insert(left, bb[0]);
             }
             else
             {
-                QPointF intersectionPoint;
-                auto itype = QLineF(bb[0], bb[1]).
-                        intersect(QLineF(prevBb[0], prevBb[1]),
-                        &intersectionPoint);
-                if (itype == QLineF::BoundedIntersection)
-                {
-                    *left = intersectionPoint.toPoint();
-                    left = boundingPolygon.insert(left, intersectionPoint.toPoint());
-                }
-                else if (itype == QLineF::UnboundedIntersection)
-                {
-                    left = boundingPolygon.insert(left, bb[0]);
-                }
-                else
-                {
-                    qDebug() << itype;
-                }
+                qDebug() << itype;
             }
-            left = boundingPolygon.insert(left, bb[1]);
+        }
+        left = boundingPolygon.insert(left, bb[1]);
 
 
-            if (prevBb.isEmpty())
+        if (prevBb.isEmpty())
+        {
+            boundingPolygon.push_back(bb[3]);
+        }
+        else
+        {
+            QPointF intersectionPoint;
+            auto itype = QLineF(bb[2], bb[3]).
+                    intersect(QLineF(prevBb[2], prevBb[3]),
+                    &intersectionPoint);
+            if (itype == QLineF::BoundedIntersection)
+            {
+                boundingPolygon.back() = intersectionPoint.toPoint();
+                boundingPolygon.push_back(intersectionPoint.toPoint());
+            }
+            else if (itype == QLineF::UnboundedIntersection)
             {
                 boundingPolygon.push_back(bb[3]);
             }
             else
             {
-                QPointF intersectionPoint;
-                auto itype = QLineF(bb[2], bb[3]).
-                        intersect(QLineF(prevBb[2], prevBb[3]),
-                        &intersectionPoint);
-                if (itype == QLineF::BoundedIntersection)
-                {
-                    boundingPolygon.back() = intersectionPoint.toPoint();
-                    boundingPolygon.push_back(intersectionPoint.toPoint());
-                }
-                else if (itype == QLineF::UnboundedIntersection)
-                {
-                    boundingPolygon.push_back(bb[3]);
-                }
-                else
-                {
-                    qDebug() << itype;
-                }
+                qDebug() << itype;
             }
-            boundingPolygon.push_back(bb[2]);
-
-            prevBb = bb;
         }
+        boundingPolygon.push_back(bb[2]);
+
+        prevBb = bb;
     }
 
 
@@ -367,7 +362,10 @@ void GradientTool::paintBrokenLine(const BrokenLine &line, QPainter *painter) co
 {
     if (line.points().size() >= 2)
     {
-        paintLineBorder(line, painter);
+        if (line_ == &line)
+        {
+            paintLineBorder(line, painter);
+        }
 
         for (int i = 0; i < line.points().size()-1; ++i)
         {
