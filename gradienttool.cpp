@@ -445,6 +445,7 @@ void GradientTool::mousePressEvent(QMouseEvent *event)
         {
             auto p1Ref = line_->getPointRef(hoverSegment->p1().toPoint());
             line_->insertPoint(p1Ref, hoverLinePointFromMouse().toPoint());
+            selectedPointIterator = p1Ref;
             update();
         }
     }
