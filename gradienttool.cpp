@@ -86,18 +86,6 @@ void GradientTool::paint(QPainter *painter)
 {
     painter->setRenderHint(QPainter::Antialiasing, true);
 
-    {
-        tra.reset();
-        tra.translate(originOffset.rx(), originOffset.ry()).scale(scale, scale);
-        bool invertible = false;
-        tra = tra.inverted(&invertible);
-        if (!invertible)
-        {
-            tra = QTransform();
-        }
-    }
-
-
     painter->translate(originOffset);
     painter->scale(scale, scale);
 
@@ -107,7 +95,6 @@ void GradientTool::paint(QPainter *painter)
     {
         tra = QTransform();
     }
-
 
     std::for_each(lines.begin(), lines.end(),
                   [this, painter](auto & line){
