@@ -84,6 +84,8 @@ QPointF GradientTool::hoverLinePointFromMouse() const
 
 void GradientTool::paint(QPainter *painter)
 {
+    qDebug() << __PRETTY_FUNCTION__;
+
     painter->setRenderHint(QPainter::Antialiasing, true);
 
     painter->translate(originOffset);
@@ -122,12 +124,17 @@ void GradientTool::finishCurrentLine()
 {
     lines.push_back(BrokenLine());
     line_ = &lines.back();
+    selectedPointIterator = line_->points().end();
     emit penWidthChanged();
 }
 
 void GradientTool::changeActiveLine(BrokenLine *line)
 {
-    line_ = line;
+    if (line_ != line)
+    {
+        line_ = line;
+        selectedPointIterator = line_->points().end();
+    }
 }
 
 QPolygon calcBoundingBox(const QLineF & line, qreal margin, qreal penWidth)
@@ -203,6 +210,8 @@ void GradientTool::paintHoverSelectedSegment(const QLineF &fragment, QPainter *p
 
 void GradientTool::paintHoverSelectedControlPoint(const QPoint &point, QPainter *painter) const
 {
+    qDebug() << __PRETTY_FUNCTION__;
+
     painter->save();
 
     QRectF occ(QPointF(), QSizeF(
@@ -217,6 +226,8 @@ void GradientTool::paintHoverSelectedControlPoint(const QPoint &point, QPainter 
 
 void GradientTool::paintSelectedControlPoint(const BrokenLine::ControlPoint &ctrlPoint, QPainter *painter) const
 {
+    qDebug() << __PRETTY_FUNCTION__;
+
     painter->save();
 
     QRectF occ(QPointF(), QSizeF(
@@ -408,7 +419,7 @@ void GradientTool::paintBrokenLine(const BrokenLine &line, QPainter *painter) co
 
 void GradientTool::mousePressEvent(QMouseEvent *event)
 {
-//    qDebug() << __PRETTY_FUNCTION__;
+    qDebug() << __PRETTY_FUNCTION__;
 
     if (event->button() == Qt::LeftButton)
     {
@@ -445,7 +456,7 @@ void GradientTool::mousePressEvent(QMouseEvent *event)
 
 void GradientTool::mouseReleaseEvent(QMouseEvent *event)
 {
-//    qDebug() << __PRETTY_FUNCTION__;
+    qDebug() << __PRETTY_FUNCTION__;
     if (event->button() == Qt::LeftButton)
     {
         if (mouseDragging)
@@ -455,6 +466,7 @@ void GradientTool::mouseReleaseEvent(QMouseEvent *event)
         else if (!hoverPoint && !hoverSegment)
         {
             line_->addPoint(::transform(event->pos()));
+            selectedPointIterator = line_->points().end()-1;
         }
     }
     else if (event->button() == Qt::RightButton)
@@ -519,7 +531,7 @@ void GradientTool::mouseMoveEvent(QMouseEvent *event)
 
 void GradientTool::hoverMoveEvent(QHoverEvent *event)
 {
-//    qDebug() << __PRETTY_FUNCTION__;
+    qDebug() << __PRETTY_FUNCTION__;
     if (!mouseLeftPressed)
     {
         if (HoverPoint h = findNearestPoint(::transform(event->pos())))
