@@ -54,7 +54,7 @@ public:
     void updateGradient();
     void updateLength();
 
-    void addPoint(const QPoint & point);
+    void addPoint(const QPoint & point, const QColor &defaultColorBegin, const QColor &defaultColorEnd);
     void insertPoint(QVector<ControlPoint>::iterator where, const QPoint & point);
     void removePoint(const QPoint & point);
     void removeAllPoints();

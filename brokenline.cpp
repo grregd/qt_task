@@ -74,14 +74,14 @@ void BrokenLine::updateLength()
     length_ = accLength_.empty() ? 0.0 : accLength_.back();
 }
 
-void BrokenLine::addPoint(const QPoint & point)
+void BrokenLine::addPoint(const QPoint & point, const QColor & defaultColorBegin, const QColor & defaultColorEnd)
 {
     qreal lastLength = 0;
     std::optional<QColor> color;
 
     if (points_.empty())
     {
-        color = Qt::cyan;
+        color = defaultColorBegin;
     }
     else
     {
@@ -89,7 +89,7 @@ void BrokenLine::addPoint(const QPoint & point)
 
         if (points_.size() == 1)
         {
-            color = Qt::magenta;
+            color = defaultColorEnd;
         }
         else
         {

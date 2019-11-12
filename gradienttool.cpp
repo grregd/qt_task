@@ -464,7 +464,7 @@ void GradientTool::mouseReleaseEvent(QMouseEvent *event)
         }
         else if (!hoverPoint && !hoverSegment)
         {
-            line_->addPoint(::transform(event->pos()));
+            line_->addPoint(::transform(event->pos()), defaultColorBegin, defaultColorEnd);
             selectedPointIterator = line_->points().end()-1;
         }
     }
