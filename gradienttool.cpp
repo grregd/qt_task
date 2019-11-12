@@ -190,8 +190,6 @@ std::optional<QLineF> GradientTool::findHoverLine(const QPoint &checkPos)
     return std::optional<QLineF>();
 }
 
-static const auto activeLineBorderWidth = 10;
-static const auto activeLineBorderOffset = activeLineBorderWidth/2 + 0;
 
 void GradientTool::paintHoverSelectedSegment(const QLineF &fragment, QPainter *painter) const
 {

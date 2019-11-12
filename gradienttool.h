@@ -72,6 +72,8 @@ private:
     QColor defaultColorEnd;
     QColor hoverSelectColor = 0xff1493;
     QColor selectedPointColor = Qt::gray;
+    const qreal activeLineBorderWidth = 10;
+    const qreal activeLineBorderOffset = activeLineBorderWidth/2 + 0;
 
     QVector<BrokenLine> lines;
     BrokenLine * line_;
