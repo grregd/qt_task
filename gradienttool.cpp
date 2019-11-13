@@ -72,6 +72,8 @@ void GradientTool::setupInfoBox()
                                               arg(height()).
                                               arg(width()*scale).
                                               arg(height()*scale); });
+    infoBox.addInfoLine([this](){ return QString("frame time: %1").
+                                              arg(elapsedTime); });
 }
 
 
@@ -84,6 +86,7 @@ QPointF GradientTool::hoverLinePointFromMouse() const
 
 void GradientTool::paint(QPainter *painter)
 {
+    elapsedTimer.restart();
     qDebug() << __PRETTY_FUNCTION__;
 
     painter->setRenderHint(QPainter::Antialiasing, true);
@@ -117,6 +120,7 @@ void GradientTool::paint(QPainter *painter)
         paintSelectedControlPoint(*selectedPointIterator, painter);
     }
 
+    elapsedTime = elapsedTimer.restart();
     infoBox.paint(QPoint(std::lround(width()-200), 0), painter);
 }
 

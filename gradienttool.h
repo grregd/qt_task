@@ -8,6 +8,7 @@
 
 #include <QQuickPaintedItem>
 #include <QLineF>
+#include <QElapsedTimer>
 
 class GradientTool : public QQuickPaintedItem
 {
@@ -95,6 +96,8 @@ private:
     bool mouseDragging = false;
 
     InfoBox infoBox;
+    QElapsedTimer elapsedTimer;
+    qint64 elapsedTime;
 };
 
 #endif // GRADIENTTOOL_H
