@@ -3,6 +3,7 @@
 
 #include "brokenline.h"
 #include "infobox.h"
+#include "brokenlinepainter.h"
 
 #include <algorithm>
 
@@ -49,7 +50,6 @@ protected:
     void paintHoverSelectedSegment(const QLineF &fragment, QPainter *painter) const;
     void paintHoverSelectedControlPoint(const QPoint &point, QPainter *painter) const;
     void paintSelectedControlPoint(const BrokenLine::ControlPoint &ctrlPoint, QPainter *painter) const;
-    void paintLineBorder(const BrokenLine &line, QPainter *painter) const;
     void paintBrokenLine(const BrokenLine &line, QPainter *painter) const;
 
     void mousePressEvent(QMouseEvent* event) override;
@@ -69,12 +69,11 @@ private:
     bool getShowControlPoints() const;
 
 private:
+    BrokenLinePainter brokenLinePainter;
     QColor defaultColorBegin;
     QColor defaultColorEnd;
     QColor hoverSelectColor = 0xff1493;
     QColor selectedPointColor = Qt::gray;
-    const qreal activeLineBorderWidth = 10;
-    const qreal activeLineBorderOffset = activeLineBorderWidth/2 + 0;
 
     QVector<BrokenLine> lines;
     BrokenLine * line_;
