@@ -50,7 +50,6 @@ protected:
     void paintHoverSelectedSegment(const QLineF &fragment, QPainter *painter) const;
     void paintHoverSelectedControlPoint(const QPoint &point, QPainter *painter) const;
     void paintSelectedControlPoint(const BrokenLine::ControlPoint &ctrlPoint, QPainter *painter) const;
-    void paintBrokenLine(const BrokenLine &line, QPainter *painter) const;
 
     void mousePressEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;

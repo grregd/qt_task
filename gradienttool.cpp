@@ -102,8 +102,10 @@ void GradientTool::paint(QPainter *painter)
     }
 
     std::for_each(lines.begin(), lines.end(),
-                  [this, painter](auto & line){
-                    GradientTool::paintBrokenLine(line, painter);});
+                  [this, painter](auto & line)
+                  {
+                    brokenLinePainter.paint(line, line_ == &line, showControlPoints, penWidth, painter);
+                  });
 
     if (hoverPoint)
     {
@@ -233,12 +235,6 @@ void GradientTool::paintSelectedControlPoint(const BrokenLine::ControlPoint &ctr
     }
 
     painter->restore();
-}
-
-
-void GradientTool::paintBrokenLine(const BrokenLine &line, QPainter *painter) const
-{
-    brokenLinePainter.paint(line, line_ == &line, showControlPoints, penWidth, painter);
 }
 
 void GradientTool::mousePressEvent(QMouseEvent *event)
@@ -448,4 +444,3 @@ void GradientTool::setShowControlPoints(bool newValue)
         update();
     }
 }
-
