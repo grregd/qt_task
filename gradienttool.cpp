@@ -337,7 +337,7 @@ void GradientTool::mouseMoveEvent(QMouseEvent *event)
 {
 //    qDebug() << __PRETTY_FUNCTION__;
     if (event->modifiers() == Qt::ControlModifier &&
-        event->buttons() & Qt::LeftButton/*mouseLeftPressed*/)
+        event->buttons() & Qt::LeftButton)
     {
         mouseDragging = true;
         originOffset += event->pos() - lastMouseMovePos;
@@ -359,26 +359,23 @@ void GradientTool::mouseMoveEvent(QMouseEvent *event)
 void GradientTool::hoverMoveEvent(QHoverEvent *event)
 {
 //    qDebug() << __PRETTY_FUNCTION__;
-    if (!mouseLeftPressed)
+    if (HoverPoint h = findNearestPoint(::transform(event->pos())))
     {
-        if (HoverPoint h = findNearestPoint(::transform(event->pos())))
+        if (!hoverPoint || hoverPoint->first != h->first)
         {
-            if (!hoverPoint || hoverPoint->first != h->first)
-            {
-                hoverPoint = h;
-                hoveredPointRef = hoverPoint->second->getPointRef(hoverPoint->first);
-                hoverSegment.reset();
-                update();
-            }
-        }
-        else
-        {
-            hoverPoint.reset();
-            hoverSegment = findHoverLine(::transform(event->pos()));
+            hoverPoint = h;
+            hoveredPointRef = hoverPoint->second->getPointRef(hoverPoint->first);
+            hoverSegment.reset();
             update();
         }
-
     }
+    else
+    {
+        hoverPoint.reset();
+        hoverSegment = findHoverLine(::transform(event->pos()));
+        update();
+    }
+
     mousePos = event->pos();
 }
 
