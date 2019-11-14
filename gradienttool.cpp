@@ -41,6 +41,7 @@ void GradientTool::setColorOfSelectedPoint(const QColor &color)
 }
 
 GradientTool::GradientTool()
+    : activeLine(nullptr)
 {
     setAcceptedMouseButtons(Qt::AllButtons);
     setAcceptHoverEvents(true);
@@ -87,7 +88,6 @@ QPointF GradientTool::hoverLinePointFromMouse() const
 void GradientTool::paint(QPainter *painter)
 {
     elapsedTimer.restart();
-    qDebug() << __PRETTY_FUNCTION__;
 
     painter->setRenderHint(QPainter::Antialiasing, true);
 
@@ -172,8 +172,9 @@ GradientTool::HoverPoint GradientTool::findNearestPoint(const QPoint &eventPos)
 
 std::optional<QLineF> GradientTool::findHoverLine(const QPoint &checkPos)
 {
-    for (auto line = lines.rbegin(); line != lines.rend(); ++line )
+    if (activeLine)
     {
+        auto line = activeLine;
         auto point = std::adjacent_find(line->points().rbegin(), line->points().rend(),
            [this, &checkPos](const auto & p1, const auto & p2)
            {
@@ -185,8 +186,8 @@ std::optional<QLineF> GradientTool::findHoverLine(const QPoint &checkPos)
         {
             return std::make_optional<QLineF>(point->point(), (point+1)->point());
         }
-
     }
+
     return std::optional<QLineF>();
 }
 
@@ -208,8 +209,6 @@ void GradientTool::paintHoverSelectedSegment(const QLineF &fragment, QPainter *p
 
 void GradientTool::paintHoverSelectedControlPoint(const QPoint &point, QPainter *painter) const
 {
-    qDebug() << __PRETTY_FUNCTION__;
-
     painter->save();
 
     QRectF occ(QPointF(), QSizeF(
@@ -224,8 +223,6 @@ void GradientTool::paintHoverSelectedControlPoint(const QPoint &point, QPainter 
 
 void GradientTool::paintSelectedControlPoint(const BrokenLine::ControlPoint &ctrlPoint, QPainter *painter) const
 {
-    qDebug() << __PRETTY_FUNCTION__;
-
     painter->save();
 
     QRectF occ(QPointF(), QSizeF(
@@ -361,7 +358,7 @@ void GradientTool::mouseMoveEvent(QMouseEvent *event)
 
 void GradientTool::hoverMoveEvent(QHoverEvent *event)
 {
-    qDebug() << __PRETTY_FUNCTION__;
+//    qDebug() << __PRETTY_FUNCTION__;
     if (!mouseLeftPressed)
     {
         if (HoverPoint h = findNearestPoint(::transform(event->pos())))
