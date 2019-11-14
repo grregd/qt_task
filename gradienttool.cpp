@@ -126,6 +126,15 @@ void GradientTool::paint(QPainter *painter)
     infoBox.paint(QPoint(std::lround(width()-200), 0), painter);
 }
 
+void GradientTool::componentComplete()
+{
+    QQuickPaintedItem::componentComplete();
+
+    lines.push_back(BrokenLine());
+    activeLine = &lines.back();
+    selectedPointRef = activeLine->points().end();
+}
+
 void GradientTool::finishCurrentLine()
 {
     lines.push_back(BrokenLine());
@@ -387,15 +396,6 @@ void GradientTool::wheelEvent(QWheelEvent* event)
     {
         setPenWidth(penWidth + event->delta()/10.0);
     }
-}
-
-void GradientTool::componentComplete()
-{
-    QQuickPaintedItem::componentComplete();
-
-    lines.push_back(BrokenLine());
-    activeLine = &lines.back();
-    selectedPointRef = activeLine->points().end();
 }
 
 void GradientTool::changeScale(int upDown, const QPoint &scalePosition)
