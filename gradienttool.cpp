@@ -391,7 +391,7 @@ void GradientTool::wheelEvent(QWheelEvent* event)
             scale *= 1.1;
         }
 
-        if (scale != oldScale)
+        if (!qFuzzyCompare(scale, oldScale))
         {
             originOffset = event->pos() - scale/oldScale * (event->pos()-originOffset);
             update();
@@ -400,7 +400,6 @@ void GradientTool::wheelEvent(QWheelEvent* event)
     else
     {
         setPenWidth(penWidth + event->delta()/10.0);
-        update();
     }
 }
 
@@ -417,11 +416,17 @@ void GradientTool::setPenWidth(qreal newValue)
 {
     if (!qFuzzyCompare(newValue, penWidth))
     {
+        auto oldPenWidth = penWidth;
+
         penWidth = newValue > penWidthMax
                 ? penWidthMax : newValue < 1
                 ? 1 : newValue;
-        emit penWidthChanged();
-        update();
+
+        if (!qFuzzyCompare(penWidth, oldPenWidth))
+        {
+            emit penWidthChanged();
+            update();
+        }
     }
 }
 
