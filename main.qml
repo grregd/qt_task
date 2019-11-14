@@ -53,7 +53,7 @@ Window {
             Layout.fillHeight: true
             Layout.fillWidth: true
             penWidthMax: 150
-            hoverSelectColor: "#3300cc" // kolor chabrowy
+            hoverMarkerSpec: "gradient" // "#3300cc" // kolor chabrowy
             defaultColorBegin: "#8fbcbc"
             defaultColorEnd: "#180a18"
             showControlPoints: false

@@ -192,7 +192,7 @@ void GradientTool::painSelectedSegmenttHovered(const QLineF &fragment, QPainter 
 {
     painter->save();
 
-    painter->setPen(QPen(hoverSelectColor, 4, Qt::DotLine));
+    painter->setPen(createHoverMarkerPen(hoverMarkerSpec, fragment.center().toPoint()));
     painter->drawPolygon(BrokenLinePainter::calcBoundingBox(fragment, BrokenLinePainter::activeLineBorderOffset, penWidth));
 
     QRectF r(hoverLinePointFromMouse(), QSizeF());
@@ -207,11 +207,12 @@ void GradientTool::paintControlPointHovered(const QPoint &point, QPainter *paint
 {
     painter->save();
 
+    painter->setPen(createHoverMarkerPen(hoverMarkerSpec, point));
+
     QRectF occ(QPointF(), QSizeF(
                   std::max(15.0, penWidth),
                   std::max(15.0, penWidth)));
     occ.moveCenter(point);
-    painter->setPen(QPen(hoverSelectColor, 4, Qt::DotLine));
     painter->drawEllipse(occ);
 
     painter->restore();
@@ -442,5 +443,20 @@ void GradientTool::setShowControlPoints(bool newValue)
         showControlPoints = newValue;
         emit showControlPointsChanged();
         update();
+    }
+}
+
+QPen GradientTool::createHoverMarkerPen(const QString &penSpec, const QPoint &point) const
+{
+    if (penSpec.compare("gradient", Qt::CaseInsensitive))
+    {
+        return QPen(QColor(penSpec), 5, Qt::DotLine);
+    }
+    else
+    {
+        QConicalGradient gradient(point, 0);
+        gradient.setStops({QGradientStop{0, Qt::black},
+                           QGradientStop{1, Qt::white}});
+        return QPen(gradient, 5, Qt::DotLine);
     }
 }

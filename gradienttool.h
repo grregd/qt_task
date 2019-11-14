@@ -21,7 +21,7 @@ class GradientTool : public QQuickPaintedItem
     Q_PROPERTY(bool showControlPoints MEMBER getShowControlPoints READ getShowControlPoints WRITE setShowControlPoints NOTIFY showControlPointsChanged)
     Q_PROPERTY(QColor defaultColorBegin MEMBER defaultColorBegin)
     Q_PROPERTY(QColor defaultColorEnd MEMBER defaultColorEnd)
-    Q_PROPERTY(QColor hoverSelectColor MEMBER hoverSelectColor)
+    Q_PROPERTY(QString hoverMarkerSpec MEMBER hoverMarkerSpec)
 
 signals:
     void penWidthChanged();
@@ -68,11 +68,12 @@ private:
     qreal getPenWidth() const;
     bool getShowControlPoints() const;
 
+    QPen createHoverMarkerPen(const QString & penSpec, const QPoint & point) const;
 private:
     BrokenLinePainter brokenLinePainter;
     QColor defaultColorBegin;
     QColor defaultColorEnd;
-    QColor hoverSelectColor = 0xff1493;
+    QString hoverMarkerSpec = "gradient";
     QColor selectedPointColor = Qt::gray;
 
     QVector<BrokenLine> lines;
