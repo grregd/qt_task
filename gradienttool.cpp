@@ -135,12 +135,11 @@ void GradientTool::componentComplete()
     selectedPointRef = activeLine->points().end();
 }
 
-void GradientTool::finishCurrentLine()
+void GradientTool::startNewLine()
 {
     lines.push_back(BrokenLine());
     activeLine = &lines.back();
     selectedPointRef = activeLine->points().end();
-    emit penWidthChanged();
 }
 
 void GradientTool::changeActiveLine(BrokenLine *line)
@@ -277,7 +276,7 @@ void GradientTool::mousePressEvent(QMouseEvent *event)
     }
     else if (event->button() == Qt::RightButton && !hoverPoint)
     {
-        finishCurrentLine();
+        startNewLine();
     }
 }
 

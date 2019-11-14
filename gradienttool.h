@@ -41,7 +41,7 @@ public:
 protected:
     void componentComplete() override;
 
-    void finishCurrentLine();
+    void startNewLine();
     void changeActiveLine(BrokenLine*);
 //    QPolygon calcBoundingBox(const QLineF & line, qreal margin) const;
     HoverPoint findNearestPoint(const QPoint &checkPos);
