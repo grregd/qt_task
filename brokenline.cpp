@@ -38,11 +38,6 @@ QLineF BrokenLine::fragment(int startPointIndex) const
     return QLineF(points_[startPointIndex].point(), points_[startPointIndex+1].point());
 }
 
-qreal BrokenLine::normalizedLength(int startPointIndex) const
-{
-    return accLength_[startPointIndex] / length_;
-}
-
 QLinearGradient BrokenLine::gradientInPoint(int startPointIndex) const
 {
     QLineF f(fragment(startPointIndex));
@@ -149,7 +144,7 @@ void BrokenLine::removeAllPoints()
     updateGradient();
 }
 
-QVector<BrokenLine::ControlPoint>::iterator BrokenLine::getPointRef(QPoint point)
+BrokenLine::ControlPointRef BrokenLine::getPointRef(QPoint point)
 {
     return std::find_if(points_.begin(), points_.end(), [point](const auto& p){ return p.point() == point; } );
 }
@@ -169,3 +164,9 @@ std::optional<QPoint> BrokenLine::findNearest(const QPoint & other, std::optiona
 
     return nearest;
 }
+
+qreal BrokenLine::normalizedLength(int startPointIndex) const
+{
+    return accLength_[startPointIndex] / length_;
+}
+

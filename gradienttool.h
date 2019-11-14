@@ -75,7 +75,7 @@ private:
     QColor selectedPointColor = Qt::gray;
 
     QVector<BrokenLine> lines;
-    BrokenLine * line_;
+    BrokenLine * activeLine;
     std::optional<QLineF> hoverSegment;
     bool showControlPoints = false;
 
@@ -87,8 +87,8 @@ private:
     QPoint lastMouseMovePos; // not transformed
 
     HoverPoint hoverPoint;
-    QVector<BrokenLine::ControlPoint>::iterator selectedPointIterator;
-    QVector<BrokenLine::ControlPoint>::iterator hoverPointIterator;
+    BrokenLine::ControlPointRef selectedPointRef;
+    BrokenLine::ControlPointRef hoveredPointRef;
 
     bool mouseLeftPressed = false;
     bool mouseDragging = false;

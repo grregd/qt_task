@@ -12,7 +12,6 @@
 
 class BrokenLine
 {
-
 public:
     struct ControlPoint
     {
@@ -37,20 +36,16 @@ public:
         const std::optional<QColor>& color() const { return color_; }
     };
 
-    QVector<ControlPoint> points_;
-    QVector<qreal> accLength_;
-    qreal length_ = 0;
-    MultiGradient gradient_;
+public:
+    using ControlPointRef = QVector<BrokenLine::ControlPoint>::iterator;
 
 public:
     QVector<ControlPoint>& points() { return points_; }
     QVector<ControlPoint> const & points() const { return points_; }
 
     QLineF fragment(int startPointIndex) const;
-    qreal normalizedLength(int startPointIndex) const;
     QLinearGradient gradientInPoint(int startPointIndex) const;
 
-//    MultiGradient const & gradient() const { return gradient_; }
     void updateGradient();
     void updateLength();
 
@@ -59,9 +54,18 @@ public:
     void removePoint(const QPoint & point);
     void removeAllPoints();
 
-    QVector<ControlPoint>::iterator getPointRef(QPoint point);
+    ControlPointRef getPointRef(QPoint point);
 
     std::optional<QPoint> findNearest(const QPoint & other, std::optional<QPoint> nearest) const;
+
+private:
+    qreal normalizedLength(int startPointIndex) const;
+
+private:
+    QVector<ControlPoint> points_;
+    QVector<qreal> accLength_;
+    qreal length_ = 0;
+    MultiGradient gradient_;
 };
 
 #endif // BROKENLINE_H
