@@ -47,9 +47,9 @@ protected:
     HoverPoint findNearestPoint(const QPoint &checkPos);
     std::optional<QLineF> findHoverLine(const QPoint &checkPos);
 
-    void paintHoverSelectedSegment(const QLineF &fragment, QPainter *painter) const;
-    void paintHoverSelectedControlPoint(const QPoint &point, QPainter *painter) const;
-    void paintSelectedControlPoint(const BrokenLine::ControlPoint &ctrlPoint, QPainter *painter) const;
+    void painSelectedSegmenttHovered(const QLineF &fragment, QPainter *painter) const;
+    void paintControlPointHovered(const QPoint &point, QPainter *painter) const;
+    void paintControlPointSelected(const BrokenLine::ControlPoint &ctrlPoint, QPainter *painter) const;
 
     void mousePressEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;

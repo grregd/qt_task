@@ -109,17 +109,17 @@ void GradientTool::paint(QPainter *painter)
 
     if (hoverPoint)
     {
-        paintHoverSelectedControlPoint(hoverPoint->first, painter);
+        paintControlPointHovered(hoverPoint->first, painter);
     }
 
     if (hoverSegment)
     {
-        paintHoverSelectedSegment(*hoverSegment, painter);
+        painSelectedSegmenttHovered(*hoverSegment, painter);
     }
 
     if (selectedPointRef != activeLine->points().end())
     {
-        paintSelectedControlPoint(*selectedPointRef, painter);
+        paintControlPointSelected(*selectedPointRef, painter);
     }
 
     elapsedTime = elapsedTimer.restart();
@@ -130,9 +130,7 @@ void GradientTool::componentComplete()
 {
     QQuickPaintedItem::componentComplete();
 
-    lines.push_back(BrokenLine());
-    activeLine = &lines.back();
-    selectedPointRef = activeLine->points().end();
+    startNewLine();
 }
 
 void GradientTool::startNewLine()
@@ -190,8 +188,7 @@ std::optional<QLineF> GradientTool::findHoverLine(const QPoint &checkPos)
     return std::optional<QLineF>();
 }
 
-
-void GradientTool::paintHoverSelectedSegment(const QLineF &fragment, QPainter *painter) const
+void GradientTool::painSelectedSegmenttHovered(const QLineF &fragment, QPainter *painter) const
 {
     painter->save();
 
@@ -206,7 +203,7 @@ void GradientTool::paintHoverSelectedSegment(const QLineF &fragment, QPainter *p
     painter->restore();
 }
 
-void GradientTool::paintHoverSelectedControlPoint(const QPoint &point, QPainter *painter) const
+void GradientTool::paintControlPointHovered(const QPoint &point, QPainter *painter) const
 {
     painter->save();
 
@@ -220,7 +217,7 @@ void GradientTool::paintHoverSelectedControlPoint(const QPoint &point, QPainter 
     painter->restore();
 }
 
-void GradientTool::paintSelectedControlPoint(const BrokenLine::ControlPoint &ctrlPoint, QPainter *painter) const
+void GradientTool::paintControlPointSelected(const BrokenLine::ControlPoint &ctrlPoint, QPainter *painter) const
 {
     painter->save();
 

@@ -12,7 +12,7 @@ Window {
     width: 640
     height: 480
 
-    title: qsTr("Hello World")
+    title: qsTr("Gradient toy")
 
     ColumnLayout {
         anchors.fill: parent
