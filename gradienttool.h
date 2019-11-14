@@ -61,6 +61,7 @@ protected:
     QPointF hoverLinePointFromMouse() const;
 
 private:
+    void changeScale(int upDown, const QPoint & scalePosition);
     void setPenWidth(qreal newValue);
     void setShowControlPoints(bool newValue);
 

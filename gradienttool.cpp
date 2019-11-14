@@ -381,21 +381,7 @@ void GradientTool::wheelEvent(QWheelEvent* event)
 {
     if (event->modifiers() == Qt::ControlModifier)
     {
-        auto oldScale = scale;
-        if (event->delta() < 0 && scale > 0.1)
-        {
-            scale /= 1.1;
-        }
-        else if (event->delta() > 0)
-        {
-            scale *= 1.1;
-        }
-
-        if (!qFuzzyCompare(scale, oldScale))
-        {
-            originOffset = event->pos() - scale/oldScale * (event->pos()-originOffset);
-            update();
-        }
+        changeScale(event->delta(), event->pos());
     }
     else
     {
@@ -410,6 +396,25 @@ void GradientTool::componentComplete()
     lines.push_back(BrokenLine());
     activeLine = &lines.back();
     selectedPointRef = activeLine->points().end();
+}
+
+void GradientTool::changeScale(int upDown, const QPoint &scalePosition)
+{
+    auto oldScale = scale;
+    if (upDown < 0 && scale > 0.1)
+    {
+        scale /= 1.1;
+    }
+    else if (upDown > 0)
+    {
+        scale *= 1.1;
+    }
+
+    if (!qFuzzyCompare(scale, oldScale))
+    {
+        originOffset = scalePosition - scale/oldScale * (scalePosition-originOffset);
+        update();
+    }
 }
 
 void GradientTool::setPenWidth(qreal newValue)
