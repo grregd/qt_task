@@ -310,6 +310,7 @@ void GradientTool::mouseReleaseEvent(QMouseEvent *event)
             else
             {
                 hoverPoint->second->removePoint(hoverPoint->first);
+                hoveredPointRef = BrokenLine::ControlPointRef();
                 hoverPoint.reset();
             }
         }

@@ -120,9 +120,13 @@ void BrokenLine::removePoint(const QPoint & point)
     {
         if (points_.size() > 1)
         {
-            if (std::distance(where, points_.rbegin().base()) == 1 )
+            if (where == std::prev(points_.end()) )
             {
                 (where-1)->color() = where->color();
+            }
+            else if (where == std::begin(points_))
+            {
+                (where+1)->color() = where->color();
             }
         }
 
