@@ -14,6 +14,7 @@
 #include <QEasingCurve>
 #include <QGuiApplication>
 #include <QStaticText>
+#include <QQuickItemGrabResult>
 
 static QTransform tra;
 
@@ -53,6 +54,24 @@ void GradientTool::loadFromTextFile(const QUrl &fileUrl)
     storage.loadFromFile(lines, fileUrl.toLocalFile());
     changeActiveLine(&lines.front());
     update();
+}
+
+void GradientTool::exportPng(const QUrl &fileUrl)
+{
+    qDebug() << fileUrl.toLocalFile();
+    auto grabResult = grabToImage(size().toSize());
+    connect(&*grabResult, &QQuickItemGrabResult::ready, this,
+        [=]()
+        {
+            qDebug() << __PRETTY_FUNCTION__;
+            qDebug() << grabResult->image().dotsPerMeterX();
+            qDebug() << grabResult->image().dotsPerMeterY();
+            if (!grabResult->image().save(fileUrl.toLocalFile(), nullptr, 100))
+            {
+                qWarning() << __PRETTY_FUNCTION__ << "Failed to save as " << fileUrl.toLocalFile();
+            }
+        }
+    );
 }
 
 GradientTool::GradientTool()

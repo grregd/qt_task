@@ -33,6 +33,7 @@ public slots:
     void setColorOfSelectedPoint(const QColor & color);
     void saveToTextFile(const QUrl &fileUrl);
     void loadFromTextFile(const QUrl & fileUrl);
+    void exportPng(const QUrl & fileUrl);
 
 public:
     GradientTool();

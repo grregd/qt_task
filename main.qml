@@ -51,6 +51,10 @@ Window {
                 text: "Load"
 
                 onClicked: {
+                    fileDialog.acceptHandler = function(fileUrl)
+                    {
+                        gradientTool.loadFromTextFile(fileDialog.fileUrl)
+                    }
                     fileDialog.title = "Select file to load from"
                     fileDialog.selectExisting = true
                     fileDialog.open()
@@ -59,7 +63,24 @@ Window {
             Button {
                 text: "Save"
                 onClicked: {
+                    fileDialog.acceptHandler = function(fileUrl)
+                    {
+                        gradientTool.saveToTextFile(fileDialog.fileUrl)
+                    }
                     fileDialog.title = "Select file to save to"
+                    fileDialog.selectExisting = false
+                    fileDialog.open()
+                }
+            }
+
+            Button {
+                text: "Export"
+                onClicked: {
+                    fileDialog.acceptHandler = function(fileUrl)
+                    {
+                        gradientTool.exportPng(fileUrl)
+                    }
+                    fileDialog.title = "Select file to export to (extension determines format)"
                     fileDialog.selectExisting = false
                     fileDialog.open()
                 }
@@ -93,19 +114,16 @@ Window {
        }
 
        FileDialog {
+           property var acceptHandler
            id: fileDialog
            selectMultiple: false
            selectFolder: false
            folder: shortcuts.home
 
            onAccepted: {
-               if (fileDialog.selectExisting == false)
+               if (acceptHandler)
                {
-                    gradientTool.saveToTextFile(fileDialog.fileUrl)
-               }
-               else
-               {
-                    gradientTool.loadFromTextFile(fileDialog.fileUrl)
+                    acceptHandler(fileDialog.fileUrl)
                }
            }
        }
