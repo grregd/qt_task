@@ -7,9 +7,9 @@
 #include <QIODevice>
 
 
-void JsonStorage::saveToFile(const QVector<BrokenLine> &lines)
+void JsonStorage::saveToFile(const QVector<BrokenLine> &lines, const QString &fileName)
 {
-    QFile file("file.json");
+    QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly))
     {
         qWarning("can't open file for writing");
@@ -56,9 +56,9 @@ void JsonStorage::writeLine(const BrokenLine &line, QJsonArray & lineObject) con
     }
 }
 
-void JsonStorage::loadFromFile(QVector<BrokenLine> &lines) const
+void JsonStorage::loadFromFile(QVector<BrokenLine> &lines, const QString &fileName) const
 {
-    QFile file("file.json");
+    QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly))
     {
         qWarning("can't open file for reading");

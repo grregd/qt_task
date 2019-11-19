@@ -41,16 +41,16 @@ void GradientTool::setColorOfSelectedPoint(const QColor &color)
     }
 }
 
-void GradientTool::saveToTextFile()
+void GradientTool::saveToTextFile(const QUrl &fileUrl)
 {
     JsonStorage storage;
-    storage.saveToFile(lines);
+    storage.saveToFile(lines, fileUrl.toLocalFile());
 }
 
-void GradientTool::loadFromTextFile()
+void GradientTool::loadFromTextFile(const QUrl &fileUrl)
 {
     JsonStorage storage;
-    storage.loadFromFile(lines);
+    storage.loadFromFile(lines, fileUrl.toLocalFile());
     changeActiveLine(&lines.front());
     update();
 }

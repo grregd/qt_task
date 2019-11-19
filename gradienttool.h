@@ -31,8 +31,8 @@ signals:
 
 public slots:
     void setColorOfSelectedPoint(const QColor & color);
-    void saveToTextFile();
-    void loadFromTextFile();
+    void saveToTextFile(const QUrl &fileUrl);
+    void loadFromTextFile(const QUrl & fileUrl);
 
 public:
     GradientTool();

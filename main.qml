@@ -49,11 +49,20 @@ Window {
 
             Button {
                 text: "Load"
-                onClicked: gradientTool.loadFromTextFile()
+
+                onClicked: {
+                    fileDialog.title = "Select file to load from"
+                    fileDialog.selectExisting = true
+                    fileDialog.open()
+                }
             }
             Button {
                 text: "Save"
-                onClicked: gradientTool.saveToTextFile()
+                onClicked: {
+                    fileDialog.title = "Select file to save to"
+                    fileDialog.selectExisting = false
+                    fileDialog.open()
+                }
             }
         }
 
@@ -81,7 +90,25 @@ Window {
 
             onCurrentColorChanged: if (visible) gradientTool.setColorOfSelectedPoint(currentColor)
             Component.onCompleted: visible = false
-        }
+       }
+
+       FileDialog {
+           id: fileDialog
+           selectMultiple: false
+           selectFolder: false
+           folder: shortcuts.home
+
+           onAccepted: {
+               if (fileDialog.selectExisting == false)
+               {
+                    gradientTool.saveToTextFile(fileDialog.fileUrl)
+               }
+               else
+               {
+                    gradientTool.loadFromTextFile(fileDialog.fileUrl)
+               }
+           }
+       }
 
        Shortcut {
             sequence: "Ctrl+F"
