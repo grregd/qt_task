@@ -17,6 +17,7 @@ SOURCES += \
         brokenline.cpp \
         brokenlinepainter.cpp \
         infobox.cpp \
+        jsonstorage.cpp \
         multigradient.cpp \
         gradienttool.cpp \
         main.cpp
@@ -38,5 +39,6 @@ HEADERS += \
     brokenline.h \
     brokenlinepainter.h \
     infobox.h \
+    jsonstorage.h \
     multigradient.h \
     gradienttool.h

@@ -1,5 +1,6 @@
 #include "gradienttool.h"
 #include "multigradient.h"
+#include "jsonstorage.h"
 
 #include <QDebug>
 
@@ -38,6 +39,20 @@ void GradientTool::setColorOfSelectedPoint(const QColor &color)
             update();
         }
     }
+}
+
+void GradientTool::saveToTextFile()
+{
+    JsonStorage storage;
+    storage.saveToFile(lines);
+}
+
+void GradientTool::loadFromTextFile()
+{
+    JsonStorage storage;
+    storage.loadFromFile(lines);
+    changeActiveLine(&lines.front());
+    update();
 }
 
 GradientTool::GradientTool()
@@ -309,6 +324,10 @@ void GradientTool::mouseReleaseEvent(QMouseEvent *event)
             }
             else
             {
+                if (selectedPointRef == hoveredPointRef)
+                {
+                    selectedPointRef = std::prev(hoverPoint->second->getPointRef(hoverPoint->first));
+                }
                 hoverPoint->second->removePoint(hoverPoint->first);
                 hoveredPointRef = BrokenLine::ControlPointRef();
                 hoverPoint.reset();

@@ -46,6 +46,15 @@ Window {
                     onPenWidthChanged: penWidthSlider.value = gradientTool.penWidth
                 }
             }
+
+            Button {
+                text: "Load"
+                onClicked: gradientTool.loadFromTextFile()
+            }
+            Button {
+                text: "Save"
+                onClicked: gradientTool.saveToTextFile()
+            }
         }
 
         GradientTool {
