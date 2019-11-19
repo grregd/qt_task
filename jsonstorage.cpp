@@ -49,7 +49,7 @@ void JsonStorage::writeLine(const BrokenLine &line, QJsonArray & lineObject) con
         pointObject["y"] = point.point().y();
         if (point.color())
         {
-            pointObject["c"] = point.color()->name();
+            pointObject["c"] = point.color()->name(QColor::HexArgb);
         }
 
         lineObject.append(pointObject);
