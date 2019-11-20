@@ -72,6 +72,9 @@ private:
     bool getShowControlPoints() const;
 
     QPen createHoverMarkerPen(const QString & penSpec, const QPoint & point) const;
+
+    QSize totalSpan();
+
 private:
     BrokenLinePainter brokenLinePainter;
     QColor defaultColorBegin;

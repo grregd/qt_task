@@ -33,6 +33,25 @@ QVector<qreal> calculateAccLength(const QVector<BrokenLine::ControlPoint> & poin
     return result;
 }
 
+void updateSpan(QSize & span, const QPoint point)
+{
+    span.setWidth(std::max(span.width(), point.x()));
+    span.setHeight(std::max(span.height(), point.y()));
+}
+
+QSize calculateSpan(const QVector<BrokenLine::ControlPoint> & points)
+{
+    QSize result;
+    for (auto i = points.begin(); i != points.end(); ++i)
+    {
+        updateSpan(result, i->point());
+    }
+
+    return result;
+}
+
+
+
 QLineF BrokenLine::fragment(int startPointIndex) const
 {
     return QLineF(points_[startPointIndex].point(), points_[startPointIndex+1].point());
@@ -67,6 +86,7 @@ void BrokenLine::updateLength()
 {
     accLength_ = calculateAccLength(points_);
     length_ = accLength_.empty() ? 0.0 : accLength_.back();
+    span_ = calculateSpan(points_);
 }
 
 void BrokenLine::addPoint(const QPoint & point, const QColor & defaultColorBegin, const QColor & defaultColorEnd)
@@ -97,6 +117,7 @@ void BrokenLine::addPoint(const QPoint & point, const QColor & defaultColorBegin
     accLength_.push_back(lastLength);
     length_ = accLength_.empty() ? 0.0 : accLength_.back();
 
+    updateSpan(span_, point);
     updateGradient();
 }
 
@@ -107,6 +128,7 @@ void BrokenLine::insertPoint(QVector<ControlPoint>::iterator where, const QPoint
     accLength_ = calculateAccLength(points_);
     length_ = accLength_.empty() ? 0.0 : accLength_.back();
 
+    updateSpan(span_, point);
     updateGradient();
 }
 

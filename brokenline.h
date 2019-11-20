@@ -58,6 +58,8 @@ public:
 
     std::optional<QPoint> findNearest(const QPoint & other, std::optional<QPoint> nearest) const;
 
+    QSize span() const { return span_; }
+
 private:
     qreal normalizedLength(int startPointIndex) const;
 
@@ -66,6 +68,7 @@ private:
     QVector<qreal> accLength_;
     qreal length_ = 0;
     MultiGradient gradient_;
+    QSize span_;
 };
 
 #endif // BROKENLINE_H

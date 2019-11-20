@@ -59,17 +59,31 @@ void GradientTool::loadFromTextFile(const QUrl &fileUrl)
 void GradientTool::exportPng(const QUrl &fileUrl)
 {
     qDebug() << fileUrl.toLocalFile();
+
+    auto storeWidth = width();
+    auto storeHeight = height();
+    auto storeOrigin = originOffset;
+    auto storeScale = scale;
+
+    auto span = totalSpan();
+    setWidth(span.width());
+    setHeight(span.height());
+    originOffset = QPoint(0, 0);
+    scale = 1.0;
+
     auto grabResult = grabToImage(size().toSize());
     connect(&*grabResult, &QQuickItemGrabResult::ready, this,
         [=]()
         {
-            qDebug() << __PRETTY_FUNCTION__;
-            qDebug() << grabResult->image().dotsPerMeterX();
-            qDebug() << grabResult->image().dotsPerMeterY();
             if (!grabResult->image().save(fileUrl.toLocalFile(), nullptr, 100))
             {
                 qWarning() << __PRETTY_FUNCTION__ << "Failed to save as " << fileUrl.toLocalFile();
             }
+
+            setWidth(storeWidth);
+            setHeight(storeHeight);
+            originOffset = storeOrigin;
+            scale = storeScale;
         }
     );
 }
@@ -499,3 +513,17 @@ QPen GradientTool::createHoverMarkerPen(const QString &penSpec, const QPoint &po
         return QPen(gradient, 5, Qt::DotLine);
     }
 }
+
+QSize GradientTool::totalSpan()
+{
+    QSize result;
+
+    for (auto const & line: lines)
+    {
+        result.setWidth(std::max(result.width(), line.span().width()));
+        result.setHeight(std::max(result.height(), line.span().height()));
+    }
+
+    return result + QSize(penWidth, penWidth);
+}
+
