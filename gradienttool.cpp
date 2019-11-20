@@ -32,7 +32,6 @@ void GradientTool::setColorOfSelectedPoint(const QColor &color)
 {
     if (selectedPointRef != activeLine->points().end())
     {
-        qDebug() << __PRETTY_FUNCTION__ << color;
         if (color.spec() != QColor::Invalid)
         {
             selectedPointRef->color() = color;
@@ -290,8 +289,6 @@ void GradientTool::paintControlPointSelected(const BrokenLine::ControlPoint &ctr
 
 void GradientTool::mousePressEvent(QMouseEvent *event)
 {
-    qDebug() << __PRETTY_FUNCTION__;
-
     if (event->button() == Qt::LeftButton)
     {
         lastMouseMovePos = event->pos();
@@ -328,7 +325,6 @@ void GradientTool::mousePressEvent(QMouseEvent *event)
 
 void GradientTool::mouseReleaseEvent(QMouseEvent *event)
 {
-    qDebug() << __PRETTY_FUNCTION__;
     if (event->button() == Qt::LeftButton)
     {
         if (mouseDragging)
