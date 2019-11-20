@@ -50,6 +50,8 @@ void GradientTool::saveToTextFile(const QUrl &fileUrl)
 void GradientTool::loadFromTextFile(const QUrl &fileUrl)
 {
     JsonStorage storage;
+    lines.clear();
+    startNewLine();
     storage.loadFromFile(lines, fileUrl.toLocalFile());
     changeActiveLine(&lines.front());
     update();
