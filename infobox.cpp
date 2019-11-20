@@ -14,6 +14,9 @@ InfoBox &InfoBox::addInfoLine(std::function<QString ()> fn)
 
 void InfoBox::paint(QPoint pos, QPainter *painter)
 {
+    if (!visible_)
+        return;
+
     const int infoBoxWidth = 200;
     const int infoLineHeight = 15;
 

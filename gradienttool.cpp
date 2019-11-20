@@ -71,6 +71,7 @@ void GradientTool::exportPng(const QUrl &fileUrl)
     setHeight(span.height());
     originOffset = QPoint(0, 0);
     scale = 1.0;
+    infoBox.setVisible(false);
 
     auto grabResult = grabToImage(size().toSize());
     connect(&*grabResult, &QQuickItemGrabResult::ready, this,
@@ -85,6 +86,7 @@ void GradientTool::exportPng(const QUrl &fileUrl)
             setHeight(storeHeight);
             originOffset = storeOrigin;
             scale = storeScale;
+            infoBox.setVisible(true);
         }
     );
 }

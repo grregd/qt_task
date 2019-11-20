@@ -16,8 +16,14 @@ public:
 
     void paint(QPoint pos, QPainter *painter);
 
+    void setVisible(bool v) { visible_ = v; }
+    bool visible() const { return visible_; }
+
 private:
     std::list<std::function<QString()>> fns;
+
+private:
+    bool visible_ = true;
 };
 
 #endif // INFOBOX_H
